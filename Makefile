@@ -28,3 +28,4 @@ clean:
 	rm -f test test.o test2 test2.o
 
 list.o: higherc/higherc.h higherc/list.h
+test test2: higherc.a
