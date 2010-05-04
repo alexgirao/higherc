@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "higherc.h"
 #include "buffer.h"
 #include "list.h"
 
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
 		if (rsz == 0) {
 			usleep(15000);  // 15ms sleep
 		} else {
-			printf("read %d bytes\n", rsz);
+			printf("read %ld bytes\n", rsz);
 		}
 	}
 
