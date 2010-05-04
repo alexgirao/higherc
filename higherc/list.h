@@ -14,11 +14,14 @@ struct hcns(item) {
 	// item data goes here
 };
 
-/*
- * bufsz: holds item data
+/* bufsz: holds item data
+ * return: list object, use list_free to dispose
  */
 struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *tail);
-
 void hcns(list_free)(struct hcns(list) *list);
+
+/* pos: 
+ */
+void hcns(list_item)(struct hcns(list) *list, int pos);
 
 #endif

@@ -4,9 +4,9 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "higherc.h"
-#include "buffer.h"
-#include "list.h"
+#include "higherc/higherc.h"
+#include "higherc/buffer.h"
+#include "higherc/list.h"
 
 int main(int argc, char **argv)
 {

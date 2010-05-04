@@ -27,4 +27,4 @@ list.o: list.c
 clean:
 	rm -f test test.o test2 test2.o
 
-list.o: higherc.h list.h
+list.o: higherc/higherc.h higherc/list.h
