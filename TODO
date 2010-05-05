@@ -5,3 +5,4 @@ list
 	list traverse with tail example
 	list reverse
 	list duplicate
+	list flatten

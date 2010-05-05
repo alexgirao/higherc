@@ -1,7 +1,7 @@
 #include "higherc/higherc.h"
 #include "higherc/byte.h"
 
-int hcns(byte_chr)(const char *s, int n, int c)
+int hcns(byte_chrl)(const char *s, int n, int c)
 {
 	char ch;
 	const char *t;
@@ -39,7 +39,42 @@ int hcns(byte_chr)(const char *s, int n, int c)
 	return n;
 }
 
-void hcns(byte_copy)(char *to, int n, const char *from)
+int hcns(byte_chrr)(const char *s, int n, int c)
+{
+	char ch;
+	const char *t;
+
+	ch = c;
+	t = s + n;
+	for (;;) {
+		--t;
+		if (t<s)
+			break;
+		if (*t == ch)
+			return  t - s;
+
+		--t;
+		if (t<s)
+			break;
+		if (*t == ch)
+			return  t - s;
+
+		--t;
+		if (t<s)
+			break;
+		if (*t == ch)
+			return  t - s;
+
+		--t;
+		if (t<s)
+			break;
+		if (*t == ch)
+			return  t - s;
+	}
+	return n;
+}
+
+void hcns(byte_copyl)(char *to, int n, const char *from)
 {
 	for (;;) {
 		if (!n)
@@ -128,41 +163,6 @@ int hcns(byte_diff)(const char *s, int n, const char *t)
 	}
 	return ((int)(unsigned char)*s)
 	    - ((int)(unsigned char)*t);
-}
-
-int hcns(byte_rchr)(const char *s, int n, int c)
-{
-	char ch;
-	const char *t;
-
-	ch = c;
-	t = s + n;
-	for (;;) {
-		--t;
-		if (t<s)
-			break;
-		if (*t == ch)
-			return  t - s;
-
-		--t;
-		if (t<s)
-			break;
-		if (*t == ch)
-			return  t - s;
-
-		--t;
-		if (t<s)
-			break;
-		if (*t == ch)
-			return  t - s;
-
-		--t;
-		if (t<s)
-			break;
-		if (*t == ch)
-			return  t - s;
-	}
-	return n;
 }
 
 void hcns(byte_zero)(char *s, int n)

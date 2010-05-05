@@ -1,32 +1,34 @@
 
-CFLAGS = 
+CFLAGS = -Wall
 LDFLAGS = 
 LIBS = higherc.a
+PROGS = test test-list-0 test-stralloc-0
+OBJS = byte.o alloc.o str.o list.o stralloc.o test-list-0.o
 
-all: higherc.a test test-list-0
+all: higherc.a $(PROGS)
 
-higherc.a: list.o str.o
+higherc.a: list.o byte.o alloc.o str.o stralloc.o
 	ar cr $@ $^
 	ranlib $@
 
 test: test.o
 	gcc $(LDFLAGS) -o $@ $< $(LIBS)
 
-test-list-0: test-list-0.o
+test-list-0 test-stralloc-0: %: %.o
 	gcc $(LDFLAGS) -o $@ $< $(LIBS)
 
 test.o: test.c
-	gcc -Wall -c $(CFLAGS) -o $@ $<
+	gcc -c $(CFLAGS) -o $@ $<
 
-test-list-0.o: test-list-0.c
-	gcc -Wall -c $(CFLAGS) -o $@ $<
-
-list.o str.o: %.o: %.c
-	gcc -Wall -c $(CFLAGS) -o $@ $<
+$(OBJS): %.o: %.c
+	gcc -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f test test.o test-list-0 test-list-0.o
+	rm -f  *.o $(PROGS)
 
-list.o: higherc/higherc.h higherc/list.h
-str.o: higherc/higherc.h higherc/str.h
-test test-list-0: higherc.a
+byte.o: higherc/higherc.h higherc/byte.h
+str.o: higherc/higherc.h higherc/byte.h higherc/str.h
+alloc.o: higherc/higherc.h higherc/byte.h higherc/alloc.h
+stralloc.o: higherc/higherc.h higherc/byte.h higherc/str.h higherc/stralloc.h
+list.o: higherc/higherc.h higherc/alloc.h higherc/list.h
+$(PROGS): higherc.a

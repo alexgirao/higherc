@@ -1,7 +1,7 @@
 #include "higherc/higherc.h"
 #include "higherc/str.h"
 
-int hcns(str_chr)(const char *s, int c)
+int hcns(str_chrl)(const char *s, int c)
 {
 	char ch;
 	const char *t;
@@ -34,6 +34,45 @@ int hcns(str_chr)(const char *s, int c)
 		++t;
 
 	}
+	return t - s;
+}
+
+int hcns(str_chrr)(const char *s, int c)
+{
+	char ch;
+	const char *t;
+	const char *u;
+
+	ch = c;
+	t = s;
+	u = 0;
+	for (;;) {
+		if (!*t)
+			break;
+		if (*t == ch)
+			u = t;
+		++t;
+
+		if (!*t)
+			break;
+		if (*t == ch)
+			u = t;
+		++t;
+
+		if (!*t)
+			break;
+		if (*t == ch)
+			u = t;
+		++t;
+
+		if (!*t)
+			break;
+		if (*t == ch)
+			u = t;
+		++t;
+	}
+	if (u)
+		return u - s;
 	return t - s;
 }
 
@@ -178,45 +217,6 @@ int hcns(str_len)(const char *s)
 			return t - s;
 		++t;
 	}
-}
-
-int hcns(str_rchr)(const char *s, int c)
-{
-	char ch;
-	const char *t;
-	const char *u;
-
-	ch = c;
-	t = s;
-	u = 0;
-	for (;;) {
-		if (!*t)
-			break;
-		if (*t == ch)
-			u = t;
-		++t;
-
-		if (!*t)
-			break;
-		if (*t == ch)
-			u = t;
-		++t;
-
-		if (!*t)
-			break;
-		if (*t == ch)
-			u = t;
-		++t;
-
-		if (!*t)
-			break;
-		if (*t == ch)
-			u = t;
-		++t;
-	}
-	if (u)
-		return u - s;
-	return t - s;
 }
 
 int hcns(str_start)(const char *s, const char *t)
