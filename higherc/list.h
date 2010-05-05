@@ -12,6 +12,8 @@ struct hcns(list) {
 	// list data (item + user data)
 };
 
+/* list item
+ */
 struct hcns(item) {
 	int pos;    // data position relative to list header, 0 means undefined
 	int size;   // data size
