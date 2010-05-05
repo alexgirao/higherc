@@ -4,10 +4,31 @@
 #include <unistd.h>
 #include <errno.h>
 #include <assert.h>
+#include <stdarg.h>
 
 #include "higherc/higherc.h"
 #include "higherc/buffer.h"
 #include "higherc/list.h"
+
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+# define FATAL(...)       fatal(__FILE__, __LINE__, __VA_ARGS__)
+#elif defined (__GNUC__)
+# define FATAL(fmt...)   fatal(__FILE__, __LINE__, fmt)
+#endif
+
+static void fatal(char *file, int line, char *fmt, ...)
+{
+	va_list args;
+
+	va_start(args, fmt);
+
+	fprintf(stderr, "fatal-error: %s: %i: ", file, (int)line);
+	vfprintf(stderr, fmt, args);
+	fprintf(stderr, "\n");
+	fflush(stderr);
+
+	exit(-1);
+}
 
 struct mydata {
 	int alpha;
@@ -18,8 +39,13 @@ struct mydata {
 int main(int argc, char **argv)
 {
 	int len = 10;
-	struct hcns(list) *list = hcns(list_alloc)(len, len * sizeof(struct mydata), NULL);
+	int bufsiz = len * sizeof(struct mydata);
+	struct hcns(list) *list = hcns(list_alloc)(len, bufsiz, NULL);
 	int i;
+
+	if (!list) {
+		FATAL("failed to create a list with %i items and %i bytes buffer", len, bufsiz);
+	}
 
 	for (i=0; i<list->length; i++) {
 		int sz = sizeof(struct mydata);

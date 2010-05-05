@@ -23,7 +23,7 @@ struct hcns(item) {
  * return: list object, use list_free to dispose
  */
 struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *tail);
-void hcns(list_free)(struct hcns(list) *list);
+hcns(bool) hcns(list_free)(struct hcns(list) *list);
 
 /* index: item position at list, start at 0
  * return: pointer to user allocated area with size bytes available

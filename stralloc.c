@@ -9,7 +9,7 @@
 /* alloc/free
  */
 
-hcns(bool) hcns(stralloc_alloc)(struct hcns(stralloc) *x, int n)
+hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n)
 {
 	if (x->s) {
 		if (n > x->a) {
@@ -33,7 +33,7 @@ hcns(bool) hcns(stralloc_alloc)(struct hcns(stralloc) *x, int n)
 	return 0;
 }
 
-hcns(bool) hcns(stralloc_free)(struct hcns(stralloc) *x)
+hcns(bool) hcns(s_free)(struct hcns(s) *x)
 {
 	if (x->s) {
 		void *p = x->s;
@@ -48,9 +48,9 @@ hcns(bool) hcns(stralloc_free)(struct hcns(stralloc) *x)
 /* copy
  */
 
-hcns(bool) hcns(stralloc_copyn)(struct hcns(stralloc) *sa, const char *s, int n)
+hcns(bool) hcns(s_copyn)(struct hcns(s) *sa, const char *s, int n)
 {
-	if (!hcns(stralloc_alloc)(sa, n + 1))
+	if (!hcns(s_alloc)(sa, n + 1))
 		return 0;
 	hcns(byte_copyl)(sa->s, n, s);
 	sa->len = n;
@@ -58,24 +58,24 @@ hcns(bool) hcns(stralloc_copyn)(struct hcns(stralloc) *sa, const char *s, int n)
 	return 1;
 }
 
-hcns(bool) hcns(stralloc_copy)(struct hcns(stralloc) *to, const struct hcns(stralloc) *from)
+hcns(bool) hcns(s_copy)(struct hcns(s) *to, const struct hcns(s) *from)
 {
-	return hcns(stralloc_copyn)(to, from->s, from->len);
+	return hcns(s_copyn)(to, from->s, from->len);
 }
 
-hcns(bool) hcns(stralloc_copyz)(struct hcns(stralloc) *sa, const char *s)
+hcns(bool) hcns(s_copyz)(struct hcns(s) *sa, const char *s)
 {
-	return hcns(stralloc_copyn)(sa, s, hcns(str_len)(s));
+	return hcns(s_copyn)(sa, s, hcns(str_len)(s));
 }
 
 /* cat
  */
 
-hcns(bool) hcns(stralloc_catn)(struct hcns(stralloc) *sa, const char *s, int n)
+hcns(bool) hcns(s_catn)(struct hcns(s) *sa, const char *s, int n)
 {
 	if (!sa->s)
-		return hcns(stralloc_copyn)(sa, s, n);
-	if (!hcns(stralloc_alloc)(sa, sa->len + n + 1))
+		return hcns(s_copyn)(sa, s, n);
+	if (!hcns(s_alloc)(sa, sa->len + n + 1))
 		return 0;
 	hcns(byte_copyl)(sa->s + sa->len, n, s);
 	sa->len += n;
@@ -83,12 +83,12 @@ hcns(bool) hcns(stralloc_catn)(struct hcns(stralloc) *sa, const char *s, int n)
 	return 1;
 }
 
-hcns(bool) hcns(stralloc_cat)(struct hcns(stralloc) *to, const struct hcns(stralloc) *from)
+hcns(bool) hcns(s_cat)(struct hcns(s) *to, const struct hcns(s) *from)
 {
-	return hcns(stralloc_catn)(to, from->s, from->len);
+	return hcns(s_catn)(to, from->s, from->len);
 }
 
-hcns(bool) hcns(stralloc_catz)(struct hcns(stralloc) *sa, const char *s)
+hcns(bool) hcns(s_catz)(struct hcns(s) *sa, const char *s)
 {
-	return hcns(stralloc_catn)(sa, s, hcns(str_len)(s));
+	return hcns(s_catn)(sa, s, hcns(str_len)(s));
 }

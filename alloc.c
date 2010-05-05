@@ -8,6 +8,11 @@ void *hcns(alloc)(int n)
 	return malloc(n);
 }
 
+void *hcns(alloc_z)(int n)
+{
+	return calloc(1, n);
+}
+
 void hcns(alloc_free)(char *x)
 {
 	free(x);

@@ -1,21 +1,21 @@
 #ifndef tid0312e910d3c3t7zzl4zg0fut3i889en4d5dlshki6gd /* higherc-stralloc-h */
 #define tid0312e910d3c3t7zzl4zg0fut3i889en4d5dlshki6gd /* higherc-stralloc-h */
 
-struct hcns(stralloc) {
+struct hcns(s) {
 	char *s;
 	int len;
 	int a;   /* allocated */
 };
 
-hcns(bool) hcns(stralloc_alloc)(struct hcns(stralloc) *x, int n);
-hcns(bool) hcns(stralloc_free)(struct hcns(stralloc) *x);
+hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n);
+hcns(bool) hcns(s_free)(struct hcns(s) *x);
 
-hcns(bool) hcns(stralloc_copyn)(struct hcns(stralloc) *, const char *, int);
-hcns(bool) hcns(stralloc_copy)(struct hcns(stralloc) *, const struct hcns(stralloc) *);
-hcns(bool) hcns(stralloc_copyz)(struct hcns(stralloc) *, const char *);
+hcns(bool) hcns(s_copyn)(struct hcns(s) *, const char *, int);
+hcns(bool) hcns(s_copy)(struct hcns(s) *, const struct hcns(s) *);
+hcns(bool) hcns(s_copyz)(struct hcns(s) *, const char *);
 
-hcns(bool) hcns(stralloc_catn)(struct hcns(stralloc) *, const char *, int);
-hcns(bool) hcns(stralloc_cat)(struct hcns(stralloc) *, const struct hcns(stralloc) *);
-hcns(bool) hcns(stralloc_catz)(struct hcns(stralloc) *, const char *);
+hcns(bool) hcns(s_catn)(struct hcns(s) *, const char *, int);
+hcns(bool) hcns(s_cat)(struct hcns(s) *, const struct hcns(s) *);
+hcns(bool) hcns(s_catz)(struct hcns(s) *, const char *);
 
 #endif
