@@ -65,7 +65,7 @@ hcns(bool) hcns(s_copy)(struct hcns(s) *to, const struct hcns(s) *from)
 
 hcns(bool) hcns(s_copyz)(struct hcns(s) *sa, const char *s)
 {
-	return hcns(s_copyn)(sa, s, hcns(str_len)(s));
+	return hcns(s_copyn)(sa, s, hcns(slen)(s));
 }
 
 /* cat
@@ -90,5 +90,5 @@ hcns(bool) hcns(s_cat)(struct hcns(s) *to, const struct hcns(s) *from)
 
 hcns(bool) hcns(s_catz)(struct hcns(s) *sa, const char *s)
 {
-	return hcns(s_catn)(sa, s, hcns(str_len)(s));
+	return hcns(s_catn)(sa, s, hcns(slen)(s));
 }
