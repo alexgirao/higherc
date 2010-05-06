@@ -48,48 +48,72 @@ int main(int argc, char **argv)
 	}
 
 	{
-		int i;
+		int i, j;
 
-		printf("debug: lower=%i enqueued=%i len=%i rem=%i\n", pbuf.lower, pbuf.enqueued, pbuf.list->length,
-		       hcns(remaining)(&pbuf));
+		j = 2;
+		while (j--) {
+		    /* enqueue up to len
+		     */
 
-		for (i=0; i<len; i++) {
-			void *p = hcns(enqueue)(&pbuf);
-			printf("enqueued %p, remaining %i, lower %i\n", p, hcns(remaining)(&pbuf), pbuf.lower);
+		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
+			   hcns(remaining)(&pbuf));
+
+		    for (i=0; i<len; i++) {
+			    assert(pbuf.next == i);
+			    void *p = hcns(enqueue)(&pbuf);
+			    printf("enqueued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
+		    }
+
+		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
+			   hcns(remaining)(&pbuf));
+
+		    assert(hcns(remaining)(&pbuf) == 0);
+
+		    /* dequeue up to len
+		     */
+
+		    for (i=0; i<len; i++) {
+			    assert(hcns(remaining)(&pbuf) == i);
+			    void *p = hcns(dequeue)(&pbuf);
+			    printf("dequeued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
+		    }
+
+    		    assert(hcns(remaining)(&pbuf) == len);
 		}
 
-		printf("debug: lower=%i enqueued=%i len=%i rem=%i\n", pbuf.lower, pbuf.enqueued, pbuf.list->length,
-		       hcns(remaining)(&pbuf));
+		/*
+		 */
 
-		assert(hcns(remaining)(&pbuf) == 0);
+		assert(len >= 5);
 
-		for (i=0; i<len; i++) {
-			assert(hcns(remaining)(&pbuf) == i);
-			void *p = hcns(dequeue)(&pbuf);
-			printf("dequeued %p, remaining %i, lower %i\n", p, hcns(remaining)(&pbuf), pbuf.lower);
+		j = 5;
+		while (j--) {
+		    /* enqueue up to len
+		     */
+
+		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
+			   hcns(remaining)(&pbuf));
+
+		    for (i=0; i<3; i++) {
+			    void *p = hcns(enqueue)(&pbuf);
+			    printf("enqueued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
+		    }
+
+		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
+			   hcns(remaining)(&pbuf));
+
+		    /* dequeue up to len
+		     */
+
+		    for (i=0; i<3; i++) {
+			    void *p = hcns(dequeue)(&pbuf);
+			    printf("dequeued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
+		    }
+
+		    if (j == 0) {
+			    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length, hcns(remaining)(&pbuf));
+		    }
 		}
-
-		/* printf("debug: lower=%i enqueued=%i len=%i rem=%i\n", pbuf.lower, pbuf.enqueued, pbuf.list->length, */
-		/*        hcns(remaining)(&pbuf)); */
-
-		/* for (i=0; i<len; i++) { */
-		/* 	void *p = hcns(enqueue)(&pbuf); */
-		/* 	printf("enqueue %p\n", p); */
-		/* } */
-		
-		/* printf("debug: lower=%i enqueued=%i len=%i rem=%i\n", pbuf.lower, pbuf.enqueued, pbuf.list->length, */
-		/*        hcns(remaining)(&pbuf)); */
-
-		/* assert(len >= 5); */
-
-		/* for (i=0; i<3; i++) { */
-		/* 	void *p = hcns(enqueue)(&pbuf); */
-		/* 	printf("enqueue %p\n", p); */
-		/* } */
-
-		/* printf("debug: lower=%i enqueued=%i len=%i rem=%i\n", pbuf.lower, pbuf.enqueued, pbuf.list->length, */
-		/*        hcns(remaining)(&pbuf)); */
-
 	}
 
 	assert(hcns(pbuf_free)(&pbuf) == 1);

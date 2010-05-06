@@ -47,7 +47,7 @@ hcns(bool) hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int length, int itemsiz)
 
 	pbuf->list = list;
 	pbuf->itemsiz = itemsiz;
-	pbuf->lower = 0;
+	pbuf->next = 0;
 	pbuf->enqueued = 0;
 
 	return 1;
@@ -72,8 +72,10 @@ int hcns(remaining)(struct hcns(pbuf) *pbuf)
 
 void *hcns(enqueue)(struct hcns(pbuf) *pbuf)
 {
-	int pos = pbuf->lower;
+	int pos = pbuf->next;
 
+	assert(pos >= 0);
+	assert(pos < pbuf->list->length);
 	assert(pbuf->enqueued <= pbuf->list->length);
 
 	if (pbuf->enqueued == pbuf->list->length) {
@@ -81,10 +83,8 @@ void *hcns(enqueue)(struct hcns(pbuf) *pbuf)
 		return NULL;
 	}
 
-	assert(pbuf->lower < pbuf->list->length);
-
 	/* cycle */
-	pbuf->lower = (pbuf->lower + 1) % pbuf->list->length;
+	pbuf->next = (pbuf->next + 1) % pbuf->list->length;
 	pbuf->enqueued++;
 
 	return hcns(item_get)(pbuf->list, pos, NULL);
@@ -101,7 +101,7 @@ void *hcns(dequeue)(struct hcns(pbuf) *pbuf)
 		return NULL;
 	}
 
-	pos = pbuf->lower - pbuf->enqueued;
+	pos = pbuf->next - pbuf->enqueued;
 	if (pos < 0) {
 		/* two's complement of queue length */
 		pos = pbuf->list->length - -pos;

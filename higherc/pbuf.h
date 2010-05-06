@@ -22,7 +22,7 @@
 struct hcns(pbuf) {
 	struct hcns(list) *list;
 	int itemsiz;
-	int lower; /* lower index */
+	int next; /* next available item */
 	int enqueued;  /* how many items enqueued */
 };
 

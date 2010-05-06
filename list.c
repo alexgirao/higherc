@@ -10,7 +10,7 @@
 #include "higherc/buffer.h"
 #include "higherc/list.h"
 
-#define HIGHERC_LIST_DEBUG
+/*#define HIGHERC_LIST_DEBUG*/
 
 struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *tail)
 {
