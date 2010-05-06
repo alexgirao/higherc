@@ -1,3 +1,8 @@
 high level structures for c programming
 
      - single linked lists (list)
+
+api instructions
+
+    - unless explicitly stated, all structure members are read-only
+    - fixed-size structures returns a boolean on allocation

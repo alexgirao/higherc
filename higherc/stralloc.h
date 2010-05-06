@@ -3,9 +3,11 @@
 
 struct hcns(s) {
 	char *s;
-	int len;
-	int a;   /* allocated */
+	int len; /* can be changed between 0 and a-1 (inclusive) to truncate string */
+	int a; /* allocated */
 };
+
+#define HIGHERC_NULL_S {NULL, 0, 0}
 
 hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n);
 hcns(bool) hcns(s_free)(struct hcns(s) *x);

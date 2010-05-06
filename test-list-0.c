@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 		printf("{%i, %.2f, %s}\n", ms->alpha, ms->bravo, ms->charlie);
 	}
 
-	hcns(list_free)(list);
+	assert(hcns(list_free)(list) == 1);
 
 	return 0;
 }

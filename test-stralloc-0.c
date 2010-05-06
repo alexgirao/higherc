@@ -9,7 +9,7 @@
 
 int main(int argc, char **argv)
 {
-	struct hcns(s) sa0 = {NULL,0,0};
+	struct hcns(s) sa0 = HIGHERC_NULL_S;
 
 	hcns(s_catz)(&sa0, "hello world of possibilities!");
 	hcns(s_catn)(&sa0, "", 1); /* append '\0' */
@@ -18,9 +18,12 @@ int main(int argc, char **argv)
 
 	sa0.len = 0;  /* truncate string */
 
-	hcns(s_catn)(&sa0, "hi!", 3);
-
+	hcns(s_catn)(&sa0, "hi ", 3);
 	fwrite(sa0.s, sa0.len, 1, stdout);
+
+	hcns(s_copyz)(&sa0, "folks!");
+	fwrite(sa0.s, sa0.len, 1, stdout);
+
 	fwrite("\n", 1, 1, stdout);
 
 	hcns(s_free)(&sa0);

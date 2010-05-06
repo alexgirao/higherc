@@ -3,13 +3,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <assert.h>
 
 #include "higherc/higherc.h"
 #include "higherc/alloc.h"
 #include "higherc/buffer.h"
 #include "higherc/list.h"
 
-//#define HIGHERC_LIST_DEBUG
+#define HIGHERC_LIST_DEBUG
 
 struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *tail)
 {
@@ -61,6 +62,8 @@ void *hcns(item_setup)(struct hcns(list) *list, int index, int size)
 
 	int allocsz0 = sizeof(struct hcns(list)) + list->length * sizeof(struct hcns(item));
 
+	assert(index >= 0);
+
 	if (item->pos != 0) {
 		//FATAL("item_setup(%p, %i, %i), called multiple times", list, index, size);
 		return NULL;
@@ -83,6 +86,8 @@ void *hcns(item_get)(struct hcns(list) *list, int index, int *sizep)
 {
 	struct hcns(item) *first_item = (struct hcns(item) *) higherc_offset(list, sizeof(struct hcns(list)));
 	struct hcns(item) *item = first_item + index;
+
+	assert(index >= 0);
 
 	if (item->pos == 0) {
 		/* undefined */
