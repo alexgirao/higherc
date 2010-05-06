@@ -1,9 +1,9 @@
 
 CFLAGS = -Wall
-LDFLAGS = 
-LIBS = higherc.a
+LDFLAGS = -L.
+LIBS = -lhigherc
 PROGS = test test-list-0 test-stralloc-0
-OBJS = byte.o alloc.o str.o list.o stralloc.o test-list-0.o
+OBJS = byte.o alloc.o str.o list.o stralloc.o test-list-0.o test-stralloc-0.o
 
 all: higherc.a $(PROGS)
 
