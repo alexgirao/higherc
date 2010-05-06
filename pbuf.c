@@ -8,21 +8,4 @@
 #include "higherc/alloc.h"
 #include "higherc/buffer.h"
 #include "higherc/list.h"
-
-/* processing buffer
- *
- *    - on top of list
- *
- *        - fixed length
- *        - fixed item size
- *
- *    - item cycling is hidden
- *    - push, flush and remaining
- *
- *        - push one
- *        - flush all
- *        - if full, remaining = 0
- *        - if full, push fails, must flush
- *
- */ 
-
+#include "higherc/pbuf.h"
