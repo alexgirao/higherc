@@ -5,9 +5,9 @@ LIBS = -lhigherc
 PROGS = test test-list-0 test-stralloc-0
 OBJS = byte.o alloc.o str.o list.o stralloc.o test-list-0.o test-stralloc-0.o
 
-all: higherc.a $(PROGS)
+all: libhigherc.a $(PROGS)
 
-higherc.a: list.o byte.o alloc.o str.o stralloc.o
+libhigherc.a: list.o byte.o alloc.o str.o stralloc.o
 	ar cr $@ $^
 	ranlib $@
 
@@ -24,11 +24,11 @@ $(OBJS): %.o: %.c
 	gcc -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f  *.o $(PROGS)
+	rm -f  *.o $(PROGS) libhigherc.a
 
 byte.o: higherc/higherc.h higherc/byte.h
 str.o: higherc/higherc.h higherc/byte.h higherc/str.h
 alloc.o: higherc/higherc.h higherc/byte.h higherc/alloc.h
 stralloc.o: higherc/higherc.h higherc/byte.h higherc/str.h higherc/stralloc.h
 list.o: higherc/higherc.h higherc/alloc.h higherc/list.h
-$(PROGS): higherc.a
+$(PROGS): libhigherc.a
