@@ -17,6 +17,11 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 	int allocsz0 = sizeof(struct hcns(list)) + length * sizeof(struct hcns(item));
 	int allocsz = allocsz0 + bufsz;
 
+	if (tail) {
+		/* not implemented-yet, see TODO */
+		return NULL;
+	}
+
 	struct hcns(list) *r = hcns(alloc_z)(allocsz);
 	if (!r) {
 		return NULL;
