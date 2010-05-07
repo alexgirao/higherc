@@ -22,7 +22,7 @@ void *hcns(alloc_re)(void *x, int m, int n)
 {
 	char *y = hcns(alloc)(n);
 	if (!y)	return NULL;
-	hcns(byte_copyl)(y, m, x);
+	hcns(bcopyl)(y, m, x);
 	hcns(alloc_free)(x);
 	return y;
 }

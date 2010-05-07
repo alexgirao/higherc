@@ -52,7 +52,7 @@ hcns(bool) hcns(s_copyn)(struct hcns(s) *sa, const char *s, int n)
 {
 	if (!hcns(s_alloc)(sa, n + 1))
 		return 0;
-	hcns(byte_copyl)(sa->s, n, s);
+	hcns(bcopyl)(sa->s, n, s);
 	sa->len = n;
 	sa->s[n] = 'Z';		/* ``offensive programming'' */
 	return 1;
@@ -77,7 +77,7 @@ hcns(bool) hcns(s_catn)(struct hcns(s) *sa, const char *s, int n)
 		return hcns(s_copyn)(sa, s, n);
 	if (!hcns(s_alloc)(sa, sa->len + n + 1))
 		return 0;
-	hcns(byte_copyl)(sa->s + sa->len, n, s);
+	hcns(bcopyl)(sa->s + sa->len, n, s);
 	sa->len += n;
 	sa->s[sa->len] = 'Z';	/* ``offensive programming'' */
 	return 1;
