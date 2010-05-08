@@ -30,7 +30,7 @@ static int read_check(int fd, char *buf, int count)
 	ssize_t r = read(fd, buf, count);
 	if (r < 0) {
 		assert(r == -1);  // just to detect weird systems/weird bugs
-		fprintf(stderr, "read() = %li, errno: %i\n", r, errno);
+		fprintf(stderr, "read() = %li, errno: %i\n", (long int) r, errno);
 		fflush(stderr);
 		perror("read()");
 		exit(1);
