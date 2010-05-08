@@ -1,3 +1,11 @@
+
+smarter build system (see baselib)
+
+	detect byte ordering (little-endian, big-endian)
+	ensure byte IS 1, short IS 2 and int IS 4, FAIL if no
+	detect 64-bit type availability
+	typedef 64-bit type
+
 list
 
 	list alloc with tail (incref on all lists)

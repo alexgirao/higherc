@@ -14,12 +14,21 @@ int main(int argc, char **argv)
 	ssize_t rsz;
 	char c = 0xef;
 
-	printf("1: %x\n", (int)c);              // calculate two's complement
-	printf("2: %x\n", (unsigned int)c);     // calculate two's complement (even if unsigned)
-	printf("3: %x\n", (int)(char)c);        // calculate two's complement (even if unsigned)
-	printf("4: %x\n", (int)(unsigned char)c);        // ok (most right form?)
-	printf("5: %x\n", (int)((char)c & 0xff));        // ok
-	printf("6: %x\n", (int)(c & 0xff));              // ok
+	printf("1: %x\n", (int)c);              // two's complement aware
+	printf("2: %x\n", (unsigned int)c);     // likewise
+	printf("3: %x\n", (int)(char)c);        // likewise
+	printf("4: %x\n", (int)(unsigned char)c);        // bitwise ;-)
+	printf("5: %x\n", (int)((char)c & 0xff));        // strip sign-bit
+	printf("6: %x\n", (int)(c & 0xff));              // likewise
+
+
+	int x = 0xdeadbeef;
+	unsigned int y = x;
+
+#define bval(v, pos) (((unsigned char *)&v)[pos])
+
+	printf("%.2x%.2x%.2x%.2x\n", bval(x, 0), bval(x, 1), bval(x, 2), bval(x, 3));
+	printf("%.2x%.2x%.2x%.2x\n", bval(y, 0), bval(y, 1), bval(y, 2), bval(y, 3));
 
 	/* read stdin
 	 */
