@@ -9,10 +9,11 @@ LIB_HEADERS = higherc/alloc.h higherc/buffer.h higherc/byte.h		\
 higherc/higherc.h higherc/list.h higherc/pbuf.h higherc/stralloc.h	\
 higherc/str.h higherc/tok.h
 
-PROGS = test test-list-0 test-stralloc-0 test-pbuf-0 test-tok-0
+PROGS = test test-list-0 test-stralloc-0 test-pbuf-0 test-tok-0	\
+sample-cat
 
 PROGS_OBJS = test.o test-list-0.o test-stralloc-0.o test-pbuf-0.o	\
-test-tok-0.o
+test-tok-0.o sample-cat.o
 
 all: libhigherc.a $(PROGS)
 
