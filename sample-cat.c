@@ -53,18 +53,16 @@ int main(int argc, char **argv)
 	char buf[0x10000];
 	int total = 0;
 	int len = 0;
+	hcns(bool) eof = 0;
 
 	for (;;) {
-		hcns(bool) eof = 0;
-
 		if (!eof) {
 			/* still data to read
 			 */
 			do {
 				/* read until buffer is full or EOF
 				 */
-				int n;
-				n = read_check(0 /* STDIN */, buf + len, sizeof(buf) - len);
+				int n = read_check(0 /* STDIN */, buf + len, sizeof(buf) - len);
 				eof = n == 0;
 				if (eof) {
 					/* EOF */
@@ -88,10 +86,8 @@ int main(int argc, char **argv)
 				hcns(bcopyr)(buf, len - n, buf + n);
 			}
 			len -= n;
-		}
-
-		if (eof && len == 0) {
-			/* EOF and nothing more to process */
+		} else {
+			/* nothing more to process */
 			break;
 		}
     	}
