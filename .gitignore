@@ -8,3 +8,4 @@ test-stralloc-0
 test-pbuf-0
 test-tok-0
 sample-cat
+test-bytewise

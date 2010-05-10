@@ -34,8 +34,8 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 	r->tail = tail;
 
 #ifdef HIGHERC_LIST_DEBUG
-	printf("list header + items: %p - %p\n", r, higherc_offset(r, allocsz0));
-	printf("user data:           %p - %p\n", higherc_offset(r, allocsz0), higherc_offset(r, allocsz));
+	printf("list header + items: %p - %p\n", r, HC_OFFSET(r, allocsz0));
+	printf("user data:           %p - %p\n", HC_OFFSET(r, allocsz0), HC_OFFSET(r, allocsz));
 #endif
 
 	return r;
@@ -62,7 +62,7 @@ hcns(bool) hcns(list_free)(struct hcns(list) *list)
 
 void *hcns(item_setup)(struct hcns(list) *list, int index, int size)
 {
-	struct hcns(item) *first_item = (struct hcns(item) *) higherc_offset(list, sizeof(struct hcns(list)));
+	struct hcns(item) *first_item = (struct hcns(item) *) HC_OFFSET(list, sizeof(struct hcns(list)));
 	struct hcns(item) *item = first_item + index;
 
 	int allocsz0 = sizeof(struct hcns(list)) + list->length * sizeof(struct hcns(item));
@@ -84,12 +84,12 @@ void *hcns(item_setup)(struct hcns(list) *list, int index, int size)
 
 	list->lastpos = list->lastpos + size;
 
-	return higherc_offset(list, item->pos);
+	return HC_OFFSET(list, item->pos);
 }
 
 void *hcns(item_get)(struct hcns(list) *list, int index, int *sizep)
 {
-	struct hcns(item) *first_item = (struct hcns(item) *) higherc_offset(list, sizeof(struct hcns(list)));
+	struct hcns(item) *first_item = (struct hcns(item) *) HC_OFFSET(list, sizeof(struct hcns(list)));
 	struct hcns(item) *item = first_item + index;
 
 	assert(index >= 0);
@@ -103,5 +103,5 @@ void *hcns(item_get)(struct hcns(list) *list, int index, int *sizep)
 		*sizep = item->size;
 	}
 
-	return higherc_offset(list, item->pos);
+	return HC_OFFSET(list, item->pos);
 }

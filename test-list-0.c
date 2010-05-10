@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 		ms->bravo = i * 100.0;
 		snprintf(ms->charlie, sz, "item %i is at %p", i, p);
 
-		printf("requested %p - %p\n", p, higherc_offset(p, sz));
+		printf("requested %p - %p\n", p, HC_OFFSET(p, sz));
 	}
 
 	for (i=0; i<list->length; i++) {

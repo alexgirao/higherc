@@ -7,11 +7,11 @@
 
 typedef int hcns(bool);   /* 0 = false, 1 = true */
 
-#define higherc_offset(p, c)                ((char*)(p)+(int)(c))
+#define HC_OFFSET(p, c)                ((char*)(p)+(int)(c))
 
-#define higherc_align_by(bytes,alignment)       ((bytes + alignment) & ~(alignment-1))
-#define higherc_align4(bytes)                   higherc_align_by(bytes,4)
-#define higherc_align8(bytes)                   higherc_align_by(bytes,8)
-#define higherc_align16(bytes)                  higherc_align_by(bytes,16)
+#define HC_ALIGN_BY(bytes,alignment)       ((bytes + alignment) & ~(alignment-1))
+#define HC_ALIGN4(bytes)                   HC_ALIGN_BY(bytes,4)
+#define HC_ALIGN8(bytes)                   HC_ALIGN_BY(bytes,8)
+#define HC_ALIGN16(bytes)                  HC_ALIGN_BY(bytes,16)
 
 #endif
