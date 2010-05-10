@@ -34,20 +34,17 @@ int main(int argc, char **argv)
 
 	check_int("bswap(x)  ", HC_BSWAP4(x), LE_0XDEADBEEF);
 	check_int("bswap(y)  ", HC_BSWAP4(y), LE_0XDEADBEEF);
-	check_int("bswap(x)  ", HC_BSWAP4(x), LE_0XDEADBEEF);
-	check_int("bswap(y)  ", HC_BSWAP4(y), LE_0XDEADBEEF);
 
 	check_int("get_be4(x)", HC_GET_BE4(&x), LE_0XDEADBEEF);
 	check_int("get_be4(y)", HC_GET_BE4(&y), LE_0XDEADBEEF);
 
 	int i;
-	unsigned j;
+	unsigned int j;
 
 	HC_PUT_BE4(&i, x);
 	HC_PUT_BE4(&j, y);
-
-	check_int("x         ", i, LE_0XDEADBEEF);
-	check_int("y         ", j, LE_0XDEADBEEF);
+	check_int("put_be4(x)", i, LE_0XDEADBEEF);
+	check_int("put_be4(y)", j, LE_0XDEADBEEF);
 
 	return 0;
 }
