@@ -28,6 +28,8 @@ static inline unsigned int hcns(_swab32)(unsigned int val)
 
 #if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 
+#define HC_ARCH_LE 1
+
 /* __builtin_constant_p: http://gcc.gnu.org/onlinedocs/gcc-4.3.2/gcc/Other-Builtins.html
  */
 
@@ -45,6 +47,8 @@ static inline unsigned int hcns(_swab32)(unsigned int val)
 
 #elif defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
 
+#define HC_ARCH_LE 1
+
 #include <stdlib.h>
 
 #define HC_BSWAP4(x) _byteswap_ulong(x)
@@ -55,13 +59,32 @@ static inline unsigned int hcns(_swab32)(unsigned int val)
 
 #endif
 
-/* define HC_BSWAP4
+/* define HC_GET_BE4, HC_PUT_BE4
  */
 
-#ifdef HC_BSWAP4
+#if defined(HC_BSWAP4) && defined(HC_ARCH_LE)
 
 #define HC_GET_BE4(p)     HC_BSWAP4(*(unsigned int *)(p))
 #define HC_PUT_BE4(p, v)  do { *(unsigned int *)(p) = HC_BSWAP4(v); } while (0)
+
+#elif defined(HC_ARCH_LE)
+
+#define HC_GET_BE4(p)	( \
+	(*((unsigned char *)(p) + 0) << 24) | \
+	(*((unsigned char *)(p) + 1) << 16) | \
+	(*((unsigned char *)(p) + 2) <<  8) | \
+	(*((unsigned char *)(p) + 3) <<  0) )
+
+#define HC_PUT_BE4(p, v)	do { \
+	unsigned int __v = (v); \
+	*((unsigned char *)(p) + 0) = __v >> 24; \
+	*((unsigned char *)(p) + 1) = __v >> 16; \
+	*((unsigned char *)(p) + 2) = __v >>  8; \
+	*((unsigned char *)(p) + 3) = __v >>  0; } while (0)
+
+#else
+
+#error unsupported compiler/architecture
 
 #endif
 
