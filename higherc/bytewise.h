@@ -100,4 +100,30 @@ extern const signed char hcns(hexval_table)[256];
 #define HC_HEX_VALUE(d) (hcns(hexval_table)[(unsigned char)(d)])
 #define HC_HEX_DIGIT(v) ("0123456789abcdef"[(v)&0xf])
 
+/* HC_PUT_HEX(d, n, s): n is the amount of bytes to read from source (s)
+ */
+#define HC_PUT_HEX(d, n, s)						\
+	do {								\
+		int __i=0, __n=n;					\
+		unsigned char *__d=(unsigned char *)(d);		\
+		unsigned char *__s=(unsigned char *)(s);		\
+		for (;__i<__n;__i++,__s++) {				\
+			*__d++ = HC_HEX_DIGIT(*__s >> 4);		\
+			*__d++ = HC_HEX_DIGIT(*__s);			\
+		}							\
+	} while (0);
+
+/* HC_GET_HEX(d, n, s): n is the amount of bytes to write to destiny (d)
+ */
+#define HC_GET_HEX(d, n, s)						\
+	do {								\
+		int __i=0, __n=n;					\
+		unsigned char *__d=(unsigned char *)(d);		\
+		unsigned char *__s=(unsigned char *)(s);		\
+		for (;__i<__n;__i++,__d++) {				\
+			*__d = HC_HEX_VALUE(*__s++) << 4;		\
+			*__d |= HC_HEX_VALUE(*__s++);			\
+		}							\
+	} while (0);
+
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */
