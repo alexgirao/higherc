@@ -40,4 +40,5 @@ pbuf.o: higherc/higherc.h higherc/byte.h higherc/str.h higherc/alloc.h higherc/l
 bytewise.o: higherc/higherc.h higherc/bytewise.h
 readfd.o: higherc/higherc.h higherc/readfd.h
 
+$(PROGS): $(LIB_OBJS)
 $(PROGS_OBJS): $(LIB_HEADERS)

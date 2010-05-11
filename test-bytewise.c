@@ -29,6 +29,9 @@ int main(int argc, char **argv)
 	int x = 0xdeadbeef;
 	unsigned int y = x;
 
+	/* network byte order/big endian
+	 */
+
 	check_int("x         ", x, 0xde, 0xad, 0xbe, 0xef);
 	check_int("y         ", y, 0xde, 0xad, 0xbe, 0xef);
 
@@ -45,6 +48,17 @@ int main(int argc, char **argv)
 	HC_PUT_BE4(&j, y);
 	check_int("put_be4(x)", i, LE_0XDEADBEEF);
 	check_int("put_be4(y)", j, LE_0XDEADBEEF);
+
+	/* hex base
+	 */
+
+	printf("hex value: %i .. %i %i .. %i\n", HC_HEX_VALUE('0'), HC_HEX_VALUE('9'), HC_HEX_VALUE('a'), HC_HEX_VALUE('f'));
+	printf("hex value: %i .. %i %i .. %i\n", HC_HEX_VALUE('0'), HC_HEX_VALUE('9'), HC_HEX_VALUE('A'), HC_HEX_VALUE('F'));
+	printf("hex value: %i .. %i %i .. %i\n", HC_HEX_VALUE(0), HC_HEX_VALUE(127), HC_HEX_VALUE(255), HC_HEX_VALUE(1234));
+	printf("hex digit: %c .. %c %c .. %c\n", HC_HEX_DIGIT(0), HC_HEX_DIGIT(9), HC_HEX_DIGIT(10), HC_HEX_DIGIT(15));
+
+	/*
+	 */
 
 	return 0;
 }
