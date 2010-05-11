@@ -28,6 +28,14 @@ int main(int argc, char **argv)
 {
 	int x = 0xdeadbeef;
 	unsigned int y = x;
+	unsigned int endian0 = 1;
+	int is_litle_endian = *((unsigned char *)(&endian0));
+
+	/*
+	 */
+
+	assert(sizeof(int) == 4);
+	assert(is_litle_endian == 1);
 
 	/* network byte order/big endian
 	 */
