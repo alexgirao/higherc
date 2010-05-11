@@ -15,7 +15,7 @@
  * Default version that the compiler ought to optimize properly with
  * constant values.
  */
-static inline unsigned int hcns(_swab32)(unsigned int val)
+static inline unsigned int hcns(swab32)(unsigned int val)
 {
 	return (((val & 0xff000000) >> 24) |
 		((val & 0x00ff0000) >>  8) |
@@ -39,7 +39,7 @@ static inline unsigned int hcns(_swab32)(unsigned int val)
 #define HC_BSWAP4(x) ({ \
 	unsigned int __res; \
 	if (__builtin_constant_p(x)) { \
-		__res = hcns(_swab32)(x);	\
+		__res = hcns(swab32)(x);	\
 	} else { \
 		__asm__("bswap %0" : "=r" (__res) : "0" ((unsigned int)(x))); \
 	} \
@@ -87,5 +87,16 @@ static inline unsigned int hcns(_swab32)(unsigned int val)
 #error unsupported compiler/architecture
 
 #endif
+
+/* hex
+ */
+
+extern const signed char hcns(hexval_table)[256];
+static inline unsigned int hcns(hexval)(unsigned char c)
+{
+	return hcns(hexval_table)[c];
+}
+
+
 
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */
