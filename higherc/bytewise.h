@@ -126,4 +126,30 @@ extern const signed char hcns(hexval_table)[256];
 		}							\
 	} while (0);
 
+/* ctype
+ */
+
+#define GIT_SPACE 0x01
+#define GIT_DIGIT 0x02
+#define GIT_ALPHA 0x04
+#define GIT_GLOB_SPECIAL 0x08
+#define GIT_REGEX_SPECIAL 0x10
+
+extern unsigned char sane_ctype[256];
+
+#define sane_istest(x, mask) ((sane_ctype[(unsigned char)(x)] & (mask)) != 0)
+
+#define isascii(x) (((x) & ~0x7f) == 0)
+#define isspace(x) sane_istest(x, GIT_SPACE)
+#define isdigit(x) sane_istest(x, GIT_DIGIT)
+#define isalpha(x) sane_istest(x, GIT_ALPHA)
+#define isalnum(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT)
+#define isgraph(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
+#define isprint(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL | GIT_SPACE)
+#define is_glob_special(x) sane_istest(x, GIT_GLOB_SPECIAL)
+#define is_regex_special(x) sane_istest(x, GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
+
+#define tolower(x) (isalpha(x) ? x | 0x20 : x)
+#define toupper(x) (isalpha(x) ? x & ~0x20 : x)
+
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */

@@ -24,6 +24,81 @@ static void check_int(char *prefix, int v, int b3, int b2, int b1, int b0)
 #define BE_0XDEADBEEF 0xde, 0xad, 0xbe, 0xef
 #define LE_0XDEADBEEF 0xef, 0xbe, 0xad, 0xde
 
+static void test_ctype()
+{
+	assert(isascii(0));
+	assert(isascii(127));
+	assert(!isascii(128));
+	assert(!isascii(255));
+	assert(!isascii(256));
+
+	assert(isdigit('0') && !isalpha('0'));
+	assert(isdigit('9') && !isalpha('9'));
+	assert(!isdigit('a') && isalpha('a'));
+	assert(!isdigit('A') && isalpha('A'));
+	assert(!isdigit('f') && isalpha('f'));
+	assert(!isdigit('F') && isalpha('F'));
+
+	assert(
+		isalnum('0') && 
+		isalnum('9') && 
+		isalnum('a') && 
+		isalnum('f') && 
+		isalnum('z') && 
+		isalnum('A') && 
+		isalnum('F') && 
+		isalnum('Z') && 
+		!isalnum('.') && 
+		!isalnum('*')
+		);
+
+	assert(isspace(' '));
+	assert(isspace('\r'));
+	assert(isspace('\n'));
+	assert(isspace('\t'));
+
+	assert(toupper('0') == '0');
+	assert(toupper('9') == '9');
+	assert(tolower('0') == '0');
+	assert(tolower('9') == '9');
+
+	assert(toupper('A') == 'A');
+	assert(toupper('F') == 'F');
+	assert(toupper('Z') == 'Z');
+
+	assert(tolower('a') == 'a');
+	assert(tolower('f') == 'f');
+	assert(tolower('z') == 'z');
+
+	assert(toupper('a') == 'A');
+	assert(toupper('f') == 'F');
+	assert(toupper('z') == 'Z');
+
+	assert(tolower('A') == 'a');
+	assert(tolower('F') == 'f');
+	assert(tolower('Z') == 'z');
+
+	{
+		int i;
+		for (i=0;i<256;i++) {
+			if (!isascii(i)) {
+				continue;
+			}
+			if (isalpha(i)) {
+				if ((i & 0x20) == 0) {
+					printf("0x%.2x %c (lower case: %c)\n", i, i, tolower(i));
+				} else {
+					printf("0x%.2x %c (upper case: %c)\n", i, i, toupper(i));
+				}
+			} else if (isdigit(i)) {
+				printf("0x%.2x %c\n", i, i);
+			} else if (isgraph(i)) {
+				printf("0x%.2x %c (graph)\n", i, i);
+			}
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
 	int x = 0xdeadbeef;
@@ -67,6 +142,8 @@ int main(int argc, char **argv)
 
 	/*
 	 */
+
+	test_ctype();
 
 	return 0;
 }
