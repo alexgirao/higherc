@@ -16,8 +16,9 @@ void fatal(char *file, int line, char *fmt, ...);
 /*
  */
 
-#define HC_MALLOC(p, sz) do { p = hcns(alloc)(sz); if ((p) == NULL) FATAL("malloc(%i)", sz); } while (0)
-#define HC_NEW(p, t) do { p = hcns(alloc_z)(sizeof(t)); if ((p) == NULL) FATAL("calloc(1, %i (type " #t "))", sizeof(t)); } while (0)
+#define HC_MALLOC(p, sz) do { p = hcns(alloc)(sz); if ((p) == NULL) FATAL("hcns(alloc)(%i)", sz); } while (0)
+#define HC_NEW(p, t) do { p = (t*) hcns(alloc_z)(sizeof(t)); if ((p) == NULL) FATAL("hcns(alloc_z)(%i (type " #t "))", sizeof(t)); } while (0)
+#define HC_NEW_AR(p, l, t) do { p = (t*) hcns(alloc_z)(l * sizeof(t)); if ((p) == NULL) FATAL("hcns(alloc_z)(%i (%i itens of type " #t "))", l * sizeof(t), l); } while (0)
 #define HC_FREE(p) hcns(alloc_free)(p)
 
 #endif

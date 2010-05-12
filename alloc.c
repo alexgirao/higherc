@@ -13,14 +13,14 @@ void *hcns(alloc_z)(int n)
 	return calloc(1, n);
 }
 
-void hcns(alloc_free)(char *x)
+void hcns(alloc_free)(void *x)
 {
 	free(x);
 }
 
 void *hcns(alloc_re)(void *x, int m, int n)
 {
-	char *y = hcns(alloc)(n);
+	void *y = hcns(alloc)(n);
 	if (!y)	return NULL;
 	hcns(bcopyl)(y, m, x);
 	hcns(alloc_free)(x);

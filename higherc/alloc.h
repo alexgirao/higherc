@@ -3,7 +3,7 @@
 
 void *hcns(alloc)(int n);
 void *hcns(alloc_z)(int n); /* allocate with memory set to zero */
-void hcns(alloc_free)(char *x);
+void hcns(alloc_free)(void *x);
 void *hcns(alloc_re)(void *x, int m, int n); /* reallocate n copying only m bytes */
 
 #endif
