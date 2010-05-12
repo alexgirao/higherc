@@ -1,3 +1,6 @@
+#ifndef tid030fcf561884hn35vz11nhs6s9yw18g31tdeosz4q25 /* higherc-fatal-h */
+#define tid030fcf561884hn35vz11nhs6s9yw18g31tdeosz4q25 /* higherc-fatal-h */
+
 #include <stdarg.h>
 
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
@@ -9,3 +12,12 @@
 /* this function ceases program execution with a exit(1)
  */
 void fatal(char *file, int line, char *fmt, ...);
+
+/*
+ */
+
+#define HC_MALLOC(p, sz) do { p = hcns(alloc)(sz); if ((p) == NULL) FATAL("malloc(%i)", sz); } while (0)
+#define HC_NEW(p, t) do { p = hcns(alloc_z)(sizeof(t)); if ((p) == NULL) FATAL("calloc(1, %i (type " #t "))", sizeof(t)); } while (0)
+#define HC_FREE(p) hcns(alloc_free)(p)
+
+#endif
