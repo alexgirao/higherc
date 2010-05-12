@@ -9,7 +9,7 @@
 
 int main(int argc, char **argv)
 {
-	struct hcns(s) sa0 = HIGHERC_NULL_S;
+	struct hcns(s) sa0 = HC_NULL_S;
 
 	hcns(s_catz)(&sa0, "hello world of possibilities!");
 	hcns(s_catn)(&sa0, "", 1); /* append '\0' */

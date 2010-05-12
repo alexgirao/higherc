@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 {
 	int len = 10;
 	int itemsiz = sizeof(struct mydata);
-	struct hcns(pbuf) pbuf = HIGHERC_NULL_PBUF;
+	struct hcns(pbuf) pbuf = HC_NULL_PBUF;
 
 	if (!hcns(pbuf_alloc)(&pbuf, len, itemsiz)) {
 		FATAL("failed to create a pbuf with %i items and %i bytes item size", len, itemsiz);

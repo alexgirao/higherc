@@ -7,7 +7,7 @@ struct hcns(s) {
 	int a; /* allocated */
 };
 
-#define HIGHERC_NULL_S {NULL, 0, 0}
+#define HC_NULL_S {NULL, 0, 0}
 
 hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n);
 hcns(bool) hcns(s_free)(struct hcns(s) *x);

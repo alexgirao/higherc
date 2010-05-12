@@ -26,7 +26,7 @@ struct hcns(pbuf) {
 	int enqueued;  /* how many items enqueued */
 };
 
-#define HIGHERC_NULL_PBUF {NULL, 0}
+#define HC_NULL_PBUF {NULL, 0, 0, 0}
 
 hcns(bool) hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int length, int itemsz);
 hcns(bool) hcns(pbuf_free)(struct hcns(pbuf) *pbuf);
