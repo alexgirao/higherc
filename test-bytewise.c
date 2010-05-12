@@ -86,7 +86,9 @@ static void test_ctype()
 		int i;
 		struct hcns(s) flags = HC_NULL_S;
 
-		hcns(s_copyn)(&flags, "\0", 1);  /* initialize stralloc */
+		hcns(s_copyn)(&flags, "\0\0", 2);  /* initialize
+						    * stralloc with at
+						    * least 2 bytes */
 
 		for (i=0;i<256;i++) {
 			if (!isascii(i)) {
@@ -95,27 +97,30 @@ static void test_ctype()
 
 			flags.len = 0; /* truncate stralloc */
 			flags.s[0] = '\0'; /* truncate c string */
+			flags.s[1] = '\0'; /* zero second byte too,
+					    * for the substring
+					    * below */
 
+			if (isprint(i)) {
+				hcns(s_catz)(&flags, " print");
+			}
+			if (isgraph(i)) {
+				hcns(s_catz)(&flags, " graph");
+			}
 			if (isspace(i)) {
 				hcns(s_catz)(&flags, " space");
 			}
 			if (isblank(i)) {
 				hcns(s_catz)(&flags, " blank");
 			}
+			if (isalnum(i)) {
+				hcns(s_catz)(&flags, " alnum");
+			}
 			if (isdigit(i)) {
 				hcns(s_catz)(&flags, " digit");
 			}
 			if (isalpha(i)) {
 				hcns(s_catz)(&flags, " alpha");
-			}
-			if (isalnum(i)) {
-				hcns(s_catz)(&flags, " alnum");
-			}
-			if (isgraph(i)) {
-				hcns(s_catz)(&flags, " graph");
-			}
-			if (isprint(i)) {
-				hcns(s_catz)(&flags, " print");
 			}
 			if (ispunct(i)) {
 				hcns(s_catz)(&flags, " punct");
@@ -130,11 +135,11 @@ static void test_ctype()
 			flags.s[flags.len] = '\0';
 
 			if (isprint(i)) {
-				printf("%3i 0x%.2x %c (flags: %s)\n", i, i, i < 0x20 ? '?' : i, flags.s);
+				printf("%3i 0x%.2x %c (flags: %s)\n", i, i, i < 0x20 ? '?' : i, flags.s+1);
 			} else if (i == 0x7f) {
-				printf("%3i 0x%.2x DEL NOPRINT (flags:%s)\n", i, i, flags.s);
+				printf("%3i 0x%.2x DEL NOPRINT (flags:%s)\n", i, i, flags.s+1);
 			} else {
-				printf("%3i 0x%.2x %c NOPRINT (flags:%s)\n", i, i, i < 0x20 ? '?' : i, flags.s);
+				printf("%3i 0x%.2x %c NOPRINT (flags:%s)\n", i, i, i < 0x20 ? '?' : i, flags.s+1);
 			}
 
 			/*if (isalpha(i)) {

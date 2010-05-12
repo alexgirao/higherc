@@ -143,17 +143,19 @@ extern unsigned char sane_ctype[256];
 #define getflags(x) sane_ctype[(unsigned char)(x)]
 #define sane_istest(x, mask) ((sane_ctype[(unsigned char)(x)] & (mask)) != 0)
 
+#define MASK_ALNUM (GIT_ALPHA | GIT_DIGIT)
+#define MASK_GRAPH (MASK_ALNUM | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL | GIT_PUNCT)
+#define MASK_PRINT (MASK_GRAPH | GIT_SPACE)
+
 #define isascii(x) (((x) & ~0x7f) == 0)
 #define isspace(x) sane_istest(x, GIT_SPACE)
 #define isblank(x) sane_istest(x, GIT_BLANK)
 #define isdigit(x) sane_istest(x, GIT_DIGIT)
 #define isalpha(x) sane_istest(x, GIT_ALPHA)
-#define isalnum(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT)
-#define isgraph(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
-#define ispunct(x) sane_istest(x, ~(GIT_ALPHA | GIT_DIGIT | GIT_BLANK | GIT_SPACE) | GIT_PUNCT)
-#define isprint(x) sane_istest(x, \
-	GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | \
-	GIT_REGEX_SPECIAL | GIT_SPACE | GIT_PUNCT)
+#define isalnum(x) sane_istest(x, MASK_ALNUM)
+#define isgraph(x) sane_istest(x, MASK_GRAPH)
+#define isprint(x) sane_istest(x, MASK_PRINT)
+#define ispunct(x) sane_istest(x, MASK_GRAPH & ~MASK_ALNUM)
 #define is_glob_special(x) sane_istest(x, GIT_GLOB_SPECIAL)
 #define is_regex_special(x) sane_istest(x, GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
 
