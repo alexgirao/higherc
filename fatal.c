@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stdarg.h>
 
-void fatal(char *file, int line, char *fmt, ...);
+void fatal(char *file, int line, char *fmt, ...)
 {
 	va_list args;
 

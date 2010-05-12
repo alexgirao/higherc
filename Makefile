@@ -4,11 +4,12 @@ LDFLAGS = -L.
 LIBS = -lhigherc
 
 LIB_OBJS = byte.o alloc.o str.o list.o stralloc.o pbuf.o bytewise.o	\
-readfd.o
+readfd.o fatal.o
 
 LIB_HEADERS = higherc/alloc.h higherc/buffer.h higherc/byte.h		\
 higherc/higherc.h higherc/list.h higherc/pbuf.h higherc/stralloc.h	\
-higherc/str.h higherc/tok.h higherc/bytewise.h higherc/readfd.h
+higherc/str.h higherc/tok.h higherc/bytewise.h higherc/readfd.h		\
+higherc/fatal.h
 
 PROGS = test test-list-0 test-stralloc-0 test-pbuf-0 test-tok-0	\
 sample-cat test-bytewise
