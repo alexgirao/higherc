@@ -136,7 +136,7 @@ extern const signed char hcns(hexval_table)[256];
 #define GIT_REGEX_SPECIAL 0x10
 #define GIT_BLANK 0x20
 #define GIT_PUNCT 0x40  /* not GIT_GLOB_SPECIAL nor GIT_REGEX_SPECIAL */
-//#define _GIT_BLANK 0x80
+//#define GIT_ 0x80
 
 extern unsigned char sane_ctype[256];
 
@@ -150,8 +150,10 @@ extern unsigned char sane_ctype[256];
 #define isalpha(x) sane_istest(x, GIT_ALPHA)
 #define isalnum(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT)
 #define isgraph(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
-#define isprint(x) sane_istest(x, GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL | GIT_SPACE)
 #define ispunct(x) sane_istest(x, ~(GIT_ALPHA | GIT_DIGIT | GIT_BLANK | GIT_SPACE) | GIT_PUNCT)
+#define isprint(x) sane_istest(x, \
+	GIT_ALPHA | GIT_DIGIT | GIT_GLOB_SPECIAL | \
+	GIT_REGEX_SPECIAL | GIT_SPACE | GIT_PUNCT)
 #define is_glob_special(x) sane_istest(x, GIT_GLOB_SPECIAL)
 #define is_regex_special(x) sane_istest(x, GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
 
