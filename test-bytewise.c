@@ -28,57 +28,57 @@ static void check_int(char *prefix, int v, int b3, int b2, int b1, int b0)
 
 static void test_ctype()
 {
-	assert(isascii(0));
-	assert(isascii(127));
-	assert(!isascii(128));
-	assert(!isascii(255));
-	assert(!isascii(256));
+	assert(HC_ISASCII(0));
+	assert(HC_ISASCII(127));
+	assert(!HC_ISASCII(128));
+	assert(!HC_ISASCII(255));
+	assert(!HC_ISASCII(256));
 
-	assert(isdigit('0') && !isalpha('0'));
-	assert(isdigit('9') && !isalpha('9'));
-	assert(!isdigit('a') && isalpha('a'));
-	assert(!isdigit('A') && isalpha('A'));
-	assert(!isdigit('f') && isalpha('f'));
-	assert(!isdigit('F') && isalpha('F'));
+	assert(HC_ISDIGIT('0') && !HC_ISALPHA('0'));
+	assert(HC_ISDIGIT('9') && !HC_ISALPHA('9'));
+	assert(!HC_ISDIGIT('a') && HC_ISALPHA('a'));
+	assert(!HC_ISDIGIT('A') && HC_ISALPHA('A'));
+	assert(!HC_ISDIGIT('f') && HC_ISALPHA('f'));
+	assert(!HC_ISDIGIT('F') && HC_ISALPHA('F'));
 
 	assert(
-		isalnum('0') && 
-		isalnum('9') && 
-		isalnum('a') && 
-		isalnum('f') && 
-		isalnum('z') && 
-		isalnum('A') && 
-		isalnum('F') && 
-		isalnum('Z') && 
-		!isalnum('.') && 
-		!isalnum('*')
+		HC_ISALNUM('0') && 
+		HC_ISALNUM('9') && 
+		HC_ISALNUM('a') && 
+		HC_ISALNUM('f') && 
+		HC_ISALNUM('z') && 
+		HC_ISALNUM('A') && 
+		HC_ISALNUM('F') && 
+		HC_ISALNUM('Z') && 
+		!HC_ISALNUM('.') && 
+		!HC_ISALNUM('*')
 		);
 
-	assert(isspace(' '));
-	assert(isspace('\r'));
-	assert(isspace('\n'));
-	assert(isspace('\t'));
+	assert(HC_ISSPACE(' '));
+	assert(HC_ISSPACE('\r'));
+	assert(HC_ISSPACE('\n'));
+	assert(HC_ISSPACE('\t'));
 
-	assert(toupper('0') == '0');
-	assert(toupper('9') == '9');
-	assert(tolower('0') == '0');
-	assert(tolower('9') == '9');
+	assert(HC_TOUPPER('0') == '0');
+	assert(HC_TOUPPER('9') == '9');
+	assert(HC_TOLOWER('0') == '0');
+	assert(HC_TOLOWER('9') == '9');
 
-	assert(toupper('A') == 'A');
-	assert(toupper('F') == 'F');
-	assert(toupper('Z') == 'Z');
+	assert(HC_TOUPPER('A') == 'A');
+	assert(HC_TOUPPER('F') == 'F');
+	assert(HC_TOUPPER('Z') == 'Z');
 
-	assert(tolower('a') == 'a');
-	assert(tolower('f') == 'f');
-	assert(tolower('z') == 'z');
+	assert(HC_TOLOWER('a') == 'a');
+	assert(HC_TOLOWER('f') == 'f');
+	assert(HC_TOLOWER('z') == 'z');
 
-	assert(toupper('a') == 'A');
-	assert(toupper('f') == 'F');
-	assert(toupper('z') == 'Z');
+	assert(HC_TOUPPER('a') == 'A');
+	assert(HC_TOUPPER('f') == 'F');
+	assert(HC_TOUPPER('z') == 'Z');
 
-	assert(tolower('A') == 'a');
-	assert(tolower('F') == 'f');
-	assert(tolower('Z') == 'z');
+	assert(HC_TOLOWER('A') == 'a');
+	assert(HC_TOLOWER('F') == 'f');
+	assert(HC_TOLOWER('Z') == 'z');
 
 	{
 		int i;
@@ -89,7 +89,7 @@ static void test_ctype()
 						    * least 2 bytes */
 
 		for (i=0;i<256;i++) {
-			if (!isascii(i)) {
+			if (!HC_ISASCII(i)) {
 				continue;
 			}
 
@@ -99,50 +99,50 @@ static void test_ctype()
 					    * for the substring
 					    * below */
 
-			if (isprint(i)) {
+			if (HC_ISPRINT(i)) {
 				hcns(s_catz)(&flags, " print");
 			}
-			if (isgraph(i)) {
+			if (HC_ISGRAPH(i)) {
 				hcns(s_catz)(&flags, " graph");
 			}
-			if (isspace(i)) {
+			if (HC_ISSPACE(i)) {
 				hcns(s_catz)(&flags, " space");
 			}
-			if (isblank(i)) {
+			if (HC_ISBLANK(i)) {
 				hcns(s_catz)(&flags, " blank");
 			}
-			if (isalnum(i)) {
+			if (HC_ISALNUM(i)) {
 				hcns(s_catz)(&flags, " alnum");
 			}
-			if (isdigit(i)) {
+			if (HC_ISDIGIT(i)) {
 				hcns(s_catz)(&flags, " digit");
 			}
-			if (isalpha(i)) {
+			if (HC_ISALPHA(i)) {
 				hcns(s_catz)(&flags, " alpha");
-				if (isalpha_upper(i)) {
+				if (HC_ISALPHA_UPPER(i)) {
 					hcns(s_catz)(&flags, " alpha_upper");
-				} else if (isalpha_lower(i)) {
+				} else if (HC_ISALPHA_LOWER(i)) {
 					hcns(s_catz)(&flags, " alpha_lower");
 				} else {
 					HC_FATAL("exhausted");
 				}
 			}
-			if (ispunct(i)) {
+			if (HC_ISPUNCT(i)) {
 				hcns(s_catz)(&flags, " punct");
 			}
-			if (isregex_meta(i)) {
+			if (HC_ISREGEX_META(i)) {
 				hcns(s_catz)(&flags, " regex_meta");
 			}
-			if (isregex_char(i)) {
+			if (HC_ISREGEX_CHAR(i)) {
 				hcns(s_catz)(&flags, " regex_char");
 			}
-			if (isglob(i)) {
+			if (HC_ISGLOB(i)) {
 				hcns(s_catz)(&flags, " glob");
 			}
 
 			flags.s[flags.len] = '\0';
 
-			if (isprint(i)) {
+			if (HC_ISPRINT(i)) {
 				printf("%3i 0x%.2x %c (flags: %s)\n", i, i, i < 0x20 ? '?' : i, flags.s+1);
 			} else if (i == 0x7f) {
 				printf("%3i 0x%.2x DEL NOPRINT (flags:%s)\n", i, i, flags.s+1);

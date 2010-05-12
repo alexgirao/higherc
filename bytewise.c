@@ -40,24 +40,24 @@ const signed char hcns(hexval_table)[256] = {
  */
 
 enum {
-	S = GIT_SPACE,
-	A = GIT_ALPHA,
-	D = GIT_DIGIT,
-	G = GIT_GLOB,
-	R = GIT_REGEX_META,
-	H = GIT_REGEX_CHAR,
-	K = GIT_BLANK,
-	P = GIT_PUNCT,
+	S = HC_SPACE,
+	A = HC_ALPHA,
+	D = HC_DIGIT,
+	G = HC_GLOB,
+	R = HC_REGEX_META,
+	H = HC_REGEX_CHAR,
+	K = HC_BLANK,
+	P = HC_PUNCT,
 	/* composite type
 	 */
-	C = GIT_SPACE | GIT_BLANK,
-	B = GIT_GLOB | GIT_REGEX_META,
-	I = GIT_GLOB | GIT_REGEX_CHAR,
-	J = GIT_GLOB | GIT_REGEX_META | GIT_REGEX_CHAR,
-	E = GIT_REGEX_META | GIT_REGEX_CHAR
+	C = HC_SPACE | HC_BLANK,
+	B = HC_GLOB | HC_REGEX_META,
+	I = HC_GLOB | HC_REGEX_CHAR,
+	J = HC_GLOB | HC_REGEX_META | HC_REGEX_CHAR,
+	E = HC_REGEX_META | HC_REGEX_CHAR
 };
 
-unsigned char sane_ctype[256] = {
+unsigned char hcns(ctypetbl)[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, C, S, S, S, S, 0, 0,		/*   0.. 15 */
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/*  16.. 31 */
 	C, P, P, P, R, P, P, P, R, R, B, R, P, H, R, P,		/*  32.. 47 */

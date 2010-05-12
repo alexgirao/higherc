@@ -129,40 +129,39 @@ extern const signed char hcns(hexval_table)[256];
 /* ctype
  */
 
-#define GIT_SPACE 0x01
-#define GIT_DIGIT 0x02
-#define GIT_ALPHA 0x04
-#define GIT_GLOB 0x08 /* do not match ] */
-#define GIT_REGEX_META 0x10 /* meta chars: do not match ] and } */
-#define GIT_REGEX_CHAR 0x20 /* character class: \, ^, -, [, ] */
-#define GIT_BLANK 0x40
-#define GIT_PUNCT 0x80  /* not GIT_GLOB_SPECIAL nor GIT_REGEX_SPECIAL */
+#define HC_SPACE 0x01
+#define HC_DIGIT 0x02
+#define HC_ALPHA 0x04
+#define HC_GLOB 0x08 /* do not match ] */
+#define HC_REGEX_META 0x10 /* meta chars: do not match ] and } */
+#define HC_REGEX_CHAR 0x20 /* character class: \, ^, -, [, ] */
+#define HC_BLANK 0x40
+#define HC_PUNCT 0x80  /* not HC_GLOB_SPECIAL nor HC_REGEX_SPECIAL */
 
-extern unsigned char sane_ctype[256];
+extern unsigned char hcns(ctypetbl)[256];
 
-#define getflags(x) sane_ctype[(unsigned char)(x)]
-#define sane_istest(x, mask) ((sane_ctype[(unsigned char)(x)] & (mask)) != 0)
+#define HC_SANE_ISTEST(x, mask) ((hcns(ctypetbl)[(unsigned char)(x)] & (mask)) != 0)
 
-#define MASK_ALNUM (GIT_ALPHA | GIT_DIGIT)
-#define MASK_GRAPH (MASK_ALNUM | GIT_GLOB | GIT_REGEX_META | GIT_REGEX_CHAR | GIT_PUNCT)
-#define MASK_PRINT (MASK_GRAPH | GIT_SPACE)
+#define HC_MASK_ALNUM (HC_ALPHA | HC_DIGIT)
+#define HC_MASK_GRAPH (HC_MASK_ALNUM | HC_GLOB | HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT)
+#define HC_MASK_PRINT (HC_MASK_GRAPH | HC_SPACE)
 
-#define isascii(x) (((x) & ~0x7f) == 0)
-#define isspace(x) sane_istest(x, GIT_SPACE)
-#define isblank(x) sane_istest(x, GIT_BLANK)
-#define isdigit(x) sane_istest(x, GIT_DIGIT)
-#define isalpha(x) sane_istest(x, GIT_ALPHA)
-#define isalpha_upper(x) ((x & 0x20) == 0)
-#define isalpha_lower(x) ((x & 0x20) != 0)
-#define isalnum(x) sane_istest(x, MASK_ALNUM)
-#define isgraph(x) sane_istest(x, MASK_GRAPH)
-#define isprint(x) sane_istest(x, MASK_PRINT)
-#define ispunct(x) sane_istest(x, MASK_GRAPH & ~MASK_ALNUM)
-#define isglob(x) sane_istest(x, GIT_GLOB)
-#define isregex_meta(x) sane_istest(x, GIT_REGEX_META)
-#define isregex_char(x) sane_istest(x, GIT_REGEX_CHAR)
+#define HC_ISASCII(x) (((x) & ~0x7f) == 0)
+#define HC_ISSPACE(x) HC_SANE_ISTEST(x, HC_SPACE)
+#define HC_ISBLANK(x) HC_SANE_ISTEST(x, HC_BLANK)
+#define HC_ISDIGIT(x) HC_SANE_ISTEST(x, HC_DIGIT)
+#define HC_ISALPHA(x) HC_SANE_ISTEST(x, HC_ALPHA)
+#define HC_ISALPHA_UPPER(x) ((x & 0x20) == 0)
+#define HC_ISALPHA_LOWER(x) ((x & 0x20) != 0)
+#define HC_ISALNUM(x) HC_SANE_ISTEST(x, HC_MASK_ALNUM)
+#define HC_ISGRAPH(x) HC_SANE_ISTEST(x, HC_MASK_GRAPH)
+#define HC_ISPRINT(x) HC_SANE_ISTEST(x, HC_MASK_PRINT)
+#define HC_ISPUNCT(x) HC_SANE_ISTEST(x, HC_MASK_GRAPH & ~HC_MASK_ALNUM)
+#define HC_ISGLOB(x) HC_SANE_ISTEST(x, HC_GLOB)
+#define HC_ISREGEX_META(x) HC_SANE_ISTEST(x, HC_REGEX_META)
+#define HC_ISREGEX_CHAR(x) HC_SANE_ISTEST(x, HC_REGEX_CHAR)
 
-#define tolower(x) (isalpha(x) ? x | 0x20 : x)
-#define toupper(x) (isalpha(x) ? x & ~0x20 : x)
+#define HC_TOLOWER(x) (HC_ISALPHA(x) ? x | 0x20 : x)
+#define HC_TOUPPER(x) (HC_ISALPHA(x) ? x & ~0x20 : x)
 
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */
