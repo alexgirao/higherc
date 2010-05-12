@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 	struct hcns(pbuf) pbuf = HC_NULL_PBUF;
 
 	if (!hcns(pbuf_alloc)(&pbuf, len, itemsiz)) {
-		FATAL("failed to create a pbuf with %i items and %i bytes item size", len, itemsiz);
+		HC_FATAL("failed to create a pbuf with %i items and %i bytes item size", len, itemsiz);
 	}
 
 	{

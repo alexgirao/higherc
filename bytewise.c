@@ -43,25 +43,29 @@ enum {
 	S = GIT_SPACE,
 	A = GIT_ALPHA,
 	D = GIT_DIGIT,
-	G = GIT_GLOB_SPECIAL,
-	R = GIT_REGEX_SPECIAL,
+	G = GIT_GLOB,
+	R = GIT_REGEX_META,
+	H = GIT_REGEX_CHAR,
 	K = GIT_BLANK,
 	P = GIT_PUNCT,
 	/* composite type
 	 */
 	C = GIT_SPACE | GIT_BLANK,
-	B = GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL
+	B = GIT_GLOB | GIT_REGEX_META,
+	I = GIT_GLOB | GIT_REGEX_CHAR,
+	J = GIT_GLOB | GIT_REGEX_META | GIT_REGEX_CHAR,
+	E = GIT_REGEX_META | GIT_REGEX_CHAR
 };
 
 unsigned char sane_ctype[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, C, S, S, S, S, 0, 0,		/*   0.. 15 */
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/*  16.. 31 */
-	C, P, P, P, R, P, P, P, R, P, B, R, P, P, R, P,		/*  32.. 47 */
+	C, P, P, P, R, P, P, P, R, R, B, R, P, H, R, P,		/*  32.. 47 */
 	D, D, D, D, D, D, D, D, D, D, P, P, P, P, P, B,		/*  48.. 63 */
 	P, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A,		/*  64.. 79 */
-	A, A, A, A, A, A, A, A, A, A, A, B, G, P, R, P,		/*  80.. 95 */
+	A, A, A, A, A, A, A, A, A, A, A, J, J, H, E, P,		/*  80.. 95 */
 	P, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A,		/*  96..111 */
-	A, A, A, A, A, A, A, A, A, A, A, R, R, P, R, 0,		/* 112..127 */
+	A, A, A, A, A, A, A, A, A, A, A, R, R, P, P, 0,		/* 112..127 */
 	/* Nothing in the 128.. range */
 };
 

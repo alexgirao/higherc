@@ -8,6 +8,7 @@
 #include "higherc/higherc.h"
 #include "higherc/stralloc.h"
 #include "higherc/bytewise.h"
+#include "higherc/fatal.h"
 
 #define bval(v, pos) (((unsigned char *)&v)[pos])
 
@@ -79,9 +80,6 @@ static void test_ctype()
 	assert(tolower('F') == 'f');
 	assert(tolower('Z') == 'z');
 
-	assert(is_glob_special('*'));
-	assert(is_regex_special('*'));
-
 	{
 		int i;
 		struct hcns(s) flags = HC_NULL_S;
@@ -121,15 +119,25 @@ static void test_ctype()
 			}
 			if (isalpha(i)) {
 				hcns(s_catz)(&flags, " alpha");
+				if (isalpha_upper(i)) {
+					hcns(s_catz)(&flags, " alpha_upper");
+				} else if (isalpha_lower(i)) {
+					hcns(s_catz)(&flags, " alpha_lower");
+				} else {
+					HC_FATAL("exhausted");
+				}
 			}
 			if (ispunct(i)) {
 				hcns(s_catz)(&flags, " punct");
 			}
-			if (is_glob_special(i)) {
-				hcns(s_catz)(&flags, " glob_special");
+			if (isregex_meta(i)) {
+				hcns(s_catz)(&flags, " regex_meta");
 			}
-			if (is_regex_special(i)) {
-				hcns(s_catz)(&flags, " regex_special");
+			if (isregex_char(i)) {
+				hcns(s_catz)(&flags, " regex_char");
+			}
+			if (isglob(i)) {
+				hcns(s_catz)(&flags, " glob");
 			}
 
 			flags.s[flags.len] = '\0';
@@ -141,18 +149,6 @@ static void test_ctype()
 			} else {
 				printf("%3i 0x%.2x %c NOPRINT (flags:%s)\n", i, i, i < 0x20 ? '?' : i, flags.s+1);
 			}
-
-			/*if (isalpha(i)) {
-				if ((i & 0x20) == 0) {
-					printf("0x%.2x %c %s (lower case: %c)\n", i, i, flags.s, tolower(i));
-				} else {
-					printf("0x%.2x %c (upper case: %c)\n", i, i, toupper(i));
-				}
-			} else if (isdigit(i)) {
-				printf("0x%.2x %c\n", i, i);
-			} else {
-				printf("0x%.2x %c (flags: 0x%.2x)\n", i, i, getflags(i));
-				}*/
 		}
 	}
 }

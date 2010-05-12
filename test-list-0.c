@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 	int i;
 
 	if (!list) {
-		FATAL("failed to create a list with %i items and %i bytes buffer", len, bufsiz);
+		HC_FATAL("failed to create a list with %i items and %i bytes buffer", len, bufsiz);
 	}
 
 	for (i=0; i<list->length; i++) {

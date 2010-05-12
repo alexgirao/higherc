@@ -132,11 +132,11 @@ extern const signed char hcns(hexval_table)[256];
 #define GIT_SPACE 0x01
 #define GIT_DIGIT 0x02
 #define GIT_ALPHA 0x04
-#define GIT_GLOB_SPECIAL 0x08 /* do not match ), ] and } */
-#define GIT_REGEX_SPECIAL 0x10
-#define GIT_BLANK 0x20
-#define GIT_PUNCT 0x40  /* not GIT_GLOB_SPECIAL nor GIT_REGEX_SPECIAL */
-//#define GIT_ 0x80
+#define GIT_GLOB 0x08 /* do not match ] */
+#define GIT_REGEX_META 0x10 /* meta chars: do not match ] and } */
+#define GIT_REGEX_CHAR 0x20 /* character class: \, ^, -, [, ] */
+#define GIT_BLANK 0x40
+#define GIT_PUNCT 0x80  /* not GIT_GLOB_SPECIAL nor GIT_REGEX_SPECIAL */
 
 extern unsigned char sane_ctype[256];
 
@@ -144,7 +144,7 @@ extern unsigned char sane_ctype[256];
 #define sane_istest(x, mask) ((sane_ctype[(unsigned char)(x)] & (mask)) != 0)
 
 #define MASK_ALNUM (GIT_ALPHA | GIT_DIGIT)
-#define MASK_GRAPH (MASK_ALNUM | GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL | GIT_PUNCT)
+#define MASK_GRAPH (MASK_ALNUM | GIT_GLOB | GIT_REGEX_META | GIT_REGEX_CHAR | GIT_PUNCT)
 #define MASK_PRINT (MASK_GRAPH | GIT_SPACE)
 
 #define isascii(x) (((x) & ~0x7f) == 0)
@@ -152,12 +152,15 @@ extern unsigned char sane_ctype[256];
 #define isblank(x) sane_istest(x, GIT_BLANK)
 #define isdigit(x) sane_istest(x, GIT_DIGIT)
 #define isalpha(x) sane_istest(x, GIT_ALPHA)
+#define isalpha_upper(x) ((x & 0x20) == 0)
+#define isalpha_lower(x) ((x & 0x20) != 0)
 #define isalnum(x) sane_istest(x, MASK_ALNUM)
 #define isgraph(x) sane_istest(x, MASK_GRAPH)
 #define isprint(x) sane_istest(x, MASK_PRINT)
 #define ispunct(x) sane_istest(x, MASK_GRAPH & ~MASK_ALNUM)
-#define is_glob_special(x) sane_istest(x, GIT_GLOB_SPECIAL)
-#define is_regex_special(x) sane_istest(x, GIT_GLOB_SPECIAL | GIT_REGEX_SPECIAL)
+#define isglob(x) sane_istest(x, GIT_GLOB)
+#define isregex_meta(x) sane_istest(x, GIT_REGEX_META)
+#define isregex_char(x) sane_istest(x, GIT_REGEX_CHAR)
 
 #define tolower(x) (isalpha(x) ? x | 0x20 : x)
 #define toupper(x) (isalpha(x) ? x & ~0x20 : x)
