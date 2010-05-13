@@ -21,6 +21,12 @@ struct i {
 #define NEW_I(p) do {struct i *__tmp = p; HC_NEW(p, struct i); p->pos = __tmp ? __tmp->pos + 1 : 0; p->tail = __tmp;} while (0)
 #define FREE_I(p) do {hcns(s_free)(&p->tag); hcns(bzero)(p, sizeof(struct i)); HC_FREE(p);} while (0)
 
+/* FREE_I(p): calling bzero is a good practice, since all data in
+ *   structure will be lost, we can't rely on buggy code accessing
+ *   phantom data, it can be removed after extensive tests in
+ *   production systems for performance reasons
+ */
+
 int main(int argc, char **argv)
 {
 	int i;
@@ -65,12 +71,12 @@ int main(int argc, char **argv)
 		fwrite("]\n", 2, 1, stdout);
 	}
 
-/* cleanup
- */
+        /* cleanup
+	 */
 
 	{
 		struct i *t0=h;
-		for (; t0; t0=t0->tail) {
+		while (t0) {
 			struct i *t1 = t0->tail;
 			FREE_I(t0);
 			t0 = t1;

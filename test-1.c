@@ -17,7 +17,7 @@ struct i {
 	struct hcns(s) tag;
 };
 
-#define NEW_I(p, t) do {struct i *__tmp = p; HC_NEW(p, t); p->tail = __tmp;} while (0)
+#define NEW_I(p) do {struct i *__tmp = p; HC_NEW(p, struct i); p->tail = __tmp;} while (0)
 #define FREE_I(p) do {hcns(s_free)(&p->tag); HC_FREE(p);} while (0)
 
 int main(int argc, char **argv)
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	 */
 
 	for (i=1; i<argc; i++) {
-		NEW_I(h, struct i);
+		NEW_I(h);
 		h_len++;
 
 		hcns(s_copyz)(&h->tag, argv[i]);
