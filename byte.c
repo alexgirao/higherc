@@ -1,7 +1,7 @@
 #include "higherc/higherc.h"
 #include "higherc/byte.h"
 
-int hcns(bchrl)(const char *s, int n, int c)
+int hcns(bchrl)(const void *s, int n, int c)
 {
 	char ch;
 	const char *t;
@@ -15,31 +15,31 @@ int hcns(bchrl)(const char *s, int n, int c)
 		if (t==u)
 			break;
 		if (*t == ch)
-			return t - s;
+			return t - (char*)s;
 		++t;
 
 		if (t==u)
 			break;
 		if (*t == ch)
-			return t - s;
+			return t - (char*)s;
 		++t;
 
 		if (t==u)
 			break;
 		if (*t == ch)
-			return t - s;
+			return t - (char*)s;
 		++t;
 
 		if (t==u)
 			break;
 		if (*t == ch)
-			return t - s;
+			return t - (char*)s;
 		++t;
 	}
 	return n;
 }
 
-int hcns(bchrr)(const char *s, int n, int c)
+int hcns(bchrr)(const void *s, int n, int c)
 {
 	char ch;
 	const char *t;
@@ -48,144 +48,151 @@ int hcns(bchrr)(const char *s, int n, int c)
 	t = s + n;
 	for (;;) {
 		--t;
-		if (t<s)
+		if (t<(char*)s)
 			break;
 		if (*t == ch)
-			return  t - s;
+			return  t - (char*)s;
 
 		--t;
-		if (t<s)
+		if (t<(char*)s)
 			break;
 		if (*t == ch)
-			return  t - s;
+			return  t - (char*)s;
 
 		--t;
-		if (t<s)
+		if (t<(char*)s)
 			break;
 		if (*t == ch)
-			return  t - s;
+			return  t - (char*)s;
 
 		--t;
-		if (t<s)
+		if (t<(char*)s)
 			break;
 		if (*t == ch)
-			return  t - s;
+			return  t - (char*)s;
 	}
 	return n;
 }
 
-void hcns(bcopyl)(char *to, int n, const char *from)
+void hcns(bcopyl)(void *to, int n, const void *from)
 {
+	char *t=to;
+	const char *f=from;
 	for (;;) {
 		if (!n)
 			return;
-		*to++ = *from++;
+		*t++ = *f++;
 		--n;
 
 		if (!n)
 			return;
-		*to++ = *from++;
+		*t++ = *f++;
 		--n;
 
 		if (!n)
 			return;
-		*to++ = *from++;
+		*t++ = *f++;
 		--n;
 
 		if (!n)
 			return;
-		*to++ = *from++;
+		*t++ = *f++;
 		--n;
 	}
 }
 
-void hcns(bcopyr)(char *to, int n, const char *from)
+void hcns(bcopyr)(void *to, int n, const void *from)
 {
+	char *t=to;
+	const char *f=from;
 	to += n;
 	from += n;
 	for (;;) {
 		if (!n)
 			return;
-		*--to = *--from;
+		*--t = *--f;
 		--n;
 
 		if (!n)
 			return;
-		*--to = *--from;
+		*--t = *--f;
 		--n;
 
 		if (!n)
 			return;
-		*--to = *--from;
+		*--t = *--f;
 		--n;
 
 		if (!n)
 			return;
-		*--to = *--from;
+		*--t = *--f;
 		--n;
 	}
 }
 
-int hcns(bdiff)(const char *s, int n, const char *t)
+int hcns(bdiff)(const void *s, int n, const void *t)
 {
+	const char *x=s;
+	const char *y=t;
 	for (;;) {
 		if (!n)
 			return 0;
-		if (*s != *t)
+		if (*x != *y)
 			break;
-		++s;
-		++t;
+		++x;
+		++y;
 		--n;
 
 		if (!n)
 			return 0;
-		if (*s != *t)
+		if (*x != *y)
 			break;
-		++s;
-		++t;
+		++x;
+		++y;
 		--n;
 
 		if (!n)
 			return 0;
-		if (*s != *t)
+		if (*x != *y)
 			break;
-		++s;
-		++t;
+		++x;
+		++y;
 		--n;
 
 		if (!n)
 			return 0;
-		if (*s != *t)
+		if (*x != *y)
 			break;
-		++s;
-		++t;
+		++x;
+		++y;
 		--n;
 	}
-	return ((int)(unsigned char)*s)
-	    - ((int)(unsigned char)*t);
+	return ((int)(unsigned char)*x)
+	    - ((int)(unsigned char)*y);
 }
 
-void hcns(bzero)(char *s, int n)
+void hcns(bzero)(void *s, int n)
 {
+	char *x=s;
 	for (;;) {
 		if (!n)
 			break;
-		*s++ = 0;
+		*x++ = 0;
 		--n;
 
 		if (!n)
 			break;
-		*s++ = 0;
+		*x++ = 0;
 		--n;
 
 		if (!n)
 			break;
-		*s++ = 0;
+		*x++ = 0;
 		--n;
 
 		if (!n)
 			break;
-		*s++ = 0;
+		*x++ = 0;
 		--n;
 	}
 }
