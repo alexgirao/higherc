@@ -1,0 +1,2 @@
+- stable sorts: bubble sort, insertion sort, merge sort, radix sort
+- unstable sorts: quick sort, selection sort, heap sort
