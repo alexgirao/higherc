@@ -22,14 +22,14 @@ void insertion_sort(int *a, int len)
 	for(i=1; i<len; i++) {
 		int j = i - 1;
 
-		printf("iteration %i\n", i);
+		printf("input %i\n", i);
 
 		input = a[i];
 
 		while(a[j] > input && j >= 0) {
 			/* shift down elements greater than input
 			 */
-			printf("swap: %i <- %i\n", j+1, j);
+			printf("shift: %i -> %i\n", j, j+1);
 			a[j+1] = a[j];
 			j--;
 		}
@@ -37,7 +37,7 @@ void insertion_sort(int *a, int len)
 		if (j+1 != i) {
 			/* don't swap if input is already in order
 			 */
-			printf("swap: %i <- %i (input)\n", j+1, i);
+			printf("move input to %i\n", j+1);
 			a[j+1] = input;
 		}
 	}
