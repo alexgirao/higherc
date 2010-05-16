@@ -5,6 +5,7 @@
 #include "higherc/str.h"
 #include "higherc/alloc.h"
 #include "higherc/stralloc.h"
+#include "higherc/bytewise.h"
 
 /* alloc/free
  */
@@ -91,4 +92,51 @@ hcns(bool) hcns(s_cat)(struct hcns(s) *to, const struct hcns(s) *from)
 hcns(bool) hcns(s_catz)(struct hcns(s) *sa, const char *s)
 {
 	return hcns(s_catn)(sa, s, hcns(slen)(s));
+}
+
+/* diff
+ */
+
+int hcns(s_diff)(struct hcns(s) *a, struct hcns(s) *b)
+{
+	int x = a->len - b->len;
+	int y = 0;
+
+	if (x > 0) {
+		x = 1;
+		y = hcns(bdiff)(a->s, b->len, b->s);
+	} else if (x < 0) {
+		x = -1;
+		y = hcns(bdiff)(a->s, a->len, b->s);
+	} else {
+		y = hcns(bdiff)(a->s, a->len, b->s);
+	}
+	return y ? y : x;
+}
+
+/* case change
+ */
+
+void hcns(s_toupper)(struct hcns(s) *s)
+{
+	int i;
+	char c;
+	for (i=0; i<s->len; i++, c++) {
+		c = s->s[i];
+		if (HC_ISALPHA(c)) {
+			s->s[i] = HC_TOUPPER(c);
+		}
+	}
+}
+
+void hcns(s_tolower)(struct hcns(s) *s)
+{
+	int i;
+	char c;
+	for (i=0; i<s->len; i++, c++) {
+		c = s->s[i];
+		if (HC_ISALPHA(c)) {
+			s->s[i] = HC_TOLOWER(c);
+		}
+	}
 }

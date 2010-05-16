@@ -1,6 +1,9 @@
 #ifndef tid030e7a6b9335mgxvfwvibrqr0ijzf3izqrur4b9eavc /* higherc-list-h */
 #define tid030e7a6b9335mgxvfwvibrqr0ijzf3izqrur4b9eavc /* higherc-list-h */
 
+/* list: a mixture of linked list and array
+ */
+
 /* list header
  */
 struct hcns(list) {
@@ -28,8 +31,12 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
  */
 hcns(bool) hcns(list_free)(struct hcns(list) *list);
 
-/* index: item position at list, start at 0
- * return: pointer to user allocated area with size bytes available
+/*
+ * index: item position at list, start at 0
+ *
+ * return: pointer to memory with `size' bytes, MUST NOT be freed,
+ *   will be freed automatically with list. NULL if called more than
+ *   once or if called with invalid arguments
  */
 void *hcns(item_setup)(struct hcns(list) *list, int index, int size);
 

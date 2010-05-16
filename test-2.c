@@ -20,6 +20,15 @@ struct i {
 
 #define NEW_I(p) do {struct i *__tmp = p; HC_NEW(p, struct i); p->pos = __tmp ? __tmp->pos + 1 : 0; p->tail = __tmp;} while (0)
 #define FREE_I(p) do {hcns(s_free)(&p->tag); hcns(bzero)(p, sizeof(struct i)); HC_FREE(p);} while (0)
+#define REVERSE_I(r, h) do {					\
+		HC_NEW_AR(r, h->pos + 1, struct i*);		\
+		{						\
+			struct i *__tmp=h;			\
+			for (; __tmp; __tmp=__tmp->tail) {	\
+				r[__tmp->pos] = __tmp;		\
+			}					\
+		}						\
+	} while (0)
 
 /* FREE_I(p): calling bzero is a good practice, since all data in
  *   structure will be lost, we can't rely on buggy code accessing
@@ -51,16 +60,9 @@ int main(int argc, char **argv)
 	 */
 
 	struct i **r;
-	HC_NEW_AR(r, h->pos + 1, struct i*);
+	REVERSE_I(r, h);
 
-	{
-		struct i *tmp=h;
-		for (; tmp; tmp=tmp->tail) {
-			r[tmp->pos] = tmp;
-		}
-	}
-
-	/* original order
+	/* traverse in original order
 	 */
 
 	for (i=0; i<=h->pos; i++) {

@@ -26,7 +26,7 @@ void insertion_sort(int *a, int len)
 
 		input = a[i];
 
-		while(a[j] > input && j >= 0) {
+		while(j >= 0 && a[j] > input) {
 			/* shift down elements greater than input
 			 */
 			printf("shift: %i -> %i\n", j, j+1);
