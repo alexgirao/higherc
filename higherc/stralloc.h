@@ -22,4 +22,7 @@ hcns(bool) hcns(s_catz)(struct hcns(s) *, const char *);
 
 int hcns(s_diff)(struct hcns(s) *a, struct hcns(s) *b);
 
+void hcns(s_upper)(struct hcns(s) *s);
+void hcns(s_lower)(struct hcns(s) *s);
+
 #endif

@@ -117,7 +117,7 @@ int hcns(s_diff)(struct hcns(s) *a, struct hcns(s) *b)
 /* case change
  */
 
-void hcns(s_toupper)(struct hcns(s) *s)
+void hcns(s_upper)(struct hcns(s) *s)
 {
 	int i;
 	char c;
@@ -129,7 +129,7 @@ void hcns(s_toupper)(struct hcns(s) *s)
 	}
 }
 
-void hcns(s_tolower)(struct hcns(s) *s)
+void hcns(s_lower)(struct hcns(s) *s)
 {
 	int i;
 	char c;

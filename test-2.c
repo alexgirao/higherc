@@ -18,9 +18,18 @@ struct i {
 	struct hcns(s) tag;
 };
 
-#define NEW_I(p) do {struct i *__tmp = p; HC_NEW(p, struct i); p->pos = __tmp ? __tmp->pos + 1 : 0; p->tail = __tmp;} while (0)
-#define FREE_I(p) do {hcns(s_free)(&p->tag); hcns(bzero)(p, sizeof(struct i)); HC_FREE(p);} while (0)
-#define REVERSE_I(r, h) do {					\
+#define I_NEW(p) do {struct i *__tmp = p; HC_NEW(p, struct i); p->pos = __tmp ? __tmp->pos + 1 : 0; p->tail = __tmp;} while (0)
+#define I_FREE(p) do {hcns(s_free)(&p->tag); hcns(bzero)(p, sizeof(struct i)); HC_FREE(p);} while (0)
+#define I_ARRAY(r, h)  do {					\
+		HC_NEW_AR(r, h->pos + 1, struct i*);		\
+		{						\
+			int __i=0; struct i *__tmp=h;		\
+			for (; __tmp; __tmp=__tmp->tail) {	\
+				r[__i++] = __tmp;		\
+			}					\
+		}						\
+	} while (0)
+#define I_REVERSED(r, h) do {					\
 		HC_NEW_AR(r, h->pos + 1, struct i*);		\
 		{						\
 			struct i *__tmp=h;			\
@@ -30,7 +39,7 @@ struct i {
 		}						\
 	} while (0)
 
-/* FREE_I(p): calling bzero is a good practice, since all data in
+/* I_FREE(p): calling bzero is a good practice, since all data in
  *   structure will be lost, we can't rely on buggy code accessing
  *   phantom data, it can be removed after extensive tests in
  *   production systems for performance reasons
@@ -45,7 +54,7 @@ int main(int argc, char **argv)
 	 */
 
 	for (i=1; i<argc; i++) {
-		NEW_I(h);
+		I_NEW(h);
 		hcns(s_copyz)(&h->tag, argv[i]);
 	}
 
@@ -60,7 +69,7 @@ int main(int argc, char **argv)
 	 */
 
 	struct i **r;
-	REVERSE_I(r, h);
+	I_REVERSED(r, h);
 
 	/* traverse in original order
 	 */
@@ -80,7 +89,7 @@ int main(int argc, char **argv)
 		struct i *t0=h;
 		while (t0) {
 			struct i *t1 = t0->tail;
-			FREE_I(t0);
+			I_FREE(t0);
 			t0 = t1;
 		}
 		HC_FREE(r);

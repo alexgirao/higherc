@@ -24,10 +24,10 @@ int main(int argc, char **argv)
 	hcns(s_copyz)(&sa0, "folks!\n");
 	fwrite(sa0.s, sa0.len, 1, stdout);
 
-	hcns(s_toupper)(&sa0);
+	hcns(s_upper)(&sa0);
 	fwrite(sa0.s, sa0.len, 1, stdout);
 
-	hcns(s_tolower)(&sa0);
+	hcns(s_lower)(&sa0);
 	fwrite(sa0.s, sa0.len, 1, stdout);
 
 	hcns(s_free)(&sa0);
