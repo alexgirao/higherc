@@ -1,5 +1,9 @@
 high level structures for c programming
 
+     objective: software development library for common, 32-bit architectures or higher
+
+data structures
+
      - single linked lists (list)
 
 api instructions
