@@ -20,7 +20,8 @@ hcns(bool) hcns(s_catn)(struct hcns(s) *, const char *, int);
 hcns(bool) hcns(s_cat)(struct hcns(s) *, const struct hcns(s) *);
 hcns(bool) hcns(s_catz)(struct hcns(s) *, const char *);
 
-int hcns(s_diff)(struct hcns(s) *a, struct hcns(s) *b);
+int hcns(s_bdiff)(struct hcns(s) *a, struct hcns(s) *b);
+int hcns(s_sdiff)(struct hcns(s) *a, char *b);
 
 void hcns(s_upper)(struct hcns(s) *s);
 void hcns(s_lower)(struct hcns(s) *s);

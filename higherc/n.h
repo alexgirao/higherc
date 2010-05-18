@@ -3,28 +3,40 @@
 
 /* natural numbers, simplest approach, non-cryptography use, motivated
  * to represent sha1 as base36
+ *
+ * always use native integer types or compiler supported larger types
  */
 
+typedef unsigned char hcns(u1);
 typedef unsigned short hcns(u2);
 typedef unsigned int hcns(u4);
-//typedef unsigned long hcns(u8);
+//typedef unsigned long hcns(u8);  // future
 
 typedef hcns(u2) hcns(h);    /* half-digit, at least 16-bit */
 typedef hcns(u4) hcns(f);    /* full-digit, at least 32-bit */
 
 #define HC_HALF_BITS 16
+#define HC_HALF_BYTES 2
 #define HC_HALF_MASK 0xffff
+#define HC_HALF_MAX HC_HALF_MASK
 #define HC_HALF_OFFENSE 0xdeadU  /* ``offensive programming'' */ 
-#define HC_OFFENSE 0xdeaddeadU   /* ``offensive programming'' */ 
+#define HC_OFFENSE 0xdeadbeefU   /* ``offensive programming'' */ 
 
 #define HC_FMT_H "%.4x"
 #define HC_FMT_F "%.8x"
 
 struct hcns(n) {
-	hcns(h) *d; /* digits */
+	hcns(h) *d; /* digits, least significant digit first */
 	int len; /* effective words */
 	int a; /* allocated words */
 };
+
+#define HC_NULL_N {NULL, 0, 0}
+
+hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n);
+hcns(bool) hcns(n_free)(struct hcns(n) *x);
+hcns(bool) hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n);
+hcns(bool) hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
 
 /* literal digit
  */
@@ -107,7 +119,7 @@ struct hcns(n) {
 
 #define D_EXP  HC_HALF_BITS
 #define DLOW(x)        ((hcns(h))(x))
-#define DHIGH(x)       ((hcns(h))(((hcns(f))(x)) >> D_EXP))
+#define DHIGH(x)       ((hcns(h))(((hcns(f))(x))>>D_EXP))
 
 /* ErtsDigit => ErtsDoubleDigit */
 #define DLOW2HIGH(x)   (((hcns(f))(x)) << D_EXP)

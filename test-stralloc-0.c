@@ -3,8 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <assert.h>
 
 #include "higherc/higherc.h"
+#include "higherc/str.h"
 #include "higherc/stralloc.h"
 
 int main(int argc, char **argv)
@@ -29,6 +31,14 @@ int main(int argc, char **argv)
 
 	hcns(s_lower)(&sa0);
 	fwrite(sa0.s, sa0.len, 1, stdout);
+
+	hcns(s_copyz)(&sa0, "aa");
+	assert(hcns(s_sdiff)(&sa0, "aa") == 0);
+
+	assert(hcns(sdiff)("aa", "aaz") < 0);
+	assert(hcns(s_sdiff)(&sa0, "aaz") < 0);
+	assert(hcns(sdiff)("aa", "a0z") > 0);
+	assert(hcns(s_sdiff)(&sa0, "a0z") > 0);
 
 	hcns(s_free)(&sa0);
 

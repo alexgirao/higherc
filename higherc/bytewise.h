@@ -92,10 +92,6 @@ static inline unsigned int hcns(swab32)(unsigned int val)
  */
 
 extern const signed char hcns(hexval_table)[256];
-/*static inline unsigned int hcns(hexval)(unsigned char c)
-{
-	return hcns(hexval_table)[c];
-	}*/
 
 #define HC_HEX_VALUE(d) (hcns(hexval_table)[(unsigned char)(d)])
 #define HC_HEX_DIGIT(v) ("0123456789abcdef"[(v)&0xf])
