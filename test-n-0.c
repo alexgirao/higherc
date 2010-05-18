@@ -46,13 +46,30 @@ int main(int argc, char **argv)
 	assert(sizeof(hcns(u4)) == 4);
 //	assert(sizeof(hcns(u8)) == 8);
 
-	hcns(f) a[2];
-	hcns(f) b = HC_F(0xdeadbeef);
-	hcns(f) c = HC_F(0xdeadbeef);
+	{
+		hcns(f) a[2];
+		hcns(f) b = HC_F(0xdeadbeef);
+		hcns(f) c = HC_F(0xdeadbeef);
+		
+		hcns(d_mul2)(a, b, c);
 
-	hcns(d_mul2)(a, b, c);
+		printf(HC_FMT_F " " HC_FMT_F "\n", a[0], a[1]);
+	}
 
-	printf(HC_FMT_H HC_FMT_H "\n", a[0], a[1]);
+	/*
+	 */
+
+	hcns(f) a, b, c;
+	int borrow;
+
+	a = 0xffffffff;
+	b = 1234;
+
+	HC_SUB(a, b, borrow, c);
+	printf(HC_FMT_F " " HC_FMT_F "\n", borrow, c);
+
+	HC_SUB(b, a, borrow, c);
+	printf(HC_FMT_F " " HC_FMT_F "\n", borrow, c);
 
 	return 0;
 }

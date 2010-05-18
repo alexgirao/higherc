@@ -15,7 +15,7 @@ hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n)
 	if (x->d) {
 		if (n > x->a) {
 			int i = n + 2;
-			void *p = hcns(alloc_re)(x->d, x->len * sizeof(hcns(f)), i * sizeof(hcns(f)));
+			void *p = hcns(alloc_re)(x->d, x->len * sizeof(hcns(h)), i * sizeof(hcns(h)));
 			if (p) {
 				x->a = i;
 				x->d = p;
@@ -25,7 +25,7 @@ hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n)
 		}
 		return 1;
 	}
-	x->d = hcns(alloc)(n * sizeof(hcns(f)));
+	x->d = hcns(alloc)(n * sizeof(hcns(h)));
 	if (x->d) {
 		x->a = n;
 		x->len = 0;
@@ -49,13 +49,13 @@ hcns(bool) hcns(n_free)(struct hcns(n) *x)
 /* copy
  */
 
-hcns(bool) hcns(n_copyn)(struct hcns(n) *x, const hcns(f) *d, int n)
+hcns(bool) hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n)
 {
-	if (!hcns(n_alloc)(x, (n + 1) * sizeof(hcns(f))))
+	if (!hcns(n_alloc)(x, (n + 1) * sizeof(hcns(h))))
 		return 0;
-	hcns(bcopyl)(x->d, n * sizeof(hcns(f)), d);
+	hcns(bcopyl)(x->d, n * sizeof(hcns(h)), d);
 	x->len = n;
-	x->d[x->len] = HC_F(0xdeadbeef);   /* ``offensive programming'' */ 
+	x->d[x->len] = HC_HALF_OFFENSE;   /* ``offensive programming'' */ 
 	return 1;
 }
 
