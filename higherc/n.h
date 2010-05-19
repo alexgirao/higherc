@@ -1,6 +1,10 @@
 #ifndef tid030be9cfda62t5nche7op21ptiwm8gix4c2xz6l1trg /* higherc-n-h */
 #define tid030be9cfda62t5nche7op21ptiwm8gix4c2xz6l1trg /* higherc-n-h */
 
+#ifndef tid030b8ac9b6bbmv6xgcvtam0vl49kzcezeu1cy2wuzd5 /* higherc-s-h */
+#error higherc-stralloc-h not included
+#endif
+
 /* natural numbers, simplest approach, non-cryptography use, motivated
  * to represent sha1 as base36
  *
@@ -16,7 +20,7 @@ typedef hcns(u2) hcns(h);    /* half-digit, at least 16-bit */
 typedef hcns(u4) hcns(f);    /* full-digit, at least 32-bit */
 
 #define HC_HALF_BITS 16
-#define HC_HALF_BYTES 2
+#define HC_HALF_BYTES (HC_HALF_BITS/8)
 #define HC_HALF_MASK 0xffff
 #define HC_HALF_MAX HC_HALF_MASK
 #define HC_HALF_OFFENSE 0xdeadU  /* ``offensive programming'' */ 
@@ -37,6 +41,12 @@ hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n);
 hcns(bool) hcns(n_free)(struct hcns(n) *x);
 hcns(bool) hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n);
 hcns(bool) hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
+
+void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
+void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v);
+void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len);  /* load big-endian bytes */
+void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n);  /* load hex string */
+void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
 
 /* literal digit
  */

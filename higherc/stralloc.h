@@ -1,5 +1,5 @@
-#ifndef tid0312e910d3c3t7zzl4zg0fut3i889en4d5dlshki6gd /* higherc-stralloc-h */
-#define tid0312e910d3c3t7zzl4zg0fut3i889en4d5dlshki6gd /* higherc-stralloc-h */
+#ifndef tid030b8ac9b6bbmv6xgcvtam0vl49kzcezeu1cy2wuzd5 /* higherc-s-h */
+#define tid030b8ac9b6bbmv6xgcvtam0vl49kzcezeu1cy2wuzd5 /* higherc-s-h */
 
 struct hcns(s) {
 	char *s;

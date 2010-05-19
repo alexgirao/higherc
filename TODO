@@ -1,17 +1,8 @@
 
-smarter build system (see baselib)
+smart build system (see baselib)
 
 	- detect byte ordering (little-endian, big-endian)
 	- ensure sizeof(long int) IS sizeof(void *)
 	- ensure sizeof(byte) IS 1, sizeof(short) IS 2 and sizeof(int) IS 4,
 	  FAIL if no (exhaust possibilities, C code has to adapt to
 	  architecture)
-
-list
-
-	list alloc with tail (incref on all lists)
-	list free with tail (decref on all lists)
-	list traverse with tail example
-	list reverse
-	list duplicate
-	list flatten

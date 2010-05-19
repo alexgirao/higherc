@@ -1,7 +1,18 @@
 #ifndef tid030e7a6b9335mgxvfwvibrqr0ijzf3izqrur4b9eavc /* higherc-list-h */
 #define tid030e7a6b9335mgxvfwvibrqr0ijzf3izqrur4b9eavc /* higherc-list-h */
 
-/* list: a mixture of linked list and array
+/* list: a mixture of linked list and array intended for heavy, fast,
+ * flexible list processing
+ */
+
+/* todo:
+ *
+ *	list alloc with tail (incref on all lists)
+ *	list free with tail (decref on all lists)
+ *	list traverse with tail example
+ *	list reverse
+ *	list duplicate
+ *	list flatten
  */
 
 /* list header
