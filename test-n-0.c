@@ -252,7 +252,7 @@ static hcns(uint) Z_sub(hcns(h)* y, hcns(uint) yl, hcns(h)* r)
 
 /*
 ** Multiply digits in x with digits in y and store in r
-** Assumption: digits in r must be 0 (upto the size of x)
+** Assumption: digits in r must be 0 (up to the size of greater operand)
 */
 static hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r)
 {
