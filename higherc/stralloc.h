@@ -26,4 +26,6 @@ int hcns(s_sdiff)(struct hcns(s) *a, char *b);
 void hcns(s_upper)(struct hcns(s) *s);
 void hcns(s_lower)(struct hcns(s) *s);
 
+#define HC_SAFE_CSTR(s) do { hcns(s_catn)(s, "\0", 1); --(s)->len; } while (0)
+
 #endif

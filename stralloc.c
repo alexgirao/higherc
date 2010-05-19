@@ -116,7 +116,8 @@ int hcns(s_bdiff)(struct hcns(s) *a, struct hcns(s) *b)
 
 int hcns(s_sdiff)(struct hcns(s) *a, char *b)
 {
-	return hcns(sdiffn)(a->s, b, a->len);
+	hcns(s_catn)(a, "\0", 1);
+	return hcns(sdiffn)(a->s, b, a->len--);
 }
 
 /* case change

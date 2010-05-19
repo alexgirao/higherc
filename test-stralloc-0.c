@@ -33,12 +33,27 @@ int main(int argc, char **argv)
 	fwrite(sa0.s, sa0.len, 1, stdout);
 
 	hcns(s_copyz)(&sa0, "aa");
+
+	assert(hcns(sdiff)("aa", "aa") == 0);
 	assert(hcns(s_sdiff)(&sa0, "aa") == 0);
 
 	assert(hcns(sdiff)("aa", "aaz") < 0);
 	assert(hcns(s_sdiff)(&sa0, "aaz") < 0);
+
 	assert(hcns(sdiff)("aa", "a0z") > 0);
 	assert(hcns(s_sdiff)(&sa0, "a0z") > 0);
+
+	assert(hcns(sdiff)("aa", "0") > 0);
+	assert(hcns(s_sdiff)(&sa0, "0") > 0);
+
+	assert(hcns(sdiff)("aa", "0zz") > 0);
+	assert(hcns(s_sdiff)(&sa0, "0zz") > 0);
+
+	assert(hcns(sdiff)("aa", "a") > 0);
+	assert(hcns(s_sdiff)(&sa0, "a") > 0);
+
+	assert(hcns(sdiff)("aa", "a0") > 0);
+	assert(hcns(s_sdiff)(&sa0, "a0") > 0);
 
 	hcns(s_free)(&sa0);
 

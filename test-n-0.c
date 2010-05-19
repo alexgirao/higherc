@@ -16,6 +16,8 @@
 #include "higherc/fatal.h"
 #include "higherc/n.h"
 
+void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
+
 static void show_2_halves(hcns(h) a[2])
 {
 	printf("a[1] == 0x" HC_FMT_H " && a[0] == 0x" HC_FMT_H "\n", a[1], a[0]);
@@ -58,6 +60,31 @@ static int D_mul(hcns(h)* x, int xl, hcns(h) d, hcns(h)* r)
 		return rl;
 	*r = c;
 	return rl+1;
+}
+
+static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
+{
+	struct hcns(s) s = HC_NULL_S;
+
+	assert(n->d != NULL);
+	assert(n->len > 0);
+
+	printf("n->len %i\n", n->len);
+
+	hcns(s_catz)(&s, prefix);
+	hcns(n_as_hex)(n, &s);
+	hcns(s_catz)(&s, suffix);
+	HC_SAFE_CSTR(&s);
+
+	printf("%s", s.s);
+}
+
+static void n_cmp_hex(struct hcns(n) *n, char *hex)
+{
+	struct hcns(s) s = HC_NULL_S;
+	hcns(n_as_hex)(n, &s);
+	HC_SAFE_CSTR(&s);
+	assert(hcns(s_sdiff)(&s, hex) == 0);
 }
 
 static void test_MUL()
@@ -152,6 +179,17 @@ static void test_MUL()
 }
 
 #if (HC_HALF_BYTES == 2)
+
+void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v)
+{
+	if (!hcns(n_alloc)(n, 2)) {
+		HC_FATAL("n_alloc(%p, %i) failed", n, 2);
+	}
+	n->d[0] = HC_LOW(v);
+	n->d[1] = HC_HIGH(v);
+	n->len = 2;
+}
+
 void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len)
 {
 	int i, ndigits = len / HC_HALF_BYTES;
@@ -205,11 +243,28 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 	for (i=ndigits-1; i>=0; i--) {
 		char t[4];
 		hcns(h) d = n->d[i];
+
+		if (!d) continue;
+
 		t[0] = HC_HEX_DIGIT(d >> 12);
 		t[1] = HC_HEX_DIGIT(d >> 8);
 		t[2] = HC_HEX_DIGIT(d >> 4);
 		t[3] = HC_HEX_DIGIT(d);
 		hcns(s_catn)(s, t, 4);
+	}
+
+	for (; i>=0; i--) {
+		char t[4];
+		hcns(h) d = n->d[i];
+		t[0] = HC_HEX_DIGIT(d >> 12);
+		t[1] = HC_HEX_DIGIT(d >> 8);
+		t[2] = HC_HEX_DIGIT(d >> 4);
+		t[3] = HC_HEX_DIGIT(d);
+		hcns(s_catn)(s, t, 4);
+	}
+
+	if (s->len == 0) {
+		hcns(s_catn)(s, "0", 1);
 	}
 }
 
@@ -217,14 +272,12 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 #error not implemented
 #endif
 
-#define HC_SAFE_C_STR(s) do { hcns(s_catn)(s, "\0", 1); --(s)->len; } while (0)
-
 static void test_hex_in_out()
 {
 	char hexstr[40] = "da39a3ee5e6b4b0d3255bfef95601890afd80709"; /* sha1 of no data */
 	printf("sizeof(hexstr): %i\n", (int)sizeof(hexstr));
 
-	if (1) {
+	{
 		struct hcns(n) a = HC_NULL_N;
 		struct hcns(s) s = HC_NULL_S;
 		unsigned char valstr[sizeof(hexstr) / 2];
@@ -239,14 +292,14 @@ static void test_hex_in_out()
 
 		s.len = 0;
 		hcns(n_as_hex)(&a, &s);
-		HC_SAFE_C_STR(&s);
+		HC_SAFE_CSTR(&s);
 
 		assert(hcns(sdiffn)(s.s, hexstr, sizeof(hexstr)) == 0);
 
 		puts(s.s);
 	}
 
-	if (1) {
+	{
 		struct hcns(n) a = HC_NULL_N;
 		struct hcns(s) s = HC_NULL_S;
 
@@ -256,34 +309,22 @@ static void test_hex_in_out()
 
 		s.len = 0;
 		hcns(n_as_hex)(&a, &s);
-		HC_SAFE_C_STR(&s);
+		HC_SAFE_CSTR(&s);
 
 		puts(s.s);
 
 		assert(hcns(sdiffn)(s.s, hexstr, sizeof(hexstr)) == 0);
 	}
-}
 
-static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
-{
-	struct hcns(s) s = HC_NULL_S;
+	if (1) {
+		struct hcns(n) a[1] = {HC_NULL_N};
 
-	hcns(s_catz)(&s, prefix);
-	hcns(n_as_hex)(n, &s);
-	hcns(s_catz)(&s, suffix);
-	HC_SAFE_C_STR(&s);
+		hcns(n_set_u4)(a, 0xdeadbeefU);
 
-	printf("%s", s.s);
-}
+		printf("%i\n", a->len);
 
-static void n_hex_cmp(struct hcns(n) *n, char *hex)
-{
-	struct hcns(s) s = HC_NULL_S;
-
-	hcns(n_as_hex)(n, &s);
-	HC_SAFE_C_STR(&s);
-
-	assert(hcns(sdiffn)(s.s, hex, s.len) == 0);
+		print_n("[", a, "]\n");
+	}
 }
 
 static void test_mul1()
@@ -298,7 +339,9 @@ static void test_mul1()
 
 	r.len = D_mul(a.d, a.len, HC_H(0), r.d);
 
-	print_n("r = ", &r, "\n");
+	print_n("r = [", &r, "]\n");
+
+	//n_cmp_hex(&r, "0");
 }
 
 int main(int argc, char **argv)
