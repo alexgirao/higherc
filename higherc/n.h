@@ -11,6 +11,8 @@
  * always use native integer types or compiler supported larger types
  */
 
+typedef unsigned int hcns(uint); /* at least 32-bit */
+
 typedef unsigned char hcns(u1);
 typedef unsigned short hcns(u2);
 typedef unsigned int hcns(u4);
