@@ -6,11 +6,10 @@
 #include <assert.h>
 
 #include "higherc/higherc.h"
-#include "higherc/buffer.h"
 #include "higherc/list.h"
 #include "higherc/byte.h"
 #include "higherc/bytewise.h"
-#include "higherc/stralloc.h"
+#include "higherc/s.h"
 #include "higherc/str.h"
 #include "higherc/rand.h"
 #include "higherc/fatal.h"

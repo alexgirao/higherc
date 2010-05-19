@@ -7,7 +7,6 @@
 
 #include "higherc/higherc.h"
 #include "higherc/alloc.h"
-#include "higherc/buffer.h"
 #include "higherc/list.h"
 
 /*#define HIGHERC_LIST_DEBUG*/

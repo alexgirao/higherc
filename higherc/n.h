@@ -2,7 +2,7 @@
 #define tid030be9cfda62t5nche7op21ptiwm8gix4c2xz6l1trg /* higherc-n-h */
 
 #ifndef tid030b8ac9b6bbmv6xgcvtam0vl49kzcezeu1cy2wuzd5 /* higherc-s-h */
-#error higherc-stralloc-h not included
+#error higherc-s-h not included
 #endif
 
 /* natural numbers, simplest approach, non-cryptography use, motivated

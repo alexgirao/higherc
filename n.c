@@ -5,7 +5,7 @@
 #include "higherc/str.h"
 #include "higherc/alloc.h"
 #include "higherc/bytewise.h"
-#include "higherc/stralloc.h"
+#include "higherc/s.h"
 #include "higherc/n.h"
 
 /* alloc/free

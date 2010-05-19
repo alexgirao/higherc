@@ -7,7 +7,7 @@
 
 #include "higherc/higherc.h"
 #include "higherc/str.h"
-#include "higherc/stralloc.h"
+#include "higherc/s.h"
 
 int main(int argc, char **argv)
 {

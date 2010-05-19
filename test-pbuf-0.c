@@ -7,7 +7,6 @@
 #include <stdarg.h>
 
 #include "higherc/higherc.h"
-#include "higherc/buffer.h"
 #include "higherc/list.h"
 #include "higherc/pbuf.h"
 #include "higherc/fatal.h"

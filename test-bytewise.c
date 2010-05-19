@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #include "higherc/higherc.h"
-#include "higherc/stralloc.h"
+#include "higherc/s.h"
 #include "higherc/bytewise.h"
 #include "higherc/fatal.h"
 
@@ -85,7 +85,7 @@ static void test_ctype()
 		struct hcns(s) flags = HC_NULL_S;
 
 		hcns(s_copyn)(&flags, "\0\0", 2);  /* initialize
-						    * stralloc with at
+						    * s with at
 						    * least 2 bytes */
 
 		for (i=0;i<256;i++) {
@@ -93,7 +93,7 @@ static void test_ctype()
 				continue;
 			}
 
-			flags.len = 0; /* truncate stralloc */
+			flags.len = 0; /* truncate s */
 			flags.s[0] = '\0'; /* truncate c string */
 			flags.s[1] = '\0'; /* zero second byte too,
 					    * for the substring

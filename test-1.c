@@ -10,7 +10,7 @@
 #include "higherc/byte.h"
 #include "higherc/alloc.h"
 #include "higherc/fatal.h"
-#include "higherc/stralloc.h"
+#include "higherc/s.h"
 
 struct i {
 	struct i *tail;

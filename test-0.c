@@ -6,10 +6,9 @@
 #include <assert.h>
 
 #include "higherc/higherc.h"
-#include "higherc/buffer.h"
 #include "higherc/list.h"
 #include "higherc/rand.h"
-#include "higherc/stralloc.h"
+#include "higherc/s.h"
 #include "higherc/n.h"
 
 #define myassert(fmt, val, check) assert((val) == (check)); printf(fmt, val);
