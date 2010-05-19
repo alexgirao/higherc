@@ -37,15 +37,12 @@ get_L() ->
     B4 = 16#98a906182cdcfb1eb4eb47117600f68958e2ddd140248b47984f4bde6587b89c8215c3da895a336e94ad1aca39015c40,
     A5 = 16#1f40fc92da241694750979ee6cf582f2d5d7d28e18335de05abc54d0560e0f5302860c652bf08d560252aa5e74210546f369fbbbce8c12cfc7957b2652fe9a75,
     B5 = 16#5267768822ee624d48fce15ec5ca79cbd602cb7f4c2157a516556991f22ef8c7b5ef7b18d1ff41c59370efb0858651d44a936c11b7b144c48fe04df3c6a3e8da,
-    [A1, B1, A2, B2, A3, B3, A4, B4, A5, B5].
+    [1, 2, 3, A1, B1, A2, B2, A3, B3, A4, B4, A5, B5].
 
 -else.
 
 get_L() ->
-    A1 = 1,
-    A2 = 2,
-    A3 = 3,
-    [A1, A2, A3].
+    [1, 2, 3].
 
 -endif.
 
@@ -78,7 +75,7 @@ main(Args) ->
 	["c_verify"] ->
 	    lists:foreach(fun ({I, _K, T}) ->
 				  lists:foreach(fun ({J, R}) ->
-							io:format("~.16.0b * ~.16.0b = ~.16.0b~n", [I, J, R])
+							io:format("\"~.16.0b\", /* * */ \"~.16.0b\", /* = */ \"~.16.0b\",~n", [I, J, R])
 						end, T)
 			  end, N);
 	[] ->

@@ -1508,27 +1508,20 @@ static void test_mul1()
 
 static void test_muln()
 {
-	/* char *a_hex = "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8"; /\* sha1 (160-bit) of 'a' *\/ */
-	/* char *b_hex = "e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98"; /\* sha1 (160-bit) of 'b' *\/ */
-	/* char *expected = "7b490971ac009a717ee7302dd841a2e9fd988cbe709e408ebe7a09d6425c47e5c27bfb87dff55d40"; */
-
 	char *tests0[] = {
-		"86f7e437faa5a7fce15d1ddcb9eaeaea377667b8", /* * */ "e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98", /* = */ "7b490971ac009a717ee7302dd841a2e9fd988cbe709e408ebe7a09d6425c47e5c27bfb87dff55d40",
+		#include "sandbox/bignum.escript--c_verify"
 		NULL
 	};
 	char **tests = tests0;
 
 	void verify(char *a_hex, char *b_hex, char *expected)
 	{
-		int a_len;
-		int b_len;
-
-		a_len = hcns(slen)(a_hex);
-		b_len = hcns(slen)(b_hex);
-
 		struct hcns(n) a[1] = {HC_NULL_N};
 		struct hcns(n) b[1] = {HC_NULL_N};
 		struct hcns(n) r[1] = {HC_NULL_N};
+
+		int a_len = hcns(slen)(a_hex);
+		int b_len = hcns(slen)(b_hex);
 
 		hcns(n_load_hex)(a, a_hex, a_len);
 		hcns(n_load_hex)(b, b_hex, b_len);
