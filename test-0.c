@@ -72,5 +72,19 @@ int main(int argc, char **argv)
 	r = b - a;
 	printf("%08x (%i) = %08x (%i) - %08x (%i)\n", r, r, b, b, a, a);
 
+	/*
+	 */
+
+	{
+		int *a, *b;
+
+		a = NULL;
+		b = a + 1;
+
+		assert(sizeof(*a) > 1);
+		assert(b - a == 1); /* pointer arithmetic consider type size */
+		assert((char*)b - (char*)a == sizeof(int));
+	}
+
 	return 0;
 }

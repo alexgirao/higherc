@@ -256,8 +256,8 @@ static hcns(uint) Z_sub(hcns(h)* y, hcns(uint) yl, hcns(h)* r)
 */
 static hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r)
 {
-    hcns(h)* r0 = r;
-    hcns(h)* rt = r;
+    hcns(h) *r0 = r;
+    hcns(h) *rt = r;
 
     while(xl--) {
 	hcns(h) cp = 0;
@@ -293,8 +293,8 @@ static hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hc
 	    break;
 	default:
 	    while(n--) {
-		DMULc(d,*yt, cp, p);
-		DSUMc(p,*rt, c, p);
+		DMULc(d, *yt, cp, p);
+		DSUMc(p, *rt, c, p);
 		*rt++ = p;
 		yt++;
 	    }
@@ -1103,44 +1103,8 @@ static int I_lg(hcns(h)* x, hcns(uint) xl)
     return sz - 1;
 }
 
-/* /\* */
-/*  * r[xl+1] = x[xl] * d */
-/*  *\/ */
-/* static int D_mul(hcns(h)* x, int xl, hcns(h) d, hcns(h)* r) */
-/* { */
-/* 	hcns(h) c = 0; */
-/* 	int rl = xl; */
-/* 	hcns(h) p; */
-
-/* 	switch(d) { */
-/* 	case 0: */
-/* 		HC_ZERO(r, 1); */
-/* 		return 1; */
-/* 	case 1: */
-/* 		if (x != r) */
-/* 			HC_MOVE(r, x, xl); */
-/* 		return xl; */
-/* 	case 2: */
-/* 		while(xl--) { */
-/* 			p = *x; */
-/* 			HC_ADD_C(p, p, c, p); */
-/* 			*r++ = p; */
-/* 			x++; */
-/* 		} */
-/* 		break; */
-/* 	default: */
-/* 		while(xl--) { */
-/* 			DMULc(d, *x, c, p); */
-/* 			*r++ = p; */
-/* 			x++; */
-/* 		} */
-/* 		break; */
-/* 	} */
-/* 	if (c == 0) */
-/* 		return rl; */
-/* 	*r = c; */
-/* 	return rl+1; */
-/* } */
+/*
+ */
 
 static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
 {
@@ -1258,125 +1222,6 @@ static void test_MUL()
 	}
 }
 
-#if (HC_HALF_BYTES == 2)
-
-void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v)
-{
-	if (!hcns(n_alloc)(n, 2)) {
-		HC_FATAL("n_alloc(%p, %i) failed", n, 2);
-	}
-	n->d[0] = HC_LOW(v);
-	n->d[1] = HC_HIGH(v);
-	n->len = 2;
-}
-
-void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len)
-{
-	int i, ndigits = len / HC_HALF_BYTES;
-	hcns(u1) *v = x;
-
-	if (!hcns(n_alloc)(r, ndigits)) {
-		HC_FATAL("n_alloc(%p, %i) failed", r, ndigits);
-	}
-	r->len = ndigits;
-
-	for (i=ndigits-1; i>=0; i--) {
-		r->d[i] = v[0] << 8 | v[1];
-		v += 2;
-	}
-}
-
-void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n)
-{
-	int i, ndigits = (n / 2) / HC_HALF_BYTES;
-	hcns(u1) *v = (hcns(u1)*) hex;
-
-	if (n % 2) {
-		/* n must be even, so we have a byte for every 2
-		 * nibbles
-		 */
-		HC_ZERO(r->d, r->len);
-		return;
-	}
-
-	if (!hcns(n_alloc)(r, ndigits)) {
-		HC_FATAL("n_alloc(%p, %i) failed", r, ndigits);
-	}
-	r->len = ndigits;
-
-	for (i=ndigits-1; i>=0; i--) {
-		r->d[i] =
-			HC_HEX_VALUE(v[0]) << 12 |
-			HC_HEX_VALUE(v[1]) << 8 |
-			HC_HEX_VALUE(v[2]) << 4 |
-			HC_HEX_VALUE(v[3]);
-		v += 4;
-	}
-}
-
-void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
-{
-	int i, ndigits = n->len;
-	int s_start_len = s->len;
-
-	if (n->d == NULL || n->len == 0) {
-		/* uninitialized
-		 */
-		hcns(s_catn)(s, "0", 1);
-		return;
-	}
-
-	hcns(s_alloc)(s, s->len + n->len * (HC_HALF_BYTES * 2)); /* each byte has 2 hex digits */
-
-	i = ndigits - 1;
-
-	/* skip leading zeroes
-	 */
-
-	while (i>=0) {
-		char t[4];
-		hcns(h) d = n->d[i--];
-
-		if (d) {
-			t[0] = HC_HEX_DIGIT(d >> 12);
-			t[1] = HC_HEX_DIGIT(d >> 8);
-			t[2] = HC_HEX_DIGIT(d >> 4);
-			t[3] = HC_HEX_DIGIT(d);
-
-			int j = 0;
-
-			while (j < 4 && t[j] == '0') j++;
-
-			hcns(s_catn)(s, t + j, 4 - j);
-
-			break;
-		}
-	}
-
-	/* output remaining digits
-	 */
-
-	while (i>=0) {
-		char t[4];
-		hcns(h) d = n->d[i--];
-
-		t[0] = HC_HEX_DIGIT(d >> 12);
-		t[1] = HC_HEX_DIGIT(d >> 8);
-		t[2] = HC_HEX_DIGIT(d >> 4);
-		t[3] = HC_HEX_DIGIT(d);
-
-		hcns(s_catn)(s, t, 4);
-	}
-
-	if (s_start_len == s->len) {
-		hcns(s_catn)(s, "0", 1);
-	}
-}
-
-#else
-#error not implemented
-#endif
-
 static void test_hex_in_out()
 {
 	char hexstr[40] = "da39a3ee5e6b4b0d3255bfef95601890afd80709"; /* sha1 of no data */
@@ -1474,6 +1319,19 @@ static void test_hex_in_out()
 
 		hcns(n_free)(a);
 	}
+
+	{
+		struct hcns(n) a[1] = {HC_NULL_N};
+
+		hcns(n_load_hexz)(a, "1");
+		hcns(n_load_hexz)(a, "12");
+		hcns(n_load_hexz)(a, "123");
+		hcns(n_load_hexz)(a, "1234");
+		hcns(n_load_hexz)(a, "12345");
+		hcns(n_load_hexz)(a, "00012345");
+		hcns(n_load_hexz)(a, "123456");
+		hcns(n_load_hexz)(a, "1234567");
+	}
 }
 
 static void test_mul1()
@@ -1519,6 +1377,7 @@ static void test_muln()
 		struct hcns(n) a[1] = {HC_NULL_N};
 		struct hcns(n) b[1] = {HC_NULL_N};
 		struct hcns(n) r[1] = {HC_NULL_N};
+		int max_digits;
 
 		int a_len = hcns(slen)(a_hex);
 		int b_len = hcns(slen)(b_hex);
@@ -1531,24 +1390,21 @@ static void test_muln()
 
 		hcns(n_alloc)(r, a->len + b->len);
 
+		max_digits = a->len > b->len ? a->len : b->len;
+
 		/* r = a * b
 		 */
 
-		ZERO_DIGITS(r->d, a->len);
+		ZERO_DIGITS(r->d, max_digits);
 		r->len = I_mul(a->d, a->len, b->d, b->len, r->d);
-
 		assert(n_cmp_hex(r, expected) == 0);
 
 		/* r = b * a
 		 */
 
-		ZERO_DIGITS(r->d, a->len);
+		ZERO_DIGITS(r->d, max_digits);
 		r->len = I_mul(b->d, b->len, a->d, a->len, r->d);
-
 		assert(n_cmp_hex(r, expected) == 0);
-
-		/*
-		 */
 
 		hcns(n_free)(r);
 		hcns(n_free)(a);
@@ -1581,10 +1437,14 @@ int main(int argc, char **argv)
 	assert(sizeof(hcns(u4)) == 4);
 //	assert(sizeof(hcns(u8)) == 8);   // future
 
+	if(1){
 	test_MUL();  // DMUL
+	}
 	test_hex_in_out();
+	if (1) {
 	test_mul1(); // D_mul
 	test_muln();
+	}
 
 	return 0;
 }
