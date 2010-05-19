@@ -18,7 +18,7 @@
 #define DEBUG_N(n) do {							\
 		printf(__FILE__ ":%i: ", __LINE__);			\
 		print_n(#n " [", n, "]");				\
-		printf(" (len: %i, a: %i)\n", (n)->len, (n)->a);	\
+		printf(" (d: %p, len: %i, a: %i)\n", (n)->d, (n)->len, (n)->a); \
 		fflush(stdout);						\
 	} while (0)
 
@@ -1146,8 +1146,8 @@ static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
 {
 	struct hcns(s) s = HC_NULL_S;
 
-	assert(n->d != NULL);
-	assert(n->len > 0);
+	//assert(n->d != NULL);
+	//assert(n->len > 0);
 
 	hcns(s_catz)(&s, prefix);
 	hcns(n_as_hex)(n, &s);
@@ -1318,6 +1318,13 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 {
 	int i, ndigits = n->len;
 	int s_start_len = s->len;
+
+	if (n->d == NULL || n->len == 0) {
+		/* uninitialized
+		 */
+		hcns(s_catn)(s, "0", 1);
+		return;
+	}
 
 	hcns(s_alloc)(s, s->len + n->len * (HC_HALF_BYTES * 2)); /* each byte has 2 hex digits */
 
@@ -1501,77 +1508,72 @@ static void test_mul1()
 
 static void test_muln()
 {
-	char a1_hex[] = "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8"; /* sha1 (160-bit) of 'a' */
-	char b1_hex[] = "e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98"; /* sha1 (160-bit) of 'b' */
-	char a2_hex[] = "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5"; /* sha224 of 'a' */
-	char b2_hex[] = "c681e18b81edaf2b66dd22376734dba5992e362bc3f91ab225854c17"; /* sha224 of 'b' */
-	char a3_hex[] = "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"; /* sha256 of 'a' */
-	char b3_hex[] = "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d"; /* sha256 of 'b' */
-	char a4_hex[] = "54a59b9f22b0b80880d8427e548b7c23abd873486e1f035dce9cd697e85175033caa88e6d57bc35efae0b5afd3145f31"; /* sha384 of 'a' */
-	char b4_hex[] = "98a906182cdcfb1eb4eb47117600f68958e2ddd140248b47984f4bde6587b89c8215c3da895a336e94ad1aca39015c40"; /* sha384 of 'b' */
-	char a5_hex[] = "1f40fc92da241694750979ee6cf582f2d5d7d28e18335de05abc54d0560e0f5302860c652bf08d560252aa5e74210546f369fbbbce8c12cfc7957b2652fe9a75"; /* sha512 of 'a' */
-	char b5_hex[] = "5267768822ee624d48fce15ec5ca79cbd602cb7f4c2157a516556991f22ef8c7b5ef7b18d1ff41c59370efb0858651d44a936c11b7b144c48fe04df3c6a3e8da"; /* sha512 of 'b' */
+	/* char *a_hex = "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8"; /\* sha1 (160-bit) of 'a' *\/ */
+	/* char *b_hex = "e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98"; /\* sha1 (160-bit) of 'b' *\/ */
+	/* char *expected = "7b490971ac009a717ee7302dd841a2e9fd988cbe709e408ebe7a09d6425c47e5c27bfb87dff55d40"; */
 
-	assert(sizeof(a1_hex) == 41 && sizeof(b1_hex) == 41);
-	assert(sizeof(a2_hex) == 57 && sizeof(b2_hex) == 57);
-	assert(sizeof(a3_hex) == 65 && sizeof(b3_hex) == 65);
-	assert(sizeof(a4_hex) == 97 && sizeof(b4_hex) == 97);
-	assert(sizeof(a5_hex) == 129 && sizeof(b5_hex) == 129);
+	char *tests0[] = {
+		"86f7e437faa5a7fce15d1ddcb9eaeaea377667b8", /* * */ "e9d71f5ee7c92d6dc9e92ffdad17b8bd49418f98", /* = */ "7b490971ac009a717ee7302dd841a2e9fd988cbe709e408ebe7a09d6425c47e5c27bfb87dff55d40",
+		NULL
+	};
+	char **tests = tests0;
 
-	struct hcns(n) a1[1] = {HC_NULL_N};
-	struct hcns(n) b1[1] = {HC_NULL_N};
-	struct hcns(n) a2[1] = {HC_NULL_N};
-	struct hcns(n) b2[1] = {HC_NULL_N};
-	struct hcns(n) a3[1] = {HC_NULL_N};
-	struct hcns(n) b3[1] = {HC_NULL_N};
-	struct hcns(n) a4[1] = {HC_NULL_N};
-	struct hcns(n) b4[1] = {HC_NULL_N};
-	struct hcns(n) a5[1] = {HC_NULL_N};
-	struct hcns(n) b5[1] = {HC_NULL_N};
+	void verify(char *a_hex, char *b_hex, char *expected)
+	{
+		int a_len;
+		int b_len;
 
-	hcns(n_load_hex)(a1, a1_hex, sizeof(a1_hex)-1);
-	hcns(n_load_hex)(b1, b1_hex, sizeof(b1_hex)-1);
-	hcns(n_load_hex)(a2, a2_hex, sizeof(a2_hex)-1);
-	hcns(n_load_hex)(b2, b2_hex, sizeof(b2_hex)-1);
-	hcns(n_load_hex)(a3, a3_hex, sizeof(a3_hex)-1);
-	hcns(n_load_hex)(b3, b3_hex, sizeof(b3_hex)-1);
-	hcns(n_load_hex)(a4, a4_hex, sizeof(a4_hex)-1);
-	hcns(n_load_hex)(b4, b4_hex, sizeof(b4_hex)-1);
-	hcns(n_load_hex)(a5, a5_hex, sizeof(a5_hex)-1);
-	hcns(n_load_hex)(b5, b5_hex, sizeof(b5_hex)-1);
+		a_len = hcns(slen)(a_hex);
+		b_len = hcns(slen)(b_hex);
 
-	assert(n_cmp_hex(a1, a1_hex) == 0);
-	assert(n_cmp_hex(b1, b1_hex) == 0);
-	assert(n_cmp_hex(a2, a2_hex) == 0);
-	assert(n_cmp_hex(b2, b2_hex) == 0);
-	assert(n_cmp_hex(a3, a3_hex) == 0);
-	assert(n_cmp_hex(b3, b3_hex) == 0);
-	assert(n_cmp_hex(a4, a4_hex) == 0);
-	assert(n_cmp_hex(b4, b4_hex) == 0);
-	assert(n_cmp_hex(a5, a5_hex) == 0);
-	assert(n_cmp_hex(b5, b5_hex) == 0);
+		struct hcns(n) a[1] = {HC_NULL_N};
+		struct hcns(n) b[1] = {HC_NULL_N};
+		struct hcns(n) r[1] = {HC_NULL_N};
 
-/* 	DEBUG_N(a1); */
-/* 	DEBUG_N(b1); */
-/* 	DEBUG_N(a2); */
-/* 	DEBUG_N(b2); */
-/* 	DEBUG_N(a3); */
-/* 	DEBUG_N(b3); */
-/* 	DEBUG_N(a4); */
-/* 	DEBUG_N(b4); */
-/* 	DEBUG_N(a5); */
-/* 	DEBUG_N(b5); */
-	
-	hcns(n_free)(a1);
-	hcns(n_free)(b1);
-	hcns(n_free)(a2);
-	hcns(n_free)(b2);
-	hcns(n_free)(a3);
-	hcns(n_free)(b3);
-	hcns(n_free)(a4);
-	hcns(n_free)(b4);
-	hcns(n_free)(a5);
-	hcns(n_free)(b5);
+		hcns(n_load_hex)(a, a_hex, a_len);
+		hcns(n_load_hex)(b, b_hex, b_len);
+
+		assert(n_cmp_hex(a, a_hex) == 0);
+		assert(n_cmp_hex(b, b_hex) == 0);
+
+		hcns(n_alloc)(r, a->len + b->len);
+
+		/* r = a * b
+		 */
+
+		ZERO_DIGITS(r->d, a->len);
+		r->len = I_mul(a->d, a->len, b->d, b->len, r->d);
+
+		assert(n_cmp_hex(r, expected) == 0);
+
+		/* r = b * a
+		 */
+
+		ZERO_DIGITS(r->d, a->len);
+		r->len = I_mul(b->d, b->len, a->d, a->len, r->d);
+
+		assert(n_cmp_hex(r, expected) == 0);
+
+		/*
+		 */
+
+		hcns(n_free)(r);
+		hcns(n_free)(a);
+		hcns(n_free)(b);
+	}
+
+	while (*tests) {
+		char *a = *tests++;
+		char *b = *tests++;
+		char *e = *tests++;
+
+		assert(a);
+		assert(b);
+		assert(e);
+
+		verify(a, b, e);
+		verify(b, a, e);   /* double inversion */
+	}
 }
 
 int main(int argc, char **argv)

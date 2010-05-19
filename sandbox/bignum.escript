@@ -63,6 +63,7 @@ main(Args) ->
 	["dc_verify"] ->
 	    io:format("[[fail]p q]sa~n"),
 	    lists:foreach(fun ({I, _K, T}) ->
+				  %io:format("serie ~p has ~p operations~n", [I, K]),
 				  lists:foreach(fun ({J, R}) ->
 							io:format("~.10.0b ~.10.0b * ~.10.0b !=a~n", [I, J, R]),
 							if
@@ -75,8 +76,7 @@ main(Args) ->
 			  end, N),
 	    io:format("[ok]p~n");
 	["c_verify"] ->
-	    lists:foreach(fun ({I, K, T}) ->
-				  io:format("serie ~p has ~p operations~n", [I, K]),
+	    lists:foreach(fun ({I, _K, T}) ->
 				  lists:foreach(fun ({J, R}) ->
 							io:format("~.16.0b * ~.16.0b = ~.16.0b~n", [I, J, R])
 						end, T)
