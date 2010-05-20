@@ -93,6 +93,11 @@ static void test_hex_in_out()
 
 		assert(sizeof(a) == sizeof(struct hcns(n)));
 
+		hcns(n_set_u4)(a, 0x00000000U);
+		assert(hcns(n_cmp_hexz)(a, "0") == 0);
+		assert(hcns(n_cmp_hexz)(a, "00") == 0);
+		assert(hcns(n_cmp_hexz)(a, "000") == 0);
+
 		hcns(n_set_u4)(a, 0x00000001U);
 		assert(hcns(n_cmp_hexz)(a, "1") == 0);
 		assert(hcns(n_cmp_hexz)(a, "01") == 0);
@@ -147,23 +152,18 @@ static void test_hex_in_out()
 
 		s="0"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="00"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="1"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="01"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="001"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="12"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
@@ -182,7 +182,6 @@ static void test_hex_in_out()
 
 		s="12345"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="00012345"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
@@ -192,7 +191,6 @@ static void test_hex_in_out()
 
 		s="0000012345"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
-		DEBUG_N(a);
 
 		s="123456"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
@@ -377,8 +375,8 @@ int main(int argc, char **argv)
 //	assert(sizeof(hcns(u8)) == 8);   // future
 
 	test_hex_in_out();
-	//test_muln();
-	//test_divn();
+	test_muln();
+	test_divn();
 
 	puts("ok");
 

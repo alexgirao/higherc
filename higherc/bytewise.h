@@ -96,6 +96,9 @@ extern const signed char hcns(hexval_table)[256];
 #define HC_HEX_VALUE(d) (hcns(hexval_table)[(unsigned char)(d)])
 #define HC_HEX_DIGIT(v) ("0123456789abcdef"[(v)&0xf])
 
+//#define HC_BASE36_VALUE(d)
+#define HC_BASE36_DIGIT(v) (v >= 0 && v < 36 ? "0123456789abcdefghijklmnopqrstuvwxyz"[v] : '?')
+
 /* HC_PUT_HEX(d, n, s): n is the amount of bytes to read from source (s)
  */
 #define HC_PUT_HEX(d, n, s)						\

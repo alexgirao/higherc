@@ -29,6 +29,20 @@
 #error not implemented
 #endif
 
+#define N struct hcns(n)
+#define S struct hcns(s)
+#define DEF_N(sym) N sym[1] = {HC_NULL_N}
+#define DEF_S(sym) S sym[1] = {HC_NULL_S}
+
+#define B36_2 1296  /* pow(36, 2) */
+#define B36_3 46656  /* pow(36, 3) */
+
+#if HC_HALF_BITS == 32
+#define B36_4 1679616
+#define B36_5 60466176
+#define B36_6 2176782336 /* 6 digits after each 2176782336 division */
+#endif
+
 /* alloc/free
  */
 
@@ -128,16 +142,10 @@ void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n)
 
 	/* strip leading zeros
 	 */
-	if (*hex == '0') {
-		do {
-			hex++;
-			n--;
-		} while (*hex == '0' && n > 0);
+	while (n > 1 && *hex == '0') {
+		hex++;
+		n--;
 	}
-
-	/* printf("debug: ["); */
-	/* fwrite(hex, n, 1, stdout); */
-	/* printf("]\n"); */
 
 	/*
 	 */
@@ -258,6 +266,36 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 #error not implemented
 #endif
 
+void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s)
+{
+	DEF_N(q);
+	hcns(h) r = HC_H(0);
+	int s_len0 = s->len;
+
+	if (HC_IS_ZERO(n)) {
+		hcns(s_catn)(s, "0", 1);
+		return;
+	}
+
+	hcns(n_alloc)(q, n->len);
+	HC_MOVE_DIGITS(q->d, n->d, n->len);
+	q->len = n->len;
+
+	while (!HC_IS_ZERO(q)) {
+		q->len = D_div(q->d, q->len, B36_3, q->d, &r);
+
+		hcns(s_alloc)(s, s->len + 3);
+
+		s->s[s->len++] = HC_BASE36_DIGIT(r % 36);
+		s->s[s->len++] = HC_BASE36_DIGIT((r / 36) % 36);
+		s->s[s->len++] = HC_BASE36_DIGIT(((r / 36) / 36) % 36);
+	}
+
+	while (s->s[s->len - 1] == '0') s->len--;
+
+	hcns(brev)(s->s + s_len0, s->len - s_len0);
+}
+
 int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
 {
 	struct hcns(s) s = HC_NULL_S;
@@ -268,13 +306,10 @@ int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
 
 	/* strip leading zeros
 	 */
-	if (*hex == '0') {
-		do {
-			hex++;
-			n--;
-		} while (*hex == '0' && n > 0);
+	while (n > 1 && *hex == '0') {
+		hex++;
+		n--;
 	}
-
 
 	if (*hex == 0) hex--;
 
