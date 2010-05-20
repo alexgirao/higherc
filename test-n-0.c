@@ -37,21 +37,6 @@ static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
 	hcns(s_free)(&s);
 }
 
-static int n_cmp_hex(struct hcns(n) *n, char *hex)
-{
-	struct hcns(s) s = HC_NULL_S;
-	int r;
-
-	hcns(n_as_hex)(n, &s);
-	HC_SAFE_CSTR(&s);
-
-	r = hcns(s_sdiff)(&s, hex);
-
-	hcns(s_free)(&s);
-
-	return r;
-}
-
 static void test_hex_in_out()
 {
 	char hexstr[40] = "da39a3ee5e6b4b0d3255bfef95601890afd80709"; /* sha1 of no data */
@@ -109,58 +94,111 @@ static void test_hex_in_out()
 		assert(sizeof(a) == sizeof(struct hcns(n)));
 
 		hcns(n_set_u4)(a, 0x00000001U);
-		assert(n_cmp_hex(a, "1") == 0);
+		assert(hcns(n_cmp_hexz)(a, "1") == 0);
+		assert(hcns(n_cmp_hexz)(a, "01") == 0);
+		assert(hcns(n_cmp_hexz)(a, "001") == 0);
 
 		hcns(n_set_u4)(a, 0x00000012U);
-		assert(n_cmp_hex(a, "12") == 0);
+		assert(hcns(n_cmp_hexz)(a, "12") == 0);
+		assert(hcns(n_cmp_hexz)(a, "012") == 0);
+		assert(hcns(n_cmp_hexz)(a, "0012") == 0);
 
 		hcns(n_set_u4)(a, 0x00000123U);
-		assert(n_cmp_hex(a, "123") == 0);
+		assert(hcns(n_cmp_hexz)(a, "123") == 0);
+		assert(hcns(n_cmp_hexz)(a, "0123") == 0);
+		assert(hcns(n_cmp_hexz)(a, "00123") == 0);
 
 		hcns(n_set_u4)(a, 0x00001234U);
-		assert(n_cmp_hex(a, "1234") == 0);
+		assert(hcns(n_cmp_hexz)(a, "1234") == 0);
 
 		hcns(n_set_u4)(a, 0x00012345U);
-		assert(n_cmp_hex(a, "12345") == 0);
+		assert(hcns(n_cmp_hexz)(a, "12345") == 0);
 
 		hcns(n_set_u4)(a, 0x00123456U);
-		assert(n_cmp_hex(a, "123456") == 0);
+		assert(hcns(n_cmp_hexz)(a, "123456") == 0);
 
 		hcns(n_set_u4)(a, 0x01234567U);
-		assert(n_cmp_hex(a, "1234567") == 0);
+		assert(hcns(n_cmp_hexz)(a, "1234567") == 0);
 
 		hcns(n_set_u4)(a, 0x12345678U);
-		assert(n_cmp_hex(a, "12345678") == 0);
+		assert(hcns(n_cmp_hexz)(a, "12345678") == 0);
 
 		hcns(n_set_u4)(a, 0x23456789U);
-		assert(n_cmp_hex(a, "23456789") == 0);
+		assert(hcns(n_cmp_hexz)(a, "23456789") == 0);
 
 		hcns(n_set_u4)(a, 0x34567890U);
-		assert(n_cmp_hex(a, "34567890") == 0);
+		assert(hcns(n_cmp_hexz)(a, "34567890") == 0);
 
 		hcns(n_set_u4)(a, 0x45678901U);
-		assert(n_cmp_hex(a, "45678901") == 0);
+		assert(hcns(n_cmp_hexz)(a, "45678901") == 0);
 
 		hcns(n_set_u4)(a, 0x56789012U);
-		assert(n_cmp_hex(a, "56789012") == 0);
+		assert(hcns(n_cmp_hexz)(a, "56789012") == 0);
 
 		hcns(n_set_u4)(a, 0xdeadbeefU);
-		assert(n_cmp_hex(a, "deadbeef") == 0);
+		assert(hcns(n_cmp_hexz)(a, "deadbeef") == 0);
 
 		hcns(n_free)(a);
 	}
 
 	{
 		struct hcns(n) a[1] = {HC_NULL_N};
+		char *s;
 
-		hcns(n_load_hexz)(a, "1");
-		hcns(n_load_hexz)(a, "12");
-		hcns(n_load_hexz)(a, "123");
-		hcns(n_load_hexz)(a, "1234");
-		hcns(n_load_hexz)(a, "12345");
-		hcns(n_load_hexz)(a, "00012345");
-		hcns(n_load_hexz)(a, "123456");
-		hcns(n_load_hexz)(a, "1234567");
+		s="0"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="00"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="1"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="01"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="001"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="12"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="012"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="0012"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="123"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="1234"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="12345"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="00012345"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="000012345"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="0000012345"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+		DEBUG_N(a);
+
+		s="123456"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		s="1234567"; hcns(n_load_hexz)(a, s);
+		assert(hcns(n_cmp_hexz)(a, s) == 0);
 	}
 }
 
@@ -179,14 +217,11 @@ static void test_muln()
 		struct hcns(n) r[1] = {HC_NULL_N};
 		int max_digits;
 
-		int a_len = hcns(slen)(a_hex);
-		int b_len = hcns(slen)(b_hex);
+		hcns(n_load_hexz)(a, a_hex);
+		hcns(n_load_hexz)(b, b_hex);
 
-		hcns(n_load_hex)(a, a_hex, a_len);
-		hcns(n_load_hex)(b, b_hex, b_len);
-
-		assert(n_cmp_hex(a, a_hex) == 0);
-		assert(n_cmp_hex(b, b_hex) == 0);
+		assert(hcns(n_cmp_hexz)(a, a_hex) == 0);
+		assert(hcns(n_cmp_hexz)(b, b_hex) == 0);
 
 		hcns(n_alloc)(r, a->len + b->len);
 
@@ -204,14 +239,14 @@ static void test_muln()
 			r->len = I_mul(a->d, a->len, b->d, b->len, r->d);
 		}
 
-		assert(n_cmp_hex(r, expected) == 0);
+		assert(hcns(n_cmp_hexz)(r, expected) == 0);
 
 		/* r = b * a
 		 */
 
 		HC_ZERO_DIGITS(r->d, max_digits);
 		r->len = I_mul(b->d, b->len, a->d, a->len, r->d);
-		assert(n_cmp_hex(r, expected) == 0);
+		assert(hcns(n_cmp_hexz)(r, expected) == 0);
 
 		hcns(n_free)(r);
 		hcns(n_free)(a);
@@ -247,14 +282,11 @@ static void test_divn()
 		struct hcns(n) q[1] = {HC_NULL_N};
 		struct hcns(n) r[1] = {HC_NULL_N};
 
-		int a_len = hcns(slen)(a_hex);
-		int b_len = hcns(slen)(b_hex);
+		hcns(n_load_hexz)(a, a_hex);
+		hcns(n_load_hexz)(b, b_hex);
 
-		hcns(n_load_hex)(a, a_hex, a_len);
-		hcns(n_load_hex)(b, b_hex, b_len);
-
-		assert(n_cmp_hex(a, a_hex) == 0);
-		assert(n_cmp_hex(b, b_hex) == 0);
+		assert(hcns(n_cmp_hexz)(a, a_hex) == 0);
+		assert(hcns(n_cmp_hexz)(b, b_hex) == 0);
 
 		assert(I_comp(a->d, a->len, b->d, b->len) >= 0);
 
@@ -288,10 +320,10 @@ static void test_divn()
 				);
 		}
 
-		assert(n_cmp_hex(a, a_hex) == 0);
-		assert(n_cmp_hex(b, b_hex) == 0);
-		assert(n_cmp_hex(q, eq) == 0);
-		assert(n_cmp_hex(r, er) == 0);
+		assert(hcns(n_cmp_hexz)(a, a_hex) == 0);
+		assert(hcns(n_cmp_hexz)(b, b_hex) == 0);
+		assert(hcns(n_cmp_hexz)(q, eq) == 0);
+		assert(hcns(n_cmp_hexz)(r, er) == 0);
 
 		hcns(n_free)(r);
 
@@ -307,9 +339,9 @@ static void test_divn()
 				&a->len
 				);
 			
-			assert(n_cmp_hex(b, b_hex) == 0);
-			assert(n_cmp_hex(q, eq) == 0);
-			assert(n_cmp_hex(a, er) == 0);
+			assert(hcns(n_cmp_hexz)(b, b_hex) == 0);
+			assert(hcns(n_cmp_hexz)(q, eq) == 0);
+			assert(hcns(n_cmp_hexz)(a, er) == 0);
 		}
 
 		hcns(n_free)(q);
@@ -345,8 +377,10 @@ int main(int argc, char **argv)
 //	assert(sizeof(hcns(u8)) == 8);   // future
 
 	test_hex_in_out();
-	test_muln();
-	test_divn();
+	//test_muln();
+	//test_divn();
+
+	puts("ok");
 
 	return 0;
 }

@@ -97,19 +97,19 @@ hcns(bool) hcns(s_catz)(struct hcns(s) *sa, const char *s)
 /* diff
  */
 
-int hcns(s_bdiff)(struct hcns(s) *a, struct hcns(s) *b)
+int hcns(s_bdiff)(struct hcns(s) *a, char *b, int bl)
 {
-	int x = a->len - b->len;
+	int x = a->len - bl;
 	int y = 0;
 
 	if (x > 0) {
 		x = 1;
-		y = hcns(bdiff)(a->s, b->len, b->s);
+		y = hcns(bdiff)(a->s, bl, b);
 	} else if (x < 0) {
 		x = -1;
-		y = hcns(bdiff)(a->s, a->len, b->s);
+		y = hcns(bdiff)(a->s, a->len, b);
 	} else {
-		y = hcns(bdiff)(a->s, a->len, b->s);
+		y = hcns(bdiff)(a->s, a->len, b);
 	}
 	return y ? y : x;
 }

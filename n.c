@@ -120,11 +120,30 @@ void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len)
 
 void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n)
 {
-	int nbytes = (n + 1) / 2;
-	int i, ndigits = (nbytes + (HC_HALF_BYTES-1)) / HC_HALF_BYTES;
+	int i, nbytes, ndigits;
 	hcns(u1) *v;
 
+	assert(hex != NULL);
 	assert(n > 0);
+
+	/* strip leading zeros
+	 */
+	if (*hex == '0') {
+		do {
+			hex++;
+			n--;
+		} while (*hex == '0' && n > 0);
+	}
+
+	/* printf("debug: ["); */
+	/* fwrite(hex, n, 1, stdout); */
+	/* printf("]\n"); */
+
+	/*
+	 */
+
+	nbytes = (n + 1) / 2;
+	ndigits = (nbytes + (HC_HALF_BYTES-1)) / HC_HALF_BYTES;
 
 	if (!hcns(n_alloc)(r, ndigits)) {
 		HC_FATAL("n_alloc(%p, %i) failed", r, ndigits);
@@ -199,13 +218,14 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 		hcns(h) d = n->d[i--];
 
 		if (d) {
+			int j;
+
 			t[0] = HC_HEX_DIGIT(d >> 12);
 			t[1] = HC_HEX_DIGIT(d >> 8);
 			t[2] = HC_HEX_DIGIT(d >> 4);
 			t[3] = HC_HEX_DIGIT(d);
 
-			int j = 0;
-
+			j = 0;
 			while (j < 4 && t[j] == '0') j++;
 
 			hcns(s_catn)(s, t + j, 4 - j);
@@ -237,6 +257,41 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 #else
 #error not implemented
 #endif
+
+int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
+{
+	struct hcns(s) s = HC_NULL_S;
+	int r;
+
+	assert(hex != NULL);
+	assert(n > 0);
+
+	/* strip leading zeros
+	 */
+	if (*hex == '0') {
+		do {
+			hex++;
+			n--;
+		} while (*hex == '0' && n > 0);
+	}
+
+
+	if (*hex == 0) hex--;
+
+	hcns(n_as_hex)(v, &s);
+	HC_SAFE_CSTR(&s);
+
+	r = hcns(s_bdiff)(&s, hex, n);
+
+	hcns(s_free)(&s);
+
+	return r;
+}
+
+int hcns(n_cmp_hexz)(struct hcns(n) *v, char *hex)
+{
+	return hcns(n_cmp_hex)(v, hex, hcns(slen(hex)));
+}
 
 /**************************************
  */

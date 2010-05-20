@@ -3,24 +3,24 @@
 
 %% ./bignum.escript dc_verify | dc
 
-mul(L=[_|_]) ->
-    mul(L, []).
+combine(L=[_|_]) ->
+    combine(L, []).
 
-mul([H|T], Acc) ->
-    mul(T, [mul2(H, [H | T]) | Acc]);
+combine([H|T], Acc) ->
+    combine(T, [combine2(H, [H | T]) | Acc]);
 
-mul([], Acc) ->
+combine([], Acc) ->
     lists:reverse(Acc).
 
 %%
 
-mul2(A, [H|T]) when A >= H ->
-    [{A, H, A div H, A rem H} | mul2(A, T)];
+combine2(A, [H|T]) when A >= H ->
+    [{A, H, A div H, A rem H} | combine2(A, T)];
 
-mul2(A, [H|T]) ->
-    [{H, A, H div A, H rem A} | mul2(A, T)];
+combine2(A, [H|T]) ->
+    [{H, A, H div A, H rem A} | combine2(A, T)];
 
-mul2(_, []) ->
+combine2(_, []) ->
     [].
 
 %%
@@ -53,7 +53,7 @@ main(Args) ->
 
     L = get_L(),
 
-    M = mul(L),
+    M = combine(L),
     
     case Args of
 	["dc_verify"] ->

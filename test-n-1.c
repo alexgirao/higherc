@@ -69,47 +69,14 @@ void hcns(n_as_base36)(N *n, S *s)
 	HC_MOVE_DIGITS(q->d, n->d, n->len);
 	q->len = n->len;
 
-	DEBUG_N(q);
-
-	while (!HC_IS_ZERO(q)) {
-		q->len = D_div(q->d, q->len, HC_H(36), q->d, &r);
-
-		DEBUG_N(q);
-
-		hcns(s_alloc)(s, s->len + 1);
-		s->s[s->len++] = HC_BASE36_DIGIT(r);
-	}
-
-	hcns(brev)(s->s + s_len0, s->len - s_len0);
-}
-
-void hcns(n_as_base36_2)(N *n, S *s)
-{
-	DEF_N(q);
-	hcns(h) r = HC_H(0);
-	int s_len0 = s->len;
-
-	if (HC_IS_ZERO(n)) {
-		hcns(s_catn)(s, "0", 1);
-		return;
-	}
-
-	hcns(n_alloc)(q, n->len);
-	HC_MOVE_DIGITS(q->d, n->d, n->len);
-	q->len = n->len;
-
-	DEBUG_N(q);
-
 	while (!HC_IS_ZERO(q)) {
 		q->len = D_div(q->d, q->len, B36_3, q->d, &r);
-
-		DEBUG_N(q);
 
 		hcns(s_alloc)(s, s->len + 3);
 
 		s->s[s->len++] = HC_BASE36_DIGIT(r % 36);
 		s->s[s->len++] = HC_BASE36_DIGIT((r / 36) % 36);
-		s->s[s->len++] = HC_BASE36_DIGIT((r / B36_2) % 36);
+		s->s[s->len++] = HC_BASE36_DIGIT(((r / 36) / 36) % 36);
 	}
 
 	while (s->s[s->len - 1] == '0') s->len--;
@@ -125,6 +92,11 @@ int main(int argc, char **argv)
 	DEF_N(a);
 	DEF_S(s);
 
+	if (0) {
+		struct hcns(n) _unused = HC_NULL_N;
+		DEBUG_N(&_unused);
+	}
+
 	hcns(n_load_hex)(a, a_hex, a_hex_len);
 
 	/*
@@ -134,19 +106,6 @@ int main(int argc, char **argv)
 	HC_SAFE_CSTR(s);
 
 	assert(hcns(s_sdiff)(s, a_b36) == 0);
-
-	puts(s->s);
-
-	/*
-	 */
-
-	s->len = 0;
-	hcns(n_as_base36_2)(a, s);
-	HC_SAFE_CSTR(s);
-
-	assert(hcns(s_sdiff)(s, a_b36) == 0);
-
-	puts(s->s);
 
 	/*
 	 */
@@ -158,14 +117,7 @@ int main(int argc, char **argv)
 	HC_SAFE_CSTR(s);
 	assert(hcns(s_sdiff)(s, "0") == 0);
 
-	puts(s->s);
-
-	s->len = 0;
-	hcns(n_as_base36_2)(a, s);
-	HC_SAFE_CSTR(s);
-	assert(hcns(s_sdiff)(s, "0") == 0);
-
-	puts(s->s);
+	puts("ok");
 
 	return 0;
 }
