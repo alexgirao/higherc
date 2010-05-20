@@ -20,6 +20,7 @@
 #define DDIGIT HC_F
 
 #define ZERO_DIGITS HC_ZERO_DIGITS 
+#define MOVE_DIGITS HC_MOVE_DIGITS 
 
 #if HC_HALF_BITS == 16
 #define HALF_OFFENSE 0xdeadU  /* ``offensive programming'' */ 
@@ -98,7 +99,7 @@ void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v)
 	}
 	n->d[0] = HC_LOW(v);
 	n->d[1] = HC_HIGH(v);
-	n->len = 2;
+	n->len = n->d[1] ? 2 : 1;
 }
 
 void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len)
@@ -266,22 +267,6 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 		r = _t % (b);			\
 	} while(0)
 
-#define MOVE_DIGITS(dst, src, sz) do {				\
-		hcns(uint) _t_sz = sz;				\
-		hcns(h)* _t_dst;				\
-		hcns(h)* _t_src;				\
-		if (dst < src) {				\
-			_t_dst = dst;				\
-			_t_src = src;				\
-			while(_t_sz--) *_t_dst++ = *_t_src++;	\
-		}						\
-		else if (dst > src) {				\
-			_t_dst = (dst)+((sz)-1);		\
-			_t_src = (src)+((sz)-1);		\
-			while(_t_sz--) *_t_dst-- = *_t_src--;	\
-		}						\
-	} while(0)
-
 /* add a and b with carry in + out */
 #define DSUMc(a,b,c,s) do {			\
 		hcns(h) ___cr = (c);		\
@@ -328,7 +313,7 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 /*
 ** compare two number vectors
 */
-int I_comp(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl)
+int I_comp(hcns(h) *x, int xl, hcns(h) *y, int yl)
 {
 	if (xl < yl)
 		return -1;
@@ -354,9 +339,9 @@ int I_comp(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl)
 ** Add digits in x and y and store them in r
 ** assumption: (xl >= yl)
 */
-static hcns(uint) I_add(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r)
+static int I_add(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r)
 {
-	hcns(uint) sz = xl;
+	int sz = xl;
 	register hcns(h) yr, xr;
 	register hcns(h) c = 0;
 
@@ -386,9 +371,9 @@ static hcns(uint) I_add(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hc
 /*
 ** Add a digits in v1 and store result in vr
 */
-static hcns(uint) D_add(hcns(h)* x, hcns(uint) xl, hcns(h) c, hcns(h)* r)
+static int D_add(hcns(h) *x, int xl, hcns(h) c, hcns(h) *r)
 {
-	hcns(uint) sz = xl;
+	int sz = xl;
 	register hcns(h) xr;
 
 	while(xl--) {
@@ -408,9 +393,9 @@ static hcns(uint) D_add(hcns(h)* x, hcns(uint) xl, hcns(h) c, hcns(h)* r)
 ** Assert  I_comp(x, xl, y, yl) >= 0
 **
 */
-static hcns(uint) I_sub(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r)
+static int I_sub(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r)
 {
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	register hcns(h) yr, xr;
 	register hcns(h) c = 0;
 
@@ -442,9 +427,9 @@ static hcns(uint) I_sub(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hc
 /*
 ** Subtract digit d from v1 and store result in vr
 */
-static hcns(uint) D_sub(hcns(h)* x, hcns(uint) xl, hcns(h) c, hcns(h)* r)
+static int D_sub(hcns(h) *x, int xl, hcns(h) c, hcns(h) *r)
 {
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	register hcns(h) yr, xr;
 
 	assert(I_comp(x, xl, x, 1) >= 0);
@@ -465,9 +450,9 @@ static hcns(uint) D_sub(hcns(h)* x, hcns(uint) xl, hcns(h) c, hcns(h)* r)
 /*
 ** subtract Z000...0 - y and store result in r, return new size
 */
-static hcns(uint) Z_sub(hcns(h)* y, hcns(uint) yl, hcns(h)* r)
+static int Z_sub(hcns(h) *y, int yl, hcns(h) *r)
 {
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	register hcns(h) yr;
 	register hcns(h) c = 0;
 
@@ -488,7 +473,7 @@ static hcns(uint) Z_sub(hcns(h)* y, hcns(uint) yl, hcns(h)* r)
 ** Multiply digits in x with digits in y and store in r
 ** Assumption: digits in r must be 0 (up to the size of greater operand)
 */
-hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r)
+int I_mul(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r)
 {
 	hcns(h) *r0 = r;
 	hcns(h) *rt = r;
@@ -496,8 +481,8 @@ hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* 
 	while(xl--) {
 		hcns(h) cp = 0;
 		hcns(h) c = 0;
-		hcns(uint) n = yl;
-		hcns(h)* yt = y;
+		int n = yl;
+		hcns(h) *yt = y;
 		hcns(h) d;
 		hcns(h) p;
 
@@ -549,24 +534,24 @@ hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* 
 **             to the size of xl+1
 */
 
-static hcns(uint) I_sqr(hcns(h)* x, hcns(uint) xl, hcns(h)* r)
+static int I_sqr(hcns(h) *x, int xl, hcns(h) *r)
 {
 	hcns(h) d_next = *x;
 	hcns(h) d;
-	hcns(h)* r0 = r;
-	hcns(h)* s = r;
+	hcns(h) *r0 = r;
+	hcns(h) *s = r;
 
 	if ((r + xl) == x)	/* "Inline" operation */
 		*x = 0;
 	x++;
 	
 	while(xl--) {
-		hcns(h)* y = x;
+		hcns(h) *y = x;
 		hcns(h) y_0 = 0, y_1 = 0, y_2 = 0, y_3 = 0;
 		hcns(h) b0, b1;
 		hcns(h) z0, z1, z2;
 		hcns(h) t;
-		hcns(uint) y_l = xl;
+		int y_l = xl;
 		
 		s = r;
 		d = d_next;
@@ -612,10 +597,10 @@ static hcns(uint) I_sqr(hcns(h)* x, hcns(uint) xl, hcns(h)* r)
  * r[xl+1] = x[xl] * d
  * return r length
  */
-hcns(uint) D_mul(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* r)
+int D_mul(hcns(h) *x, int xl, hcns(h) d, hcns(h) *r)
 {
 	hcns(h) c = 0;
-	hcns(uint) rl = xl;
+	int rl = xl;
 	hcns(h) p;
 
 	switch(d) {
@@ -656,13 +641,13 @@ hcns(uint) D_mul(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* r)
 ** Return size of r
 ** 0 means borrow
 */
-static hcns(uint) D_mulsub(hcns(h)* x, hcns(uint) xl, hcns(h) d,
-			   hcns(h)* y, hcns(uint) yl, hcns(h)* r)
+static int D_mulsub(hcns(h) *x, int xl, hcns(h) d,
+			   hcns(h) *y, int yl, hcns(h) *r)
 {
 	hcns(h) c = 0;
 	hcns(h) b = 0;
 	hcns(h) c0;
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	hcns(h) s;
 
 	assert(xl == yl || xl == yl+1);
@@ -696,11 +681,11 @@ static hcns(uint) D_mulsub(hcns(h)* x, hcns(uint) xl, hcns(h) d,
 ** quotient is returned in q and remainder digit in r
 ** x and q may be equal
 */
-hcns(uint) D_div(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* q, hcns(h)* r)
+int D_div(hcns(h) *x, int xl, hcns(h) d, hcns(h) *q, hcns(h) *r)
 {
-	hcns(h)* xp = x + (xl-1);
-	hcns(h)* qp = q + (xl-1);
-	hcns(uint) qsz = xl;
+	hcns(h) *xp = x + (xl-1);
+	hcns(h) *qp = q + (xl-1);
+	int qsz = xl;
 	hcns(h) a1;
 	
 	a1 = *xp; 
@@ -745,18 +730,18 @@ hcns(uint) D_div(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* q, hcns(h)* r)
 ** Return quotient size
 */
 
-hcns(uint) I_div(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl,
-		 hcns(h)* q, hcns(h)* r, int *rlp)
+int I_div(hcns(h) *x, int xl, hcns(h) *y, int yl,
+		 hcns(h) *q, hcns(h) *r, int *rlp)
 {
-	hcns(h)* rp;
-	hcns(h)* qp;
+	hcns(h) *rp;
+	hcns(h) *qp;
 	hcns(h) b1 = y[yl-1];
 	hcns(h) b2 = y[yl-2];
 	hcns(h) a1;
 	hcns(h) a2;
 	int r_signed = 0;
-	hcns(uint) ql;
-	hcns(uint) rl;
+	int ql;
+	int rl;
 
 	if (x != r)
 		MOVE_DIGITS(r, x, xl);
@@ -775,8 +760,8 @@ hcns(uint) I_div(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl,
 
 	do {
 		hcns(h) q0;
-		hcns(uint) nsz = yl;
-		hcns(uint) nnsz;
+		int nsz = yl;
+		int nnsz;
 
 		a1 = rp[yl-1];
 		a2 = rp[yl-2];
@@ -845,7 +830,7 @@ hcns(uint) I_div(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl,
 /*
 ** Remainder of digits in x and a digit d
 */
-static hcns(h) D_rem(hcns(h)* x, hcns(uint) xl, hcns(h) d)
+static hcns(h) D_rem(hcns(h) *x, int xl, hcns(h) d)
 {
 	hcns(h) rem = 0;
 
@@ -867,15 +852,15 @@ static hcns(h) D_rem(hcns(h)* x, hcns(uint) xl, hcns(h) d)
 ** Assumtions: xl >= yl, yl > 1
 **			   r must contain at least xl number of digits
 */
-static hcns(uint) I_rem(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r)
+static int I_rem(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r)
 {
-	hcns(h)* rp;
+	hcns(h) *rp;
 	hcns(h) b1 = y[yl-1];
 	hcns(h) b2 = y[yl-2];
 	hcns(h) a1;
 	hcns(h) a2;
 	int r_signed = 0;
-	hcns(uint) rl;
+	int rl;
 	
 	if (x != r)
 		MOVE_DIGITS(r, x, xl);
@@ -884,8 +869,8 @@ static hcns(uint) I_rem(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hc
 
 	do {
 		hcns(h) q0;
-		hcns(uint) nsz = yl;
-		hcns(uint) nnsz;
+		int nsz = yl;
+		int nnsz;
 		
 		a1 = rp[yl-1];
 		a2 = rp[yl-2];
@@ -937,11 +922,11 @@ static hcns(uint) I_rem(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hc
 /*
 ** Remove trailing digits from bitwise operations
 */
-static hcns(uint) I_btrail(hcns(h)* r0, hcns(h)* r, short sign)
+static int I_btrail(hcns(h) *r0, hcns(h) *r, short sign)
 {
 	/* convert negative numbers to one complement */
 	if (sign) {
-		hcns(uint) rl;
+		int rl;
 		hcns(h) d;
 
 		/* 1 remove all 0xffff words */
@@ -979,10 +964,10 @@ static hcns(uint) I_btrail(hcns(h)* r0, hcns(h)* r, short sign)
 /* 
 ** Bitwise and
 */
-static hcns(uint) I_band(hcns(h)* x, hcns(uint) xl, short xsgn,
-			 hcns(h)* y, hcns(uint) yl, short ysgn, hcns(h)* r)
+static int I_band(hcns(h) *x, int xl, short xsgn,
+			 hcns(h) *y, int yl, short ysgn, hcns(h) *r)
 {
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	short sign = xsgn && ysgn;
 
 	assert(xl >= yl);
@@ -1052,11 +1037,11 @@ static hcns(uint) I_band(hcns(h)* x, hcns(uint) xl, short xsgn,
 /* 
  * Bitwise 'or'.
  */
-static hcns(uint)
-I_bor(hcns(h)* x, hcns(uint) xl, short xsgn, hcns(h)* y,
-      hcns(uint) yl, short ysgn, hcns(h)* r)
+static int
+I_bor(hcns(h) *x, int xl, short xsgn, hcns(h) *y,
+      int yl, short ysgn, hcns(h) *r)
 {
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	short sign = xsgn || ysgn;
 
 	assert(xl >= yl);
@@ -1128,10 +1113,10 @@ I_bor(hcns(h)* x, hcns(uint) xl, short xsgn, hcns(h)* y,
 /* 
 ** Bitwise xor
 */
-static hcns(uint) I_bxor(hcns(h)* x, hcns(uint) xl, short xsgn,
-			 hcns(h)* y, hcns(uint) yl, short ysgn, hcns(h)* r)
+static int I_bxor(hcns(h) *x, int xl, short xsgn,
+			 hcns(h) *y, int yl, short ysgn, hcns(h) *r)
 {
-	hcns(h)* r0 = r;
+	hcns(h) *r0 = r;
 	short sign = xsgn != ysgn;
 
 	assert(xl >= yl);
@@ -1207,7 +1192,7 @@ static hcns(uint) I_bxor(hcns(h)* x, hcns(uint) xl, short xsgn,
 ** bnot -X  == (X - 1)
 ** bnot +X  == -(X + 1)
 */
-static hcns(uint) I_bnot(hcns(h)* x, hcns(uint) xl, short xsgn, hcns(h)* r)
+static int I_bnot(hcns(h) *x, int xl, short xsgn, hcns(h) *r)
 {
 	if (xsgn)
 		return D_add(x, xl, 1, r);
@@ -1218,8 +1203,8 @@ static hcns(uint) I_bnot(hcns(h)* x, hcns(uint) xl, short xsgn, hcns(h)* r)
 /*
 ** Arithmetic left shift or right
 */
-static hcns(uint) I_lshift(hcns(h)* x, hcns(uint) xl, int y, 
-			   short sign, hcns(h)* r)
+static int I_lshift(hcns(h) *x, int xl, int y, 
+			   short sign, hcns(h) *r)
 {
 	if (y == 0) {
 		MOVE_DIGITS(r, x, xl);
@@ -1231,7 +1216,7 @@ static hcns(uint) I_lshift(hcns(h)* x, hcns(uint) xl, int y,
 		long ay = (y < 0) ? -y : y;
 		int bw = ay / D_EXP;
 		int sw = ay % D_EXP;
-		hcns(uint) rl;
+		int rl;
 		hcns(h) a1=0;
 		hcns(h) a0=0;
 
@@ -1258,7 +1243,7 @@ static hcns(uint) I_lshift(hcns(h)* x, hcns(uint) xl, int y,
 			*r = a1;
 			return rl;
 		} else {			/* shift right */
-			hcns(h)* r0 = r;
+			hcns(h) *r0 = r;
 			int add_one = 0;
 
 			if (xl <= bw) {
@@ -1271,7 +1256,7 @@ static hcns(uint) I_lshift(hcns(h)* x, hcns(uint) xl, int y,
 
 			if (sign) {
 				int zl = bw;
-				hcns(h)* z = x;
+				hcns(h) *z = x;
 
 				while(zl--) {
 					if (*z != 0) {
@@ -1320,9 +1305,9 @@ static hcns(uint) I_lshift(hcns(h)* x, hcns(uint) xl, int y,
 /*
 ** Return log(x)/log(2)
 */
-static int I_lg(hcns(h)* x, hcns(uint) xl)
+static int I_lg(hcns(h) *x, int xl)
 {
-	hcns(uint) sz = xl - 1;
+	int sz = xl - 1;
 	hcns(h) d = x[sz];
 
 	sz *= D_EXP;

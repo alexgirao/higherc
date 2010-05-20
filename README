@@ -6,6 +6,16 @@ data structures
 
      - single linked lists (list)
 
+design/usability notes
+
+     - use of unsigned integers are avoided, unless when dealing with
+       bit wise data, on modern architectures, with two's complement
+       representation, no cycle cost is added to basic arithmetic and
+       flow control (add, sub, jump)
+
+     - implicity conversion between signed and unsigned types is
+       avoided at all cost
+
 api instructions
 
     - unless explicitly stated, all structure members are read-only

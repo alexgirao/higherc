@@ -196,3 +196,14 @@ void hcns(bzero)(void *s, int n)
 		--n;
 	}
 }
+
+void hcns(brev)(void *x, int n)
+{
+	char *b = x;
+	char *e = b + n - 1;
+	while (b < e) {
+		char t = *b;
+		*b++ = *e;
+		*e-- = t;
+	}
+}

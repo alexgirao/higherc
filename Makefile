@@ -12,11 +12,11 @@ higherc/bytewise.h higherc/readfd.h higherc/fatal.h higherc/rand.h	\
 higherc/n.h
 
 PROGS = test-0 test-1 test-2 test-list-0 test-stralloc-0 test-pbuf-0	\
-test-tok-0 sample-cat test-bytewise test-rand test-n-0
+test-tok-0 sample-cat test-bytewise test-rand test-n-0 test-n-1
 
 PROGS_OBJS = test-0.o test-1.o test-2.o test-list-0.o		\
 test-stralloc-0.o test-pbuf-0.o test-tok-0.o test-bytewise.o	\
-sample-cat.o test-rand.o test-n-0.o
+sample-cat.o test-rand.o test-n-0.o test-n-1.o
 
 all: libhigherc.a $(PROGS)
 

@@ -11,8 +11,6 @@
  * always use native integer types or compiler supported larger types
  */
 
-typedef unsigned int hcns(uint); /* at least 32-bit */
-
 typedef unsigned char hcns(u1);
 typedef unsigned short hcns(u2);
 typedef unsigned int hcns(u4);
@@ -45,9 +43,24 @@ struct hcns(n) {
 #define HC_F(hi,lo) ((hcns(f))(HC_TO_HIGH(hi)+(lo)))
 
 #define HC_ZERO_DIGITS(v, l) do {		\
-		hcns(uint) __l = l;		\
+		int __l = l;		\
 		hcns(h) *__v  = v;		\
 		while(__l--) *__v++ = 0;	\
+	} while(0)
+
+#define HC_MOVE_DIGITS(dst, src, l) do {			\
+		int __l = l;				\
+		hcns(h) *__dst;					\
+		hcns(h) *__src;					\
+		if (dst < src) {				\
+			__dst = dst;				\
+			__src = src;				\
+			while(__l--) *__dst++ = *__src++;	\
+		} else if (dst > src) {				\
+			__dst = (dst)+((l)-1);			\
+			__src = (src)+((l)-1);			\
+			while(__l--) *__dst-- = *__src--;	\
+		}						\
 	} while(0)
 
 hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n);
@@ -62,11 +75,11 @@ void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n);  /* load hex string 
 void hcns(n_load_hexz)(struct hcns(n) *r, char *hex); /* likewise */
 void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
 
-hcns(uint) D_mul(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* r);
-hcns(uint) D_div(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* q, hcns(h)* r);
+int D_mul(hcns(h) *x, int xl, hcns(h) d, hcns(h) *r);
+int D_div(hcns(h) *x, int xl, hcns(h) d, hcns(h) *q, hcns(h) *r);
 
-hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r);
-int I_comp(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl);
-hcns(uint) I_div(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* q, hcns(h)* r, int *rlp);
+int I_mul(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r);
+int I_comp(hcns(h) *x, int xl, hcns(h) *y, int yl);
+int I_div(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *q, hcns(h) *r, int *rlp);
 
 #endif
