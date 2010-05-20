@@ -73,9 +73,9 @@ int main(int argc, char **argv)
 	 */
 
 	s->len = 0; /* truncate s */
-	hcns(n_as_base36)(a, s);
+	hcns(n_as_dec)(a, s);
 	HC_SAFE_CSTR(s);
-	assert(hcns(s_sdiff)(s, a_b36) == 0);
+	assert(hcns(s_sdiff)(s, a_dec) == 0);
 
 	/* load 0
 	 */
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 	 */
 
 	s->len = 0; /* truncate s */
-	hcns(n_as_base36)(a, s);
+	hcns(n_as_dec)(a, s);
 	HC_SAFE_CSTR(s);
 	assert(hcns(s_sdiff)(s, "0") == 0);
 

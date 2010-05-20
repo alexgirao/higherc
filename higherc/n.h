@@ -73,6 +73,7 @@ hcns(bool) hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
 void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v);
 
 void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
+void hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s);
 void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s);
 
 void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len);  /* load big-endian bytes */

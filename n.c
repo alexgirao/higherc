@@ -262,9 +262,36 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 	}
 }
 
-#else
-#error not implemented
-#endif
+void hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s)
+{
+	DEF_N(q);
+	hcns(h) r = HC_H(0);
+	int s_len0 = s->len;
+
+	if (HC_IS_ZERO(n)) {
+		hcns(s_catn)(s, "0", 1);
+		return;
+	}
+
+	hcns(n_alloc)(q, n->len);
+	HC_MOVE_DIGITS(q->d, n->d, n->len);
+	q->len = n->len;
+
+	while (!HC_IS_ZERO(q)) {
+		q->len = D_div(q->d, q->len, 10000, q->d, &r);
+
+		hcns(s_alloc)(s, s->len + 4);
+
+		s->s[s->len++] = HC_DEC_DIGIT(r % 10);
+		s->s[s->len++] = HC_DEC_DIGIT((r / 10) % 10);
+		s->s[s->len++] = HC_DEC_DIGIT(((r / 10) / 10) % 10);
+		s->s[s->len++] = HC_DEC_DIGIT((((r / 10) / 10) / 10) % 10);
+	}
+
+	while (s->s[s->len - 1] == '0') s->len--;
+
+	hcns(brev)(s->s + s_len0, s->len - s_len0);
+}
 
 void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s)
 {
@@ -295,6 +322,10 @@ void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s)
 
 	hcns(brev)(s->s + s_len0, s->len - s_len0);
 }
+
+#else
+#error not implemented
+#endif
 
 int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
 {
