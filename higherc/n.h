@@ -18,18 +18,9 @@ typedef unsigned short hcns(u2);
 typedef unsigned int hcns(u4);
 //typedef unsigned long hcns(u8);  // future
 
-typedef hcns(u2) hcns(h);    /* half-digit, at least 16-bit */
-typedef hcns(u4) hcns(f);    /* full-digit, at least 32-bit */
-
 #define HC_HALF_BITS 16
-#define HC_HALF_BYTES (HC_HALF_BITS/8)
-#define HC_HALF_MASK 0xffff
-#define HC_HALF_MAX HC_HALF_MASK
-#define HC_HALF_OFFENSE 0xdeadU  /* ``offensive programming'' */ 
-#define HC_OFFENSE 0xdeadbeefU   /* ``offensive programming'' */ 
-
-#define HC_FMT_H "%.4x"
-#define HC_FMT_F "%.8x"
+typedef hcns(u2) hcns(h);    /* half word, at least 16-bit */
+typedef hcns(u4) hcns(f);    /* full word, at least 32-bit */
 
 struct hcns(n) {
 	hcns(h) *d; /* digits, least significant digit first */
@@ -38,6 +29,26 @@ struct hcns(n) {
 };
 
 #define HC_NULL_N {NULL, 0, 0}
+
+#define HC_HALF_BYTES (HC_HALF_BITS/8)
+#define HC_HALF_MASK ((1<<HC_HALF_BITS)-1)
+#define HC_HALF_MAX HC_HALF_MASK
+
+#define HC_FMT_H "%.4x"
+#define HC_FMT_F "%.8x"
+
+#define HC_LOW(x)        ((hcns(h))(x))
+#define HC_HIGH(x)       ((hcns(h))(((hcns(f))(x)) >> HC_HALF_BITS))
+#define HC_TO_HIGH(x)    (((hcns(f))(x)) << HC_HALF_BITS)
+
+#define HC_H(v) ((hcns(h))(v))
+#define HC_F(hi,lo) ((hcns(f))(HC_TO_HIGH(hi)+(lo)))
+
+#define HC_ZERO_DIGITS(v, l) do {		\
+		hcns(uint) __l = l;		\
+		hcns(h) *__v  = v;		\
+		while(__l--) *__v++ = 0;	\
+	} while(0)
 
 hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n);
 hcns(bool) hcns(n_free)(struct hcns(n) *x);
@@ -51,117 +62,11 @@ void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n);  /* load hex string 
 void hcns(n_load_hexz)(struct hcns(n) *r, char *hex); /* likewise */
 void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
 
-/* literal digit
- */
-#define HC_H(v) ((hcns(h))v)
-#define HC_F(v) ((hcns(f))v)
+hcns(uint) D_mul(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* r);
+hcns(uint) D_div(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* q, hcns(h)* r);
 
-#define HC_LOW(a)      ((a) & HC_HALF_MASK)
-#define HC_HIGH(a)     (((a) >> HC_HALF_BITS) & HC_HALF_MASK)
-#define HC_TO_HIGH(a)  ((hcns(f))((hcns(h))(a) << HC_HALF_BITS))
-
-/* macros that operate directly on digits
- */
-
-#define HC_ZERO(v, sz) do {			\
-		int _t_sz = sz;			\
-		hcns(h) *_t_v  = v;		\
-		while(_t_sz--) *_t_v++ = 0;	\
-	} while(0)
-
-#define HC_MOVE(dst, src, sz) do {				\
-		int _t_sz = sz;					\
-		hcns(h) *_t_dst;				\
-		hcns(h) *_t_src;				\
-		if (dst < src) {				\
-			_t_dst = dst;				\
-			_t_src = src;				\
-			while(_t_sz--) *_t_dst++ = *_t_src++;	\
-		} else if (dst > src) {				\
-			_t_dst = (dst)+((sz)-1);		\
-			_t_src = (src)+((sz)-1);		\
-			while(_t_sz--) *_t_dst-- = *_t_src--;	\
-		}						\
-	} while(0)
-
-/* add a and b with carry (c) in + out
- */
-#define HC_ADD_C(a,b,c,s) do {						\
-		hcns(h) ___cr = (c);					\
-		hcns(h) ___xr = (a)+(___cr);				\
-		hcns(h) ___yr = (b);					\
-		___cr = (___xr < ___cr);				\
-		___xr = ___yr + ___xr;					\
-		___cr += (___xr < ___yr);				\
-		s = ___xr;						\
-		c = ___cr;						\
-	}  while(0)
-
-/* add a and b with carry (c) out
- */
-#define HC_ADD(a,b,c,s) do {					\
-		hcns(h) ___xr = (a);				\
-		hcns(h) ___yr = (b);				\
-		___xr = ___yr + ___xr;				\
-		s = ___xr;					\
-		c = (___xr < ___yr);				\
-	}  while(0)
-
-/* subtract a and b with borrow (d) in + out
- */
-#define HC_SUB_B(a,b,r,d) do {						\
-		hcns(h) ___cr = (r);					\
-		hcns(h) ___xr = (a);					\
-		hcns(h) ___yr = (b)+___cr;				\
-		___cr = (___yr < ___cr);				\
-		___yr = ___xr - ___yr;					\
-		___cr += (___yr > ___xr);				\
-		d = ___yr;						\
-		r = ___cr;						\
-	} while(0)
-
-/* subtract a and b with borrow (d) out
- */
-#define HC_SUB(a,b,r,d) do {			\
-		hcns(h) ___xr = (a);		\
-		hcns(h) ___yr = (b);		\
-		___yr = ___xr - ___yr;		\
-		r = (___yr > ___xr);		\
-		d = ___yr;			\
-	} while(0)
-
-#define D_EXP  HC_HALF_BITS
-#define DLOW(x)        ((hcns(h))(x))
-#define DHIGH(x)       ((hcns(h))(((hcns(f))(x))>>D_EXP))
-
-/* ErtsDigit => ErtsDoubleDigit */
-#define DLOW2HIGH(x)   (((hcns(f))(x)) << D_EXP)
-#define DDIGIT(a1,a0)  (DLOW2HIGH(a1) + (a0))
-
-#define DMULc(a,b,c,p) do {			       \
-        hcns(f) _t = ((hcns(f))(a))*(b) + (c);	\
-	p = DLOW(_t);						\
-	c = DHIGH(_t);						\
-    } while(0)
-#define DMUL(a,b,c1,c0) do { \
-	hcns(f) _t = ((hcns(f))(a))*(b);	\
-	c0 = DLOW(_t);					\
-	c1 = DHIGH(_t);					\
-    } while(0)
-
-#define DDIV(a1,a0,b,q) do {						\
-	hcns(f) _t = DDIGIT((a1),(a0));				\
-	q = _t / (b);							\
-    } while(0)
-
-#define DDIV2(a1,a0,b1,b0,q) do {					\
-	hcns(f) _t = DDIGIT((a1),(a0));				\
-	q = _t / DDIGIT((b1),(b0));					\
-    } while(0)
-
-#define DREM(a1,a0,b,r) do { \
-	hcns(f) _t = DDIGIT((a1),(a0));		\
-	r = _t % (b);					\
-    } while(0)
+hcns(uint) I_mul(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* r);
+int I_comp(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl);
+hcns(uint) I_div(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl, hcns(h)* q, hcns(h)* r, int *rlp);
 
 #endif
