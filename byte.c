@@ -207,3 +207,11 @@ void hcns(brev)(void *x, int n)
 		*e-- = t;
 	}
 }
+
+void hcns(bset)(void *x, int n, char c)
+{
+	char *b = x;
+	while (n--) {
+		*b++ = c;
+	}
+}

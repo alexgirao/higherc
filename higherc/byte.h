@@ -8,5 +8,6 @@ void hcns(bcopyr)(void *to, int n, const void *from);
 int hcns(bdiff)(const void *s, int n, const void *t);
 void hcns(bzero)(void *s, int n);
 void hcns(brev)(void *s, int n);
+void hcns(bset)(void *s, int n, char c);
 
 #endif
