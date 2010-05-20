@@ -512,7 +512,7 @@ static hcns(uint) D_div(hcns(h)* x, hcns(uint) xl, hcns(h) d, hcns(h)* q, hcns(h
 */
 
 static hcns(uint) I_div(hcns(h)* x, hcns(uint) xl, hcns(h)* y, hcns(uint) yl,
-		     hcns(h)* q, hcns(h)* r, hcns(uint)* rlp)
+			hcns(h)* q, hcns(h)* r, int *rlp)
 {
     hcns(h)* rp;
     hcns(h)* qp;
@@ -1425,6 +1425,106 @@ static void test_muln()
 	}
 }
 
+static void test_divn()
+{
+	char *tests0[] = {
+		#include "sandbox/bignum2.escript--c_verify"
+		NULL
+	};
+	char **tests = tests0;
+
+	void verify(char *a_hex, char *b_hex, char *eq, char *er)
+	{
+		struct hcns(n) a[1] = {HC_NULL_N};
+		struct hcns(n) b[1] = {HC_NULL_N};
+		struct hcns(n) q[1] = {HC_NULL_N};
+		struct hcns(n) r[1] = {HC_NULL_N};
+
+		int a_len = hcns(slen)(a_hex);
+		int b_len = hcns(slen)(b_hex);
+
+		hcns(n_load_hex)(a, a_hex, a_len);
+		hcns(n_load_hex)(b, b_hex, b_len);
+
+		assert(n_cmp_hex(a, a_hex) == 0);
+		assert(n_cmp_hex(b, b_hex) == 0);
+
+		assert(I_comp(a->d, a->len, b->d, b->len) >= 0);
+
+		hcns(n_alloc)(q, a->len);
+
+		/* note: I_div zeroes q automatically
+		 */
+
+		/* divide preserving a
+		 */
+
+		if (b->len == 1) {
+			/* how to optimize if b (divisor) is only 1 digit length
+			 */
+
+			hcns(n_alloc)(r, 1);
+			r->len = 1;
+			q->len = D_div(
+				a->d, a->len,
+				b->d[0],
+				q->d,
+				r->d);
+		} else {
+			hcns(n_alloc)(r, a->len);
+			q->len = I_div(
+				a->d, a->len,
+				b->d, b->len,
+				q->d,
+				r->d,
+				&r->len
+				);
+		}
+
+		assert(n_cmp_hex(a, a_hex) == 0);
+		assert(n_cmp_hex(b, b_hex) == 0);
+		assert(n_cmp_hex(q, eq) == 0);
+		assert(n_cmp_hex(r, er) == 0);
+
+		hcns(n_free)(r);
+
+		/* divide putting r in a (overwrite a!)
+		 */
+
+		if (b->len > 1) {
+			q->len = I_div(
+				a->d, a->len,
+				b->d, b->len,
+				q->d,
+				a->d,
+				&a->len
+				);
+			
+			assert(n_cmp_hex(b, b_hex) == 0);
+			assert(n_cmp_hex(q, eq) == 0);
+			assert(n_cmp_hex(a, er) == 0);
+		}
+
+		hcns(n_free)(q);
+		hcns(n_free)(a);
+		hcns(n_free)(b);
+	}
+
+	while (*tests) {
+		char *a = *tests++;
+		char *b = *tests++;
+		char *eq = *tests++;
+		char *er = *tests++;
+
+		assert(a);
+		assert(b);
+		assert(eq);
+		assert(er);
+
+		verify(a, b, eq, er);  /* a >= b always */
+	}
+}
+
 int main(int argc, char **argv)
 {
 	if (0) {
@@ -1437,14 +1537,11 @@ int main(int argc, char **argv)
 	assert(sizeof(hcns(u4)) == 4);
 //	assert(sizeof(hcns(u8)) == 8);   // future
 
-	if(1){
 	test_MUL();  // DMUL
-	}
 	test_hex_in_out();
-	if (1) {
 	test_mul1(); // D_mul
 	test_muln();
-	}
+	test_divn();
 
 	return 0;
 }

@@ -1,5 +1,5 @@
 
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 LDFLAGS = -L.
 LIBS = -lhigherc
 
