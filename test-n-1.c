@@ -36,19 +36,14 @@ static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
 	hcns(s_free)(&s);
 }
 
-#define N struct hcns(n)
-#define S struct hcns(s)
-#define DEF_N(sym) N sym[1] = {HC_NULL_N}
-#define DEF_S(sym) S sym[1] = {HC_NULL_S}
-
 int main(int argc, char **argv)
 {
 	char *a_hex = "15bc3c38c53340b1e98c3be3671a378276b7613c";
 	char *a_dec = "124086592339716874826150129472345739134649196860";
 	char *a_b36 = "2jeg2ovjrtl0hfk79vsjjfva7prvj24";
 	int a_hex_len = hcns(slen)(a_hex);
-	DEF_N(a);
-	DEF_S(s);
+	HC_DEF_N(a);
+	HC_DEF_S(s);
 
 	if (0) {
 		struct hcns(n) _unused = HC_NULL_N;

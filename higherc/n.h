@@ -27,6 +27,8 @@ struct hcns(n) {
 };
 
 #define HC_NULL_N {NULL, 0, 0}
+#define HC_ST_N struct hcns(n)
+#define HC_DEF_N(sym) HC_ST_N sym[1] = {HC_NULL_N}
 
 #define HC_HALF_BYTES (HC_HALF_BITS/8)
 #define HC_HALF_MASK ((1<<HC_HALF_BITS)-1)

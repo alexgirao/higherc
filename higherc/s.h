@@ -8,6 +8,8 @@ struct hcns(s) {
 };
 
 #define HC_NULL_S {NULL, 0, 0}
+#define HC_ST_S struct hcns(s)
+#define HC_DEF_S(sym) HC_ST_S sym[1] = {HC_NULL_S}
 
 hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n);
 hcns(bool) hcns(s_free)(struct hcns(s) *x);
