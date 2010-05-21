@@ -7,7 +7,6 @@
 #include <stdarg.h>
 
 #include "higherc/higherc.h"
-#include "higherc/fatal.h"
 
 void hcns(fatal)(char *file, int line, char *fmt, ...)
 {

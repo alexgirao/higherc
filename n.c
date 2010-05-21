@@ -7,7 +7,6 @@
 #include "higherc/str.h"
 #include "higherc/alloc.h"
 #include "higherc/bytewise.h"
-#include "higherc/fatal.h"
 #include "higherc/s.h"
 #include "higherc/n.h"
 

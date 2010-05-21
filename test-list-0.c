@@ -8,7 +8,6 @@
 
 #include "higherc/higherc.h"
 #include "higherc/list.h"
-#include "higherc/fatal.h"
 
 struct mydata {
 	int alpha;

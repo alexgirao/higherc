@@ -8,8 +8,7 @@ fatal.o rand.o n.o
 
 LIB_HEADERS = higherc/alloc.h higherc/byte.h higherc/higherc.h		\
 higherc/list.h higherc/pbuf.h higherc/s.h higherc/str.h higherc/tok.h	\
-higherc/bytewise.h higherc/readfd.h higherc/fatal.h higherc/rand.h	\
-higherc/n.h
+higherc/bytewise.h higherc/readfd.h higherc/rand.h higherc/n.h
 
 PROGS = test-0 test-1 test-2 test-3 test-list-0 test-stralloc-0		\
 test-pbuf-0 test-tok-0 sample-cat test-bytewise test-rand test-n-0	\

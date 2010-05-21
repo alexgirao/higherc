@@ -8,7 +8,6 @@
 #include "higherc/higherc.h"
 #include "higherc/s.h"
 #include "higherc/bytewise.h"
-#include "higherc/fatal.h"
 
 #define bval(v, pos) (((unsigned char *)&v)[pos])
 

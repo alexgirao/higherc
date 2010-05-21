@@ -9,7 +9,6 @@
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 #include "higherc/alloc.h"
-#include "higherc/fatal.h"
 #include "higherc/s.h"
 
 /*
@@ -22,16 +21,73 @@ HC_DECL_I(i,
 	int c;
 );
 
-/* I_FREE(p): calling bzero is a good practice, since all data in
- *   structure will be lost, we can't rely on buggy code accessing
- *   phantom data, it can be removed after extensive tests in
- *   production systems for performance reasons
- */
+static int i_len(struct i *x)
+{
+	return x->pos + 1;
+}
+
+static inline struct i *_i_next_b(struct hcns(iter) *i)
+{
+	struct i *r = i->v0;
+	if (r == NULL) {
+		return NULL;
+	}
+	i->v0 = r->tail;
+	return r;
+}
+
+static void i_backward(struct i *x, struct hcns(iter) *i)
+{
+	i->next = (hcns(iter_next_fun)*) _i_next_b;
+
+	i->i0 = 1;
+	i->v0 = x;
+}
+
+static inline struct i *_i_next_f(struct hcns(iter) *i)
+{
+	struct i **r = i->v1;
+	if (r == NULL) {
+		return NULL;
+	}
+	if (i->l0-- == 0) {
+		HC_FREE(i->v0);
+		i->v0 = NULL;
+		i->v1 = NULL;
+		return NULL;
+	}
+	i->v1 = r + 1;
+	return *r;
+}
+
+static void i_forward(struct i *x, struct hcns(iter) *i)
+{
+	i->next = (hcns(iter_next_fun)*) _i_next_f;
+
+	i->i0 = 2;
+	i->v0 = i_as_array(x);
+	i->v1 = i->v0;
+	i->l0 = x->pos + 1;
+}
+
+static void i_end(struct hcns(iter) *i)
+{
+	if (i->i0 == 2) {
+		if (i->v0) {
+			printf("free: %p\n", i->v0);
+			HC_FREE(i->v0);
+			i->v0 = NULL;
+		}
+	} else if (i->i0 == 1) {
+	} else {
+		HC_FATAL("exhausted");
+	}
+}
 
 int main(int argc, char **argv)
 {
-	int i;
-	struct i *h = NULL;
+	int i, j;
+	struct i *h = NULL, *t;
 
 	/* fill list
 	 */
@@ -52,32 +108,56 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-	/* reverse
+	/* to array
+	 */
+
+	struct hcns(iter) c[1];
+
+	/* backward traverse
+	 */
+
+	fprintf(stdout, "backward traverse\n");
+
+	i_backward(h, c);
+	while ((t = c->next(c))) {
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
+	}
+	i_end(c);
+
+	/* forward traverse
+	 */
+
+	fprintf(stdout, "forward traverse\n");
+
+	i_forward(h, c);
+	while ((t = c->next(c))) {
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
+	}
+	i_end(c);
+
+	/* forward traverse, from array
 	 */
 
 	struct i **r = i_as_array(h);
 
-	/* traverse in original order
-	 */
+	fprintf(stdout, "forward traverse (from array)\n");
 
-	for (i=0; i<=h->pos; i++) {
+	for (i=0, j=i_len(h); i<j; i++) {
 		struct i *tmp = r[i];
-		fprintf(stdout, "[%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
         /* cleanup
 	 */
 
-	{
-		struct i *t0=h;
-		while (t0) {
-			struct i *t1 = t0->tail;
-			hcns(s_free)(t0->tag);
-			i_free(t0);
-			t0 = t1;
-		}
-		HC_FREE(r);
+	i_backward(h, c);
+	while ((t = c->next(c))) {
+		hcns(s_free)(t->tag);
+		i_free(t);
 	}
+	i_end(c);
+
+	HC_FREE(r);
 
 	return 0;
 }

@@ -12,7 +12,6 @@
 #include "higherc/s.h"
 #include "higherc/str.h"
 #include "higherc/rand.h"
-#include "higherc/fatal.h"
 #include "higherc/n.h"
 
 #define DEBUG_N(n) do {							\

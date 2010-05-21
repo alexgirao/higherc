@@ -9,7 +9,6 @@
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 #include "higherc/alloc.h"
-#include "higherc/fatal.h"
 #include "higherc/s.h"
 
 struct i {

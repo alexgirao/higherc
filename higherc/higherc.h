@@ -27,6 +27,18 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 #define HC_NEW_AR(p, l, t) do { p = (t*) hcns(alloc_z)((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("hcns(alloc_z)(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
 #define HC_FREE(p) hcns(alloc_free)(p)
 
+struct hcns(iter);  /* forward declaration */
+typedef void *(hcns(iter_next_fun))(struct hcns(iter) *);
+
+struct hcns(iter) {
+	hcns(iter_next_fun) *next;
+	/* opaque data
+	 */
+	void *v0, *v1, *v2, *v3;
+	int i0, i1, i2, i3;
+	long l0, l1, l2, l3;
+};
+
 #define HC_DECL_I(name, items)						\
 	struct name {							\
 		int pos;						\
