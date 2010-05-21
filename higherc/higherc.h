@@ -27,7 +27,7 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 #define HC_NEW_AR(p, l, t) do { p = (t*) hcns(alloc_z)((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("hcns(alloc_z)(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
 #define HC_FREE(p) hcns(alloc_free)(p)
 
-#define _HC_DECL_I(name, st_members, spec)				\
+#define _HC_DECL_I_HEADERS(name, st_members, spec)			\
 	struct name {							\
 		int pos;						\
 		struct name *tail;					\
@@ -41,6 +41,15 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		void *v0, *v1;						\
 		long l0;						\
 	};								\
+	spec struct name *name##_new(struct name *tail);		\
+	spec void name##_free(struct name *x);				\
+	spec struct name **name##_as_array(struct name *x);		\
+	spec int name##_len(struct name *x);				\
+	spec void name##_backward(struct name *x, struct name##_iter *i); \
+	spec void name##_forward(struct name *x, struct name##_iter *i); \
+	spec void name##_end(struct name##_iter *i);
+
+#define _HC_DECL_I(name, spec)						\
 	spec struct name *name##_new(struct name *tail) {		\
 		struct name *r;						\
 		HC_NEW(r, struct name);					\
@@ -67,7 +76,7 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 	{								\
 		return x->pos + 1;					\
 	}								\
-	static inline struct name *_name##_next_b(struct name##_iter *i)	\
+	static inline struct name *_name##_next_b(struct name##_iter *i) \
 	{								\
 		struct name *r = i->v0;					\
 		if (r == NULL) {					\
@@ -82,7 +91,7 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		i->i0 = 1;						\
 		i->v0 = x;						\
 	}								\
-	static inline struct name *_name##_next_f(struct name##_iter *i)	\
+	static inline struct name *_name##_next_f(struct name##_iter *i) \
 	{								\
 		struct name **r = i->v1;				\
 		if (r == NULL) {					\
@@ -118,8 +127,14 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		}							\
 	}
 
-#define HC_DECL_PRIVATE_I(name, st_members) _HC_DECL_I(name, st_members, static)
-#define HC_DECL_PUBLIC_I(name, st_members) _HC_DECL_I(name, st_members, )
+#define HC_DECL_PRIVATE_I(name, st_members)		\
+	_HC_DECL_I_HEADERS(name, st_members, static)	\
+	_HC_DECL_I(name, static)
+
+#define HC_DECL_PUBLIC_I_HEADERS(name, st_members)	\
+	_HC_DECL_I_HEADERS(name, st_members, )
+#define HC_DECL_PUBLIC_I(name)			\
+	_HC_DECL_I(name, )
 
 /* this function ceases program execution with a exit(1)
  */

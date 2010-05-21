@@ -14,23 +14,20 @@
 /*
  */
 
-HC_DECL_PRIVATE_I(i,
-	struct hcns(s) tag[1];
-	int a;
-	int b;
-	int c;
-);
+#include "test-4.h"
+
+HC_DECL_PUBLIC_I(hcns(aa));
 
 int main(int argc, char **argv)
 {
 	int i, j;
-	struct i *h = NULL, *t;
+	struct hcns(aa) *h = NULL, *t;
 
 	/* fill list
 	 */
 
 	for (i=1; i<argc; i++) {
-		h = i_new(h);
+		h = hcns(aa_new)(h);
 		hcns(s_copyz)(h->tag, argv[i]);
 		HC_SAFE_CSTR(h->tag);
 		h->a = i;
@@ -45,51 +42,51 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-	struct i_iter c[1];
+	struct hcns(aa_iter) c[1];
 
 	/* backward traverse
 	 */
 
 	fprintf(stdout, "backward traverse\n");
 
-	i_backward(h, c);
+	hcns(aa_backward)(h, c);
 	while ((t = c->next(c))) {
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
 	}
-	i_end(c);
+	hcns(aa_end)(c);
 
 	/* forward traverse
 	 */
 
 	fprintf(stdout, "forward traverse\n");
 
-	i_forward(h, c);
+	hcns(aa_forward)(h, c);
 	while ((t = c->next(c))) {
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
 	}
-	i_end(c);
+	hcns(aa_end)(c);
 
 	/* forward traverse, from array
 	 */
 
-	struct i **r = i_as_array(h);
+	struct hcns(aa) **r = hcns(aa_as_array)(h);
 
 	fprintf(stdout, "forward traverse (from array)\n");
 
-	for (i=0, j=i_len(h); i<j; i++) {
-		struct i *tmp = r[i];
+	for (i=0, j=hcns(aa_len)(h); i<j; i++) {
+		struct hcns(aa) *tmp = r[i];
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
         /* cleanup
 	 */
 
-	i_backward(h, c);
+	hcns(aa_backward)(h, c);
 	while ((t = c->next(c))) {
 		hcns(s_free)(t->tag);
-		i_free(t);
+		hcns(aa_free)(t);
 	}
-	i_end(c);
+	hcns(aa_end)(c);
 
 	HC_FREE(r);
 

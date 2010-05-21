@@ -1,6 +1,7 @@
 high level structures for c programming
 
-     objective: software development library for common, 32-bit architectures or higher
+     objective: platform independent algorithms library for
+     productive, 32-bit architectures or higher
 
 data structures
 

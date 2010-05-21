@@ -10,13 +10,13 @@ LIB_HEADERS = higherc/alloc.h higherc/byte.h higherc/higherc.h		\
 higherc/list.h higherc/pbuf.h higherc/s.h higherc/str.h higherc/tok.h	\
 higherc/bytewise.h higherc/readfd.h higherc/rand.h higherc/n.h
 
-PROGS = test-0 test-1 test-2 test-3 test-list-0 test-stralloc-0		\
+PROGS = test-0 test-1 test-2 test-3 test-4 test-list-0 test-stralloc-0	\
 test-pbuf-0 test-tok-0 sample-cat test-bytewise test-rand test-n-0	\
 test-n-1
 
-PROGS_OBJS = test-0.o test-1.o test-2.o test-3.o test-list-0.o	\
-test-stralloc-0.o test-pbuf-0.o test-tok-0.o test-bytewise.o	\
-sample-cat.o test-rand.o test-n-0.o test-n-1.o
+PROGS_OBJS = test-0.o test-1.o test-2.o test-3.o test-4.o	\
+test-list-0.o test-stralloc-0.o test-pbuf-0.o test-tok-0.o	\
+test-bytewise.o sample-cat.o test-rand.o test-n-0.o test-n-1.o
 
 all: libhigherc.a $(PROGS)
 
