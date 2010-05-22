@@ -59,8 +59,6 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 	}								\
 	spec void name##_free(struct name *x)				\
 	{								\
-		/* ``offensive programming'' */				\
-		hcns(bset)(x, sizeof(struct name), 0x7f);		\
 		HC_FREE(x);						\
 	}								\
 	spec struct name **name##_as_array(struct name *x)		\

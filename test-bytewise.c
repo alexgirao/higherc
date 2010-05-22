@@ -81,9 +81,9 @@ static void test_ctype()
 
 	{
 		int i;
-		struct hcns(s) flags = HC_NULL_S;
+		HC_DEF_S(flags);
 
-		hcns(s_copyn)(&flags, "\0\0", 2);  /* initialize
+		hcns(s_copyn)(flags, "\0\0", 2);  /* initialize
 						    * s with at
 						    * least 2 bytes */
 
@@ -92,63 +92,65 @@ static void test_ctype()
 				continue;
 			}
 
-			flags.len = 0; /* truncate s */
-			flags.s[0] = '\0'; /* truncate c string */
-			flags.s[1] = '\0'; /* zero second byte too,
+			flags->len = 0; /* truncate s */
+			flags->s[0] = '\0'; /* truncate c string */
+			flags->s[1] = '\0'; /* zero second byte too,
 					    * for the substring
 					    * below */
 
 			if (HC_ISPRINT(i)) {
-				hcns(s_catz)(&flags, " print");
+				hcns(s_catz)(flags, " print");
 			}
 			if (HC_ISGRAPH(i)) {
-				hcns(s_catz)(&flags, " graph");
+				hcns(s_catz)(flags, " graph");
 			}
 			if (HC_ISSPACE(i)) {
-				hcns(s_catz)(&flags, " space");
+				hcns(s_catz)(flags, " space");
 			}
 			if (HC_ISBLANK(i)) {
-				hcns(s_catz)(&flags, " blank");
+				hcns(s_catz)(flags, " blank");
 			}
 			if (HC_ISALNUM(i)) {
-				hcns(s_catz)(&flags, " alnum");
+				hcns(s_catz)(flags, " alnum");
 			}
 			if (HC_ISDIGIT(i)) {
-				hcns(s_catz)(&flags, " digit");
+				hcns(s_catz)(flags, " digit");
 			}
 			if (HC_ISALPHA(i)) {
-				hcns(s_catz)(&flags, " alpha");
+				hcns(s_catz)(flags, " alpha");
 				if (HC_ISALPHA_UPPER(i)) {
-					hcns(s_catz)(&flags, " alpha_upper");
+					hcns(s_catz)(flags, " alpha_upper");
 				} else if (HC_ISALPHA_LOWER(i)) {
-					hcns(s_catz)(&flags, " alpha_lower");
+					hcns(s_catz)(flags, " alpha_lower");
 				} else {
 					HC_FATAL("exhausted");
 				}
 			}
 			if (HC_ISPUNCT(i)) {
-				hcns(s_catz)(&flags, " punct");
+				hcns(s_catz)(flags, " punct");
 			}
 			if (HC_ISREGEX_META(i)) {
-				hcns(s_catz)(&flags, " regex_meta");
+				hcns(s_catz)(flags, " regex_meta");
 			}
 			if (HC_ISREGEX_CHAR(i)) {
-				hcns(s_catz)(&flags, " regex_char");
+				hcns(s_catz)(flags, " regex_char");
 			}
 			if (HC_ISGLOB(i)) {
-				hcns(s_catz)(&flags, " glob");
+				hcns(s_catz)(flags, " glob");
 			}
 
-			flags.s[flags.len] = '\0';
+			flags->s[flags->len] = '\0';
 
 			if (HC_ISPRINT(i)) {
-				printf("%3i 0x%.2x %c (flags: %s)\n", i, i, i < 0x20 ? '?' : i, flags.s+1);
+				printf("%3i 0x%.2x %c (flags: %s)\n", i, i, i < 0x20 ? '?' : i, flags->s+1);
 			} else if (i == 0x7f) {
-				printf("%3i 0x%.2x DEL NOPRINT (flags:%s)\n", i, i, flags.s+1);
+				printf("%3i 0x%.2x DEL NOPRINT (flags:%s)\n", i, i, flags->s+1);
 			} else {
-				printf("%3i 0x%.2x %c NOPRINT (flags:%s)\n", i, i, i < 0x20 ? '?' : i, flags.s+1);
+				printf("%3i 0x%.2x %c NOPRINT (flags:%s)\n", i, i, i < 0x20 ? '?' : i, flags->s+1);
 			}
 		}
+
+		hcns(s_free)(flags);
 	}
 }
 

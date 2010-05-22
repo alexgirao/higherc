@@ -13,11 +13,24 @@
 
 #define myassert(fmt, val, check) assert((val) == (check)); printf(fmt, val);
 
+void its_over(void)
+{
+	printf("its_over, you're flushed.\n");
+}
+
+void its_over2(void)
+{
+	printf("its_over, you're flushed 2.\n");
+}
+
 int main(int argc, char **argv)
 {
 	char c = 0xef;
 
 	assert(sizeof(char) == 1);
+
+	atexit(its_over);
+	atexit(its_over2);
 
 	/* type conversion
 	 */

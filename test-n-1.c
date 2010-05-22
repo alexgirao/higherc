@@ -95,6 +95,9 @@ int main(int argc, char **argv)
 	/*
 	 */
 
+	hcns(n_free)(a);
+	hcns(s_free)(s);
+
 	puts("ok");
 
 	return 0;

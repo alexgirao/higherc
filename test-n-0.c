@@ -196,6 +196,8 @@ static void test_hex_in_out()
 
 		s="1234567"; hcns(n_load_hexz)(a, s);
 		assert(hcns(n_cmp_hexz)(a, s) == 0);
+
+		hcns(n_free)(a);
 	}
 }
 

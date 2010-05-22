@@ -28,11 +28,6 @@
 #error not implemented
 #endif
 
-#define N struct hcns(n)
-#define S struct hcns(s)
-#define DEF_N(sym) N sym[1] = {HC_NULL_N}
-#define DEF_S(sym) S sym[1] = {HC_NULL_S}
-
 #define B36_2 1296  /* pow(36, 2) */
 #define B36_3 46656  /* pow(36, 3) */
 
@@ -263,7 +258,7 @@ void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s)
 
 void hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s)
 {
-	DEF_N(q);
+	HC_DEF_N(q);
 	hcns(h) r = HC_H(0);
 	int s_len0 = s->len;
 
@@ -290,11 +285,13 @@ void hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s)
 	while (s->s[s->len - 1] == '0') s->len--;
 
 	hcns(brev)(s->s + s_len0, s->len - s_len0);
+
+	hcns(n_free)(q);
 }
 
 void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s)
 {
-	DEF_N(q);
+	HC_DEF_N(q);
 	hcns(h) r = HC_H(0);
 	int s_len0 = s->len;
 
@@ -320,6 +317,8 @@ void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s)
 	while (s->s[s->len - 1] == '0') s->len--;
 
 	hcns(brev)(s->s + s_len0, s->len - s_len0);
+
+	hcns(n_free)(q);
 }
 
 #else
