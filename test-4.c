@@ -1,3 +1,15 @@
+/*
+
+./test-4 alpha bravo charlie delta alpha bravo
+./test-4 alpha bravo charlie delta alpha charlie
+./test-4 alpha bravo charlie delta alpha delta
+./test-4 alpha bravo charlie delta bravo alpha
+./test-4 alpha bravo charlie delta bravo charlie
+./test-4 alpha bravo charlie delta bravo delta
+
+
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -17,6 +29,11 @@
 #include "test-4.h"
 
 HC_DECL_PUBLIC_I(hcns(aa));
+
+#define AA_CMPEXPR hcns(s_bdiff)(x->tag, y->tag->s, y->tag->len)
+
+HC_DECL_PRIVATE_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PRIVATE_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
 
 int main(int argc, char **argv)
 {
@@ -43,6 +60,8 @@ int main(int argc, char **argv)
 	}
 
 	struct hcns(aa_iter) c[1];
+
+#if 0
 
 	/* backward traverse
 	 */
@@ -78,6 +97,68 @@ int main(int argc, char **argv)
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
+       	HC_FREE(r);
+
+#endif
+
+	/* sorted traverse
+	 */
+
+	struct hcns(aa) **sorted = hcns(aa_as_array)(h);
+	hcns(aa_sort)(sorted, hcns(aa_len)(h));
+
+	fprintf(stdout, "sorted traverse (from sorted array)\n");
+
+	for (i=0, j=hcns(aa_len)(h); i<j; i++) {
+		struct hcns(aa) *tmp = sorted[i];
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+	}
+
+	/* .. descending order
+	 */
+
+	hcns(aa_sort_desc)(sorted, hcns(aa_len)(h));
+
+	fprintf(stdout, "sorted traverse (from sorted array, descending order)\n");
+
+	for (i=0, j=hcns(aa_len)(h); i<j; i++) {
+		struct hcns(aa) *tmp = sorted[i];
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+	}
+
+	HC_FREE(sorted);
+
+	/* sorted traverse
+	 */
+
+	struct hcns(aa) **usorted = hcns(aa_as_array)(h);
+	int newlen;
+	hcns(aa_usort)(usorted, hcns(aa_len)(h), &newlen);
+
+	fprintf(stdout, "sorted traverse (from uniquely sorted array)\n");
+
+	for (i=0, j=newlen; i<j; i++) {
+		struct hcns(aa) *tmp = usorted[i];
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+	}
+
+	HC_FREE(usorted);
+
+	/* .. descending order
+	 */
+
+	usorted = hcns(aa_as_array)(h);
+	hcns(aa_usort_desc)(usorted, hcns(aa_len)(h), &newlen);
+
+	fprintf(stdout, "sorted traverse (from uniquely sorted array)\n");
+
+	for (i=0, j=newlen; i<j; i++) {
+		struct hcns(aa) *tmp = usorted[i];
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+	}
+
+	HC_FREE(usorted);
+
         /* cleanup
 	 */
 
@@ -87,8 +168,6 @@ int main(int argc, char **argv)
 		hcns(aa_free)(t);
 	}
 	hcns(aa_end)(c);
-
-	HC_FREE(r);
 
 	return 0;
 }

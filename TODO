@@ -1,4 +1,12 @@
 
+memory management
+
+       - count allocs and free
+       - warn at program exit (man atexit) if unbalanced
+       - let alloc and free keep track of allocated size and dirty
+         buffer upon free (offensive programming), configurable at
+         compile time
+
 smart build system (see baselib)
 
 	- detect byte ordering (little-endian, big-endian)

@@ -25,9 +25,9 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 #define HC_MALLOC(p, sz) do { p = hcns(alloc)(sz); if ((p) == NULL) HC_FATAL("hcns(alloc)(%i)", sz); } while (0)
 #define HC_NEW(p, t) do { p = (t*) hcns(alloc_z)(sizeof(t)); if ((p) == NULL) HC_FATAL("hcns(alloc_z)(%i (type " #t "))", sizeof(t)); } while (0)
 #define HC_NEW_AR(p, l, t) do { p = (t*) hcns(alloc_z)((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("hcns(alloc_z)(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
-#define HC_FREE(p) hcns(alloc_free)(p)
+#define HC_FREE(p) do { hcns(alloc_free)(p); p = NULL; } while (0)
 
-#define _HC_DECL_I_HEADERS(name, st_members, spec)			\
+#define _HC_DECL_I_HEADERS(spec, name, st_members)			\
 	struct name {							\
 		int pos;						\
 		struct name *tail;					\
@@ -47,9 +47,9 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 	spec int name##_len(struct name *x);				\
 	spec void name##_backward(struct name *x, struct name##_iter *i); \
 	spec void name##_forward(struct name *x, struct name##_iter *i); \
-	spec void name##_end(struct name##_iter *i);
+	spec void name##_end(struct name##_iter *i)
 
-#define _HC_DECL_I(name, spec)						\
+#define _HC_DECL_I(spec, name)						\
 	spec struct name *name##_new(struct name *tail) {		\
 		struct name *r;						\
 		HC_NEW(r, struct name);					\
@@ -127,14 +127,107 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		}							\
 	}
 
+#define _HC_DECL_I_SORT_HEADER(spec, name, fname) spec void name##_##fname(struct name **items, int len);
+#define _HC_DECL_I_USORT_HEADER(spec, name, fname) spec void name##_##fname(struct name **items, int len, int *newlen);
+
+#define _HC_DECL_I_SORT(spec, name, fname, a, b, cmpexpr)		\
+	spec void name##_##fname(struct name **items, int len)		\
+	{								\
+		int i, r;						\
+		struct name *a, *b;					\
+		for(i=1; i<len; i++) {					\
+			int j = i - 1;					\
+			b = items[i];					\
+			while (j>=0) {					\
+				a = items[j];				\
+				r = cmpexpr;				\
+				if (r > 0) {				\
+					/* shift down elements greater than \
+					 * input (b)			\
+					 */				\
+					items[j+1] = items[j];		\
+					j--;				\
+				} else {				\
+					break;				\
+				}					\
+			}						\
+			items[j+1] = b;					\
+		}							\
+	}
+
+#define _HC_DECL_I_USORT(spec, name, fname, a, b, cmpexpr)		\
+	spec void name##_##fname(struct name **items, int len, int *newlen) \
+	{								\
+		int i, r;						\
+		struct name *a, *b;					\
+		for(i=1; i<len; i++) {					\
+			int j = i - 1;					\
+			int k = j;					\
+			int dup_found = 0;				\
+			b = items[i];					\
+			while (j>=0) {					\
+				a = items[j];				\
+				r = cmpexpr;				\
+				if (r > 0) {				\
+					j--;				\
+				} else if (r == 0) {			\
+					dup_found = 1;			\
+					break;				\
+				} else {				\
+					break;				\
+				}					\
+			}						\
+			if (dup_found) {				\
+				/* discard duplicate shifting up unprocessed \
+				 * elements				\
+				 */					\
+				k = i + 1;				\
+				while (k < len) {			\
+					items[k - 1] = items[k];	\
+					k++;				\
+				}					\
+				len--;					\
+				i--; /* reprocess discarded slot */	\
+			} else {					\
+				while (k != j) {			\
+					/* shift down elements greater than \
+					 * input (b)			\
+					 */				\
+					items[k + 1] = items[k];	\
+					k--;				\
+				}					\
+				items[k + 1] = b;			\
+			}						\
+		}							\
+		*newlen = len;						\
+	}
+
+/* private list item
+ */
+
 #define HC_DECL_PRIVATE_I(name, st_members)		\
-	_HC_DECL_I_HEADERS(name, st_members, static)	\
-	_HC_DECL_I(name, static)
+	_HC_DECL_I_HEADERS(static, name, st_members);	\
+	_HC_DECL_I(static, name)
+
+#define HC_DECL_PRIVATE_I_SORT(sym, a, b, cmpexpr)		\
+	_HC_DECL_I_SORT_HEADER(static, sym, sort);		\
+	_HC_DECL_I_SORT_HEADER(static, sym, sort_desc);		\
+	_HC_DECL_I_SORT(static, sym, sort, a, b, cmpexpr)	\
+	_HC_DECL_I_SORT(static, sym, sort_desc, b, a, cmpexpr)
+
+#define HC_DECL_PRIVATE_I_USORT(sym, a, b, cmpexpr)			\
+	_HC_DECL_I_USORT_HEADER(static, sym, usort);			\
+	_HC_DECL_I_USORT_HEADER(static, sym, usort_desc);		\
+	_HC_DECL_I_USORT(static, sym, usort, a, b, cmpexpr)		\
+	_HC_DECL_I_USORT(static, sym, usort_desc, b, a, cmpexpr)
+
+/* public list item
+ */
 
 #define HC_DECL_PUBLIC_I_HEADERS(name, st_members)	\
-	_HC_DECL_I_HEADERS(name, st_members, )
+	_HC_DECL_I_HEADERS(, name, st_members);
 #define HC_DECL_PUBLIC_I(name)			\
-	_HC_DECL_I(name, )
+	_HC_DECL_I(, name)
 
 /* this function ceases program execution with a exit(1)
  */
