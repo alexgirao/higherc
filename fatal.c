@@ -7,12 +7,15 @@
 #include <stdarg.h>
 
 #include "higherc/higherc.h"
+#include "higherc/alloc.h"
 
 void hcns(fatal)(char *file, int line, char *fmt, ...)
 {
 	va_list args;
 
 	va_start(args, fmt);
+
+	hcns(alloc_fatal_error_happend)();
 
 	fprintf(stderr, "fatal-error: %s: %i: ", file, (int)line);
 	vfprintf(stderr, fmt, args);

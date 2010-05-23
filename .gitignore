@@ -17,3 +17,6 @@ test-n-0
 test-n-1
 test-3
 test-4
+test-crc32
+test-sha1
+test-tagid

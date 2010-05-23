@@ -85,6 +85,10 @@ void hcns(n_load_hexz)(struct hcns(n) *r, char *hex); /* likewise */
 int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n);
 int hcns(n_cmp_hexz)(struct hcns(n) *v, char *hex);
 
+void hcns(n_be1_as_hex)(struct hcns(s) *s, void *x, int len);
+void hcns(n_be1_as_dec)(struct hcns(s) *s, void *x, int len);
+void hcns(n_be1_as_base36)(struct hcns(s) *s, void *x, int len);
+
 int D_mul(hcns(h) *x, int xl, hcns(h) d, hcns(h) *r);
 int D_div(hcns(h) *x, int xl, hcns(h) d, hcns(h) *q, hcns(h) *r);
 

@@ -38,6 +38,8 @@ int main(int argc, char **argv)
 		h->c = h->a * 1000 + h->b;
 	}
 
+	printf("%i -------------------- %i\n", __LINE__, hcns(alloc_delta)());
+
 	if (h == NULL) {
 		/* no arguments
 		 */
@@ -53,7 +55,7 @@ int main(int argc, char **argv)
 	fprintf(stdout, "backward traverse\n");
 
 	i_backward(h, c);
-	while ((t = c->next(c))) {
+	while ((t = i_next(c))) {
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
 	}
 	i_end(c);
@@ -64,7 +66,7 @@ int main(int argc, char **argv)
 	fprintf(stdout, "forward traverse\n");
 
 	i_forward(h, c);
-	while ((t = c->next(c))) {
+	while ((t = i_next(c))) {
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
 	}
 	i_end(c);
@@ -84,14 +86,17 @@ int main(int argc, char **argv)
         /* cleanup
 	 */
 
+	HC_FREE(r);
+
+	printf("%i -------------------- %i\n", __LINE__, hcns(alloc_delta)());
+
 	i_backward(h, c);
-	while ((t = c->next(c))) {
+	while ((t = i_next(c))) {
 		hcns(s_free)(t->tag);
-		i_free(t);
 	}
 	i_end(c);
 
-	HC_FREE(r);
+	i_free(h);
 
 	return 0;
 }

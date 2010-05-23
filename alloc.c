@@ -8,10 +8,11 @@
 #define HC_CONF_ALLOC_OFFENSIVE_MODE
 
 static int _nallocs = 0;
+static int _dont_report = 0;
 
 static void _alloc_check(void)
 {
-	if (_nallocs) {
+	if (_nallocs && !_dont_report) {
 		/* unbalanced allocations, memory is leaking
 		 */
 		fprintf(stderr, "Oh, you're screwed It's over. You're flushed: %i.\n", _nallocs);
@@ -95,4 +96,14 @@ void *hcns(alloc_re)(void *x, int m, int n)
 	hcns(bcopyl)(y, m, x);
 	hcns(alloc_free)(x);
 	return y;
+}
+
+int hcns(alloc_delta)(void)
+{
+	return _nallocs;
+}
+
+void hcns(alloc_fatal_error_happend)(void)
+{
+	_dont_report = 1;
 }

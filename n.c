@@ -327,7 +327,7 @@ void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s)
 
 int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
 {
-	struct hcns(s) s = HC_NULL_S;
+	HC_DEF_S(s);
 	int r;
 
 	assert(hex != NULL);
@@ -342,12 +342,10 @@ int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
 
 	if (*hex == 0) hex--;
 
-	hcns(n_as_hex)(v, &s);
-	HC_SAFE_CSTR(&s);
-
-	r = hcns(s_bdiff)(&s, hex, n);
-
-	hcns(s_free)(&s);
+	hcns(n_as_hex)(v, s);
+	HC_SAFE_CSTR(s);
+	r = hcns(s_bdiff)(s, hex, n);
+	hcns(s_free)(s);
 
 	return r;
 }
@@ -355,6 +353,33 @@ int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n)
 int hcns(n_cmp_hexz)(struct hcns(n) *v, char *hex)
 {
 	return hcns(n_cmp_hex)(v, hex, hcns(slen(hex)));
+}
+
+void hcns(n_be1_as_hex)(struct hcns(s) *s, void *x, int len)
+{
+	HC_DEF_N(n);
+	hcns(n_load_be1)(n, x, len);
+	hcns(n_as_hex)(n, s);
+	hcns(n_free)(n);
+	HC_SAFE_CSTR(s);
+}
+
+void hcns(n_be1_as_dec)(struct hcns(s) *s, void *x, int len)
+{
+	HC_DEF_N(n);
+	hcns(n_load_be1)(n, x, len);
+	hcns(n_as_dec)(n, s);
+	hcns(n_free)(n);
+	HC_SAFE_CSTR(s);
+}
+
+void hcns(n_be1_as_base36)(struct hcns(s) *s, void *x, int len)
+{
+	HC_DEF_N(n);
+	hcns(n_load_be1)(n, x, len);
+	hcns(n_as_base36)(n, s);
+	hcns(n_free)(n);
+	HC_SAFE_CSTR(s);
 }
 
 /**************************************
