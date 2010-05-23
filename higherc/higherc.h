@@ -56,8 +56,8 @@ typedef unsigned int hcns(u4);
 	};								\
 	typedef struct name *(name##_next_func)(struct name##_iter *i);	\
 	typedef void (name##_end_func)(struct name##_iter *i);		\
-	spec struct name *name##__new(struct name *tail);		\
-	spec void name##__free(struct name *x);				\
+	spec struct name *name##_new0(struct name *tail);		\
+	spec void name##_free0(struct name *x);				\
 	spec struct name **name##_as_array(struct name *x);		\
 	spec int name##_len(struct name *x);				\
 	spec void name##_backward(struct name *x, struct name##_iter *i); \
@@ -66,14 +66,14 @@ typedef unsigned int hcns(u4);
 	spec struct name *name##_next(struct name##_iter *i)
 
 #define _HC_DECL_I_IMPL(spec, name)					\
-	spec struct name *name##__new(struct name *tail) {		\
+	spec struct name *name##_new0(struct name *tail) {		\
 		struct name *r;						\
 		HC_NEW(r, struct name);					\
 		r->pos = tail ? tail->pos + 1 : 0;			\
 		r->tail = tail;						\
 		return r;						\
 	}								\
-	spec void name##__free(struct name *x)				\
+	spec void name##_free0(struct name *x)				\
 	{								\
 		while (x) {						\
 			struct name *t = x->tail;			\

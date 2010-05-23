@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 	 */
 
 	for (i=1; i<argc; i++) {
-		h = i__new(h);
+		h = i_new0(h);
 		hcns(s_copyz)(h->tag, argv[i]);
 		HC_SAFE_CSTR(h->tag);
 		h->a = i;
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 	}
 	i_end(c);
 
-	i__free(h);
+	i_free0(h);
 
 	return 0;
 }

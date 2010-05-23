@@ -3,8 +3,17 @@
 
 int hcns(bchrl)(const void *s, int n, int c);
 int hcns(bchrr)(const void *s, int n, int c);
+
+/* copy from left to right, use it if shifting from left to right on
+ * overlapping buffers
+ */
 void hcns(bcopyl)(void *to, int n, const void *from);
+
+/* copy from right to left, use it if shifting from right to left on
+ * overlapping buffers
+ */
 void hcns(bcopyr)(void *to, int n, const void *from);
+
 int hcns(bdiff)(const void *s, int n, const void *t);
 void hcns(bzero)(void *s, int n);
 void hcns(brev)(void *s, int n);

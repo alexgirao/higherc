@@ -3,19 +3,26 @@ high level structures for c programming
      objective: platform independent algorithms library for
      productive, 32-bit architectures or higher
 
-data structures
-
-     - single linked lists (list)
-
 design/usability notes
+
+     - any memory allocation error will be considered a fatal error
+       and will terminate application with exit(1), this is the reason
+       many functions returns nothing (void), so you don't need to
+       worry about messy consequences of resources exhaustion and
+       painful dealing of it
 
      - use of unsigned integers are avoided, unless when dealing with
        bit wise data, on modern architectures, with two's complement
        representation, no cycle cost is added to basic arithmetic and
-       flow control (add, sub, jump)
+       flow control (add, sub, jump, mul)
 
      - implicity conversion between signed and unsigned types is
        avoided at all cost
+
+     - explicity casting between pointers are avoided at all cost
+
+     - memory allocation functions are not thread-safe, all other data
+       structures are reentrant
 
 api instructions
 

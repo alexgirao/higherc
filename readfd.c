@@ -86,9 +86,9 @@ int hcns(readfd)(int fd, int (*doit)(const char *buf, int len, hcns(bool) eof))
 			 */
 			if (len - n > 0) {
 				/* copy unprocessed data to start of
-				 * buffer
+				 * buffer (shift left)
 				 */
-				hcns(bcopyr)(buf, len - n, buf + n);
+				hcns(bcopyl)(buf, len - n, buf + n);
 			}
 			len -= n;
 			total += n;

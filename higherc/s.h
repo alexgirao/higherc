@@ -11,19 +11,25 @@ struct hcns(s) {
 #define HC_ST_S struct hcns(s)
 #define HC_DEF_S(sym) HC_ST_S sym[1] = {HC_NULL_S}
 
-hcns(bool) hcns(s_alloc)(HC_ST_S *x, int n);
-hcns(bool) hcns(s_free)(HC_ST_S *x);
+void hcns(s_alloc)(HC_ST_S *x, int n);
+void hcns(s_free)(HC_ST_S *x);
 
-hcns(bool) hcns(s_copyn)(HC_ST_S *, const char *, int);
-hcns(bool) hcns(s_copy)(HC_ST_S *, const HC_ST_S *);
-hcns(bool) hcns(s_copyz)(HC_ST_S *, const char *);
+void hcns(s_copyn)(HC_ST_S *, const char *, int);
+void hcns(s_copy)(HC_ST_S *, const HC_ST_S *);
+void hcns(s_copyz)(HC_ST_S *, const char *);
 
-hcns(bool) hcns(s_catn)(HC_ST_S *, const char *, int);
-hcns(bool) hcns(s_cat)(HC_ST_S *, const HC_ST_S *);
-hcns(bool) hcns(s_catz)(HC_ST_S *, const char *);
+void hcns(s_catn)(HC_ST_S *, const char *, int);
+void hcns(s_cat)(HC_ST_S *, const HC_ST_S *);
+void hcns(s_catz)(HC_ST_S *, const char *);
 
-void hcns(s_cat_i4_dec)(HC_ST_S *, hcns(i4));
-void hcns(s_cat_u4_dec)(HC_ST_S *, hcns(u4));
+/* s_cat_* return amount of written digits and sign '-'
+ */
+int hcns(s_cat_i4_hex)(HC_ST_S *, hcns(i4));
+int hcns(s_cat_u4_hex)(HC_ST_S *, hcns(u4));
+int hcns(s_cat_i4_dec)(HC_ST_S *, hcns(i4));
+int hcns(s_cat_u4_dec)(HC_ST_S *, hcns(u4));
+int hcns(s_cat_i4_base36)(HC_ST_S *, hcns(i4));
+int hcns(s_cat_u4_base36)(HC_ST_S *, hcns(u4));
 
 int hcns(s_diffn)(HC_ST_S *a, char *b, int bl);
 int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b);

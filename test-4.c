@@ -35,21 +35,42 @@ HC_DECL_PUBLIC_I(hcns(aa));
 HC_DECL_PRIVATE_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
 HC_DECL_PRIVATE_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
 
+static struct hcns(aa) *aa_new(struct hcns(aa) *h, int argc, char *arg)
+{
+	h = hcns(aa_new0)(h);
+
+	hcns(s_copyz)(h->tag, arg);
+	HC_SAFE_CSTR(h->tag);
+
+	h->a = argc;
+	h->b = h->tag->len;
+	h->c = h->a * 1000 + h->b;
+
+	return h;
+}
+
+static void aa_free(struct hcns(aa) *h)
+{
+	struct hcns(aa) *t;
+	struct hcns(aa_iter) c[1];
+	hcns(aa_backward)(h, c);
+	while ((t = hcns(aa_next)(c))) {
+		hcns(s_free)(t->tag);
+	}
+	hcns(aa_end)(c);
+	hcns(aa_free0)(h);
+}
+
 int main(int argc, char **argv)
 {
 	int i, j;
-	struct hcns(aa) *h = NULL, *t;
+	struct hcns(aa) *h = NULL;
 
 	/* fill list
 	 */
 
 	for (i=1; i<argc; i++) {
-		h = hcns(aa__new)(h);
-		hcns(s_copyz)(h->tag, argv[i]);
-		HC_SAFE_CSTR(h->tag);
-		h->a = i;
-		h->b = h->tag->len;
-		h->c = h->a * 1000 + h->b;
+		h = aa_new(h, i, argv[i]);
 	}
 
 	if (h == NULL) {
@@ -58,48 +79,6 @@ int main(int argc, char **argv)
 		printf("no arguments supplied\n");
 		exit(0);
 	}
-
-	struct hcns(aa_iter) c[1];
-
-#if 0
-
-	/* backward traverse
-	 */
-
-	fprintf(stdout, "backward traverse\n");
-
-	hcns(aa_backward)(h, c);
-	while ((t = hcns(aa_next)(c))) {
-		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
-	}
-	hcns(aa_end)(c);
-
-	/* forward traverse
-	 */
-
-	fprintf(stdout, "forward traverse\n");
-
-	hcns(aa_forward)(h, c);
-	while ((t = hcns(aa_next)(c))) {
-		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
-	}
-	hcns(aa_end)(c);
-
-	/* forward traverse, from array
-	 */
-
-	struct hcns(aa) **r = hcns(aa_as_array)(h);
-
-	fprintf(stdout, "forward traverse (from array)\n");
-
-	for (i=0, j=hcns(aa_len)(h); i<j; i++) {
-		struct hcns(aa) *tmp = r[i];
-		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
-	}
-
-       	HC_FREE(r);
-
-#endif
 
 	/* sorted traverse
 	 */
@@ -161,13 +140,7 @@ int main(int argc, char **argv)
         /* cleanup
 	 */
 
-	hcns(aa_backward)(h, c);
-	while ((t = hcns(aa_next)(c))) {
-		hcns(s_free)(t->tag);
-	}
-	hcns(aa_end)(c);
-
-	hcns(aa__free)(h);
+	aa_free(h);
 
 	return 0;
 }

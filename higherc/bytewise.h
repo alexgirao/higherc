@@ -94,13 +94,13 @@ static inline unsigned int hcns(swab32)(unsigned int val)
 extern const signed char hcns(hexval_table)[256];
 
 #define HC_HEX_VALUE(d) (hcns(hexval_table)[(unsigned char)(d)])
-#define HC_HEX_DIGIT(v) ("0123456789abcdef"[(v)&0xf])
+#define HC_HEX_DIGIT(v) ((v) >= 0 && (v) < 16 ? "0123456789abcdef"[v] : '?')
 
 //#define HC_DEC_VALUE(d)
-#define HC_DEC_DIGIT(v) (v >= 0 && v < 10 ? "0123456789"[v] : '?')
+#define HC_DEC_DIGIT(v) ((v) >= 0 && (v) < 10 ? "0123456789"[v] : '?')
 
 //#define HC_BASE36_VALUE(d)
-#define HC_BASE36_DIGIT(v) (v >= 0 && v < 36 ? "0123456789abcdefghijklmnopqrstuvwxyz"[v] : '?')
+#define HC_BASE36_DIGIT(v) ((v) >= 0 && (v) < 36 ? "0123456789abcdefghijklmnopqrstuvwxyz"[v] : '?')
 
 /* HC_PUT_HEX(d, n, s): n is the amount of bytes to read from source (s)
  */

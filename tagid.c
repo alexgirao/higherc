@@ -23,7 +23,7 @@ HC_DECL_PUBLIC_I_USORT(hcns(tag), a, b, CMP_EXPR);
 
 struct hcns(tag) *hcns(tag_new)(struct hcns(tag) *x, char *z)
 {
-	HC_ST_TAG *r = hcns(tag__new)(x);
+	HC_ST_TAG *r = hcns(tag_new0)(x);
 	if (!hcns(tag_setz)(r, z)) {
 		hcns(s_free)(r->value);
 		return NULL;
@@ -42,7 +42,7 @@ void hcns(tag_free)(struct hcns(tag) *x)
 	}
 	hcns(tag_end)(iter);
 
-	hcns(tag__free)(x);
+	hcns(tag_free0)(x);
 }
 
 hcns(bool) hcns(tag_is_valid)(struct hcns(s) *s)

@@ -74,12 +74,70 @@ int main(int argc, char **argv)
 	/*
 	 */
 
-	hcns(s_cat_u4_dec)(s, 0xffffffff);
+	assert(hcns(s_cat_u4_hex)(s, 0) == 1);
+	assert(hcns(s_diffz)(s, "0") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_i4_hex)(s, 0) == 1);
+	assert(hcns(s_diffz)(s, "0") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_u4_hex)(s, 0xffffffff) == 8);
+	assert(hcns(s_diffz)(s, "ffffffff") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_i4_hex)(s, (hcns(i4))0xffffffff) == 2);
+	assert(hcns(s_diffz)(s, "-1") == 0);
+	print_s("[", s, "]\n");
+
+	hcns(s_free)(s);
+
+	/*
+	 */
+
+	assert(hcns(s_cat_u4_dec)(s, 0) == 1);
+	assert(hcns(s_diffz)(s, "0") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_i4_dec)(s, 0) == 1);
+	assert(hcns(s_diffz)(s, "0") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_u4_dec)(s, 0xffffffff) == 10);
 	assert(hcns(s_diffz)(s, "4294967295") == 0);
 	print_s("[", s, "]\n");
 
 	s->len = 0;
-	hcns(s_cat_i4_dec)(s, (hcns(i4))0xffffffff);
+	assert(hcns(s_cat_i4_dec)(s, (hcns(i4))0xffffffff) == 2);
+	assert(hcns(s_diffz)(s, "-1") == 0);
+	print_s("[", s, "]\n");
+
+	hcns(s_free)(s);
+
+	/*
+	 */
+
+	assert(hcns(s_cat_u4_base36)(s, 0) == 1);
+	assert(hcns(s_diffz)(s, "0") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_i4_base36)(s, 0) == 1);
+	assert(hcns(s_diffz)(s, "0") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_u4_base36)(s, 0xffffffff) == 7);
+	assert(hcns(s_diffz)(s, "1z141z3") == 0);
+	print_s("[", s, "]\n");
+
+	s->len = 0;
+	assert(hcns(s_cat_i4_base36)(s, (hcns(i4))0xffffffff) == 2);
 	assert(hcns(s_diffz)(s, "-1") == 0);
 	print_s("[", s, "]\n");
 

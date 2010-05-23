@@ -18,6 +18,67 @@
 /* see ~/projects/tagdb/README2
  */
 
+static void print_s(char *prefix, HC_ST_S *s, char *suffix)
+{
+	if (prefix) printf("%s", prefix);
+	fwrite(s->s, s->len, 1, stdout);
+	if (suffix) printf("%s", suffix);
+}
+
+void s_shiftr(HC_ST_S *s, int start, int n, char pad)
+{
+	int i;
+
+	assert(start >= 0);
+	assert(start <= s->len);
+
+	printf("-------------------------------------------------------------------------------- %i\n", s->len - start);
+
+	hcns(s_alloc)(s, s->len + n);
+	hcns(bcopyr)(s->s + start + n, s->len - start, s->s + start);
+
+	s->len += n;
+	for (i=0;i<n;i++) {
+		s->s[start+i] = pad;
+	}
+}
+
+void print_tagid(HC_ST_TAGID *tagid)
+{
+	HC_DEF_S(E);
+
+	HC_SAFE_CSTR(tagid->A);
+	printf("tagid.A: %s\n", tagid->A->s);
+	printf("tagid.B: %i\n", tagid->B);
+	printf("tagid.C: %i\n", tagid->C);
+	printf("tagid.D: %.8x\n", tagid->D);
+
+	hcns(n_be1_as_base36)(E, tagid->E, sizeof(tagid->E));
+	HC_SAFE_CSTR(E);
+	printf("tagid.E: %s\n", E->s);
+
+	HC_DEF_S(B);
+
+	hcns(s_catz)(B, "alpha");
+	//hcns(s_catn)(B, "\0", 1);
+	s_shiftr(B, B->len, 30, '0');
+	print_s("B: [", B, "]\n");
+
+	return;
+
+
+	B->len = 3;
+	int b_len = hcns(s_cat_u4_hex)(B, tagid->B);
+	assert(b_len <= 2);
+	s_shiftr(B, 3, 2 - b_len, '0');
+
+	printf("B->len: %i\n", B->len);
+	print_s("B: [", B, "]\n");
+	hcns(s_free)(B);
+       
+	hcns(s_free)(E);
+}
+
 int main(int argc, char **argv)
 {
 	int i;
@@ -39,20 +100,7 @@ int main(int argc, char **argv)
 	}
 
 	hcns(tagid_set)(tagid, h);
-
-	HC_SAFE_CSTR(tagid->A);
-	printf("tagid.A: %s\n", tagid->A->s);
-	printf("tagid.B: %i\n", tagid->B);
-	printf("tagid.C: %i\n", tagid->C);
-	printf("tagid.D: %.8x\n", tagid->D);
-
-	{
-		HC_DEF_S(E);
-		hcns(n_be1_as_base36)(E, tagid->E, sizeof(tagid->E));
-		HC_SAFE_CSTR(E);
-		printf("tagid.E: %s\n", E->s);
-		hcns(s_free)(E);
-	}
+	print_tagid(tagid);
 
         /* cleanup
 	 */

@@ -13,12 +13,12 @@ higherc/crc32.h higherc/sha1.h higherc/tagid.h
 
 PROGS = test-0 test-1 test-2 test-3 test-4 test-list-0 test-stralloc-0	\
 test-pbuf-0 test-tok-0 sample-cat test-bytewise test-rand test-n-0	\
-test-n-1 test-crc32 test-sha1 test-tagid
+test-n-1 test-crc32 test-sha1 test-tagid test-byte
 
 PROGS_OBJS = test-0.o test-1.o test-2.o test-3.o test-4.o	\
 test-list-0.o test-stralloc-0.o test-pbuf-0.o test-tok-0.o	\
 test-bytewise.o sample-cat.o test-rand.o test-n-0.o test-n-1.o	\
-test-crc32.o test-sha1.o test-tagid.o
+test-crc32.o test-sha1.o test-tagid.o test-byte.o
 
 all: libhigherc.a $(PROGS)
 

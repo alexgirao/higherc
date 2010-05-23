@@ -3,13 +3,9 @@
 
 int hcns(bchrl)(const void *s, int n, int c)
 {
-	char ch;
-	const char *t;
-	const char *u;
-
-	ch = c;
-	t = s;
-	u = s + n;
+	char ch = c;
+	const char *t = s;
+	const char *u = t + n;
 
 	for (;;) {
 		if (t==u)
@@ -41,11 +37,8 @@ int hcns(bchrl)(const void *s, int n, int c)
 
 int hcns(bchrr)(const void *s, int n, int c)
 {
-	char ch;
-	const char *t;
-
-	ch = c;
-	t = s + n;
+	char ch = c;
+	const char *t = (char*)s + n;
 	for (;;) {
 		--t;
 		if (t<(char*)s)
@@ -76,8 +69,8 @@ int hcns(bchrr)(const void *s, int n, int c)
 
 void hcns(bcopyl)(void *to, int n, const void *from)
 {
-	char *t=to;
-	const char *f=from;
+	char *t = to;
+	const char *f = from;
 	for (;;) {
 		if (!n)
 			return;
@@ -103,10 +96,8 @@ void hcns(bcopyl)(void *to, int n, const void *from)
 
 void hcns(bcopyr)(void *to, int n, const void *from)
 {
-	char *t=to;
-	const char *f=from;
-	to += n;
-	from += n;
+	char *t = (char*)to + n;
+	const char *f = (char*)from + n;
 	for (;;) {
 		if (!n)
 			return;
