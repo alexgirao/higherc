@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	 */
 
 	for (i=1; i<argc; i++) {
-		h = hcns(aa_new)(h);
+		h = hcns(aa__new)(h);
 		hcns(s_copyz)(h->tag, argv[i]);
 		HC_SAFE_CSTR(h->tag);
 		h->a = i;
@@ -132,8 +132,7 @@ int main(int argc, char **argv)
 	 */
 
 	struct hcns(aa) **usorted = hcns(aa_as_array)(h);
-	int newlen;
-	hcns(aa_usort)(usorted, hcns(aa_len)(h), &newlen);
+	int newlen = hcns(aa_usort)(usorted, hcns(aa_len)(h));
 
 	fprintf(stdout, "sorted traverse (from uniquely sorted array)\n");
 
@@ -148,7 +147,7 @@ int main(int argc, char **argv)
 	 */
 
 	usorted = hcns(aa_as_array)(h);
-	hcns(aa_usort_desc)(usorted, hcns(aa_len)(h), &newlen);
+	newlen = hcns(aa_usort_desc)(usorted, hcns(aa_len)(h));
 
 	fprintf(stdout, "sorted traverse (from uniquely sorted array)\n");
 
@@ -168,7 +167,7 @@ int main(int argc, char **argv)
 	}
 	hcns(aa_end)(c);
 
-	hcns(aa_free)(h);
+	hcns(aa__free)(h);
 
 	return 0;
 }

@@ -41,23 +41,24 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		void *v0, *v1;						\
 		long l0;						\
 	};								\
-	spec struct name *name##_new(struct name *tail);		\
-	spec void name##_free(struct name *x);				\
+	spec struct name *name##__new(struct name *tail);		\
+	spec void name##__free(struct name *x);				\
 	spec struct name **name##_as_array(struct name *x);		\
 	spec int name##_len(struct name *x);				\
 	spec void name##_backward(struct name *x, struct name##_iter *i); \
 	spec void name##_forward(struct name *x, struct name##_iter *i); \
-	spec void name##_end(struct name##_iter *i)
+	spec void name##_end(struct name##_iter *i);			\
+	spec struct name *name##_next(struct name##_iter *i)
 
-#define _HC_DECL_I(spec, name)						\
-	spec struct name *name##_new(struct name *tail) {		\
+#define _HC_DECL_I_IMPL(spec, name)					\
+	spec struct name *name##__new(struct name *tail) {		\
 		struct name *r;						\
 		HC_NEW(r, struct name);					\
 		r->pos = tail ? tail->pos + 1 : 0;			\
 		r->tail = tail;						\
 		return r;						\
 	}								\
-	spec void name##_free(struct name *x)				\
+	spec void name##__free(struct name *x)				\
 	{								\
 		while (x) {						\
 			struct name *t = x->tail;			\
@@ -137,10 +138,10 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		}							\
 	}
 
-#define _HC_DECL_I_SORT_HEADER(spec, name, fname) spec void name##_##fname(struct name **items, int len);
-#define _HC_DECL_I_USORT_HEADER(spec, name, fname) spec void name##_##fname(struct name **items, int len, int *newlen);
+#define _HC_DECL_I_SORT_HEADER(spec, name, fname) spec void name##_##fname(struct name **items, int len)
+#define _HC_DECL_I_USORT_HEADER(spec, name, fname) spec int name##_##fname(struct name **items, int len)
 
-#define _HC_DECL_I_SORT(spec, name, fname, a, b, cmpexpr)		\
+#define _HC_DECL_I_SORT_IMPL(spec, name, fname, a, b, cmpexpr)		\
 	spec void name##_##fname(struct name **items, int len)		\
 	{								\
 		int i, r;						\
@@ -165,8 +166,8 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		}							\
 	}
 
-#define _HC_DECL_I_USORT(spec, name, fname, a, b, cmpexpr)		\
-	spec void name##_##fname(struct name **items, int len, int *newlen) \
+#define _HC_DECL_I_USORT_IMPL(spec, name, fname, a, b, cmpexpr)		\
+	spec int name##_##fname(struct name **items, int len)		\
 	{								\
 		int i, r;						\
 		struct name *a, *b;					\
@@ -209,7 +210,7 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 				items[k + 1] = b;			\
 			}						\
 		}							\
-		*newlen = len;						\
+		return len;						\
 	}
 
 /* private list item
@@ -217,48 +218,44 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 
 #define HC_DECL_PRIVATE_I(name, st_members)		\
 	_HC_DECL_I_HEADERS(static, name, st_members);	\
-	_HC_DECL_I(static, name)
+	_HC_DECL_I_IMPL(static, name)
 
-#define HC_DECL_PRIVATE_I_SORT(name, a, b, cmpexpr)		\
-	_HC_DECL_I_SORT_HEADER(static, name, sort);		\
+#define HC_DECL_PRIVATE_I_SORT(name, a, b, cmpexpr)			\
+	_HC_DECL_I_SORT_HEADER(static, name, sort);			\
 	_HC_DECL_I_SORT_HEADER(static, name, sort_desc);		\
-	_HC_DECL_I_SORT(static, name, sort, a, b, cmpexpr)	\
-	_HC_DECL_I_SORT(static, name, sort_desc, b, a, cmpexpr)
+	_HC_DECL_I_SORT_IMPL(static, name, sort, a, b, cmpexpr);	\
+	_HC_DECL_I_SORT_IMPL(static, name, sort_desc, b, a, cmpexpr)
 
 #define HC_DECL_PRIVATE_I_USORT(name, a, b, cmpexpr)			\
 	_HC_DECL_I_USORT_HEADER(static, name, usort);			\
 	_HC_DECL_I_USORT_HEADER(static, name, usort_desc);		\
-	_HC_DECL_I_USORT(static, name, usort, a, b, cmpexpr)		\
-	_HC_DECL_I_USORT(static, name, usort_desc, b, a, cmpexpr)
+	_HC_DECL_I_USORT_IMPL(static, name, usort, a, b, cmpexpr);	\
+	_HC_DECL_I_USORT_IMPL(static, name, usort_desc, b, a, cmpexpr)
 
 /* public list item
  */
 
 #define HC_DECL_PUBLIC_I_HEADERS(name, st_members)	\
-	_HC_DECL_I_HEADERS(, name, st_members);
+	_HC_DECL_I_HEADERS(, name, st_members)
 
-#define HC_DECL_PUBLIC_I_SORT_HEADER(name, a, b, cmpexpr)	\
-	_HC_DECL_I_SORT_HEADER(static, name, sort);		\
-	_HC_DECL_I_SORT_HEADER(static, name, sort_desc)
+#define HC_DECL_PUBLIC_I_SORT_HEADER(name)			\
+	_HC_DECL_I_SORT_HEADER(, name, sort);			\
+	_HC_DECL_I_SORT_HEADER(, name, sort_desc)
 
-#define HC_DECL_PUBLIC_I_USORT_HEADER(name, a, b, cmpexpr)	\
-	_HC_DECL_I_SORT_HEADER(static, name, usort);		\
-	_HC_DECL_I_SORT_HEADER(static, name, usort_desc)
+#define HC_DECL_PUBLIC_I_USORT_HEADER(name)		\
+	_HC_DECL_I_USORT_HEADER(, name, usort);		\
+	_HC_DECL_I_USORT_HEADER(, name, usort_desc)
 
 #define HC_DECL_PUBLIC_I(name)			\
-	_HC_DECL_I(, name)
+	_HC_DECL_I_IMPL(, name)
 
 #define HC_DECL_PUBLIC_I_SORT(name, a, b, cmpexpr)		\
-	_HC_DECL_I_SORT_HEADER(, name, sort);			\
-	_HC_DECL_I_SORT_HEADER(, name, sort_desc);		\
-	_HC_DECL_I_SORT(, name, sort, a, b, cmpexpr)		\
-	_HC_DECL_I_SORT(, name, sort_desc, b, a, cmpexpr)
+	_HC_DECL_I_SORT_IMPL(, name, sort, a, b, cmpexpr);	\
+	_HC_DECL_I_SORT_IMPL(, name, sort_desc, b, a, cmpexpr)
 
-#define HC_DECL_PUBLIC_I_USORT(name, a, b, cmpexpr)		\
-	_HC_DECL_I_USORT_HEADER(, name, usort);			\
-	_HC_DECL_I_USORT_HEADER(, name, usort_desc);		\
-	_HC_DECL_I_USORT(, name, usort, a, b, cmpexpr)		\
-	_HC_DECL_I_USORT(, name, usort_desc, b, a, cmpexpr)
+#define HC_DECL_PUBLIC_I_USORT(name, a, b, cmpexpr)			\
+	_HC_DECL_I_USORT_IMPL(, name, usort, a, b, cmpexpr);		\
+	_HC_DECL_I_USORT_IMPL(, name, usort_desc, b, a, cmpexpr)
 
 /* this function ceases program execution with a exit(1)
  */

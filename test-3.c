@@ -30,15 +30,13 @@ int main(int argc, char **argv)
 	 */
 
 	for (i=1; i<argc; i++) {
-		h = i_new(h);
+		h = i__new(h);
 		hcns(s_copyz)(h->tag, argv[i]);
 		HC_SAFE_CSTR(h->tag);
 		h->a = i;
 		h->b = h->tag->len;
 		h->c = h->a * 1000 + h->b;
 	}
-
-	printf("%i -------------------- %i\n", __LINE__, hcns(alloc_delta)());
 
 	if (h == NULL) {
 		/* no arguments
@@ -88,15 +86,13 @@ int main(int argc, char **argv)
 
 	HC_FREE(r);
 
-	printf("%i -------------------- %i\n", __LINE__, hcns(alloc_delta)());
-
 	i_backward(h, c);
 	while ((t = i_next(c))) {
 		hcns(s_free)(t->tag);
 	}
 	i_end(c);
 
-	i_free(h);
+	i__free(h);
 
 	return 0;
 }
