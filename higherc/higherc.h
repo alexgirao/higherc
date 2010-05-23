@@ -37,10 +37,12 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 		st_members						\
 	};								\
 	struct name##_iter {						\
-		int i0;							\
+		void *next, *end;					\
 		void *v0, *v1;						\
-		long l0;						\
+		int l0;							\
 	};								\
+	typedef struct name *(name##_next_func)(struct name##_iter *i);	\
+	typedef void (name##_end_func)(struct name##_iter *i);		\
 	spec struct name *name##__new(struct name *tail);		\
 	spec void name##__free(struct name *x);				\
 	spec struct name **name##_as_array(struct name *x);		\
@@ -83,6 +85,7 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 	{								\
 		struct name *r = i->v0;					\
 		if (r == NULL) {					\
+			i->next = NULL;					\
 			return NULL;					\
 		}							\
 		i->v0 = r->tail;					\
@@ -90,8 +93,19 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 	}								\
 	spec void name##_backward(struct name *x, struct name##_iter *i) \
 	{								\
-		i->i0 = 'b';						\
+		i->next = _##name##_next_b;				\
+		i->end = NULL;						\
 		i->v0 = x;						\
+	}								\
+	static inline void _##name##_end_f(struct name##_iter *i)	\
+	{								\
+		i->next = NULL;						\
+		i->end = NULL;						\
+		i->v1 = NULL;						\
+		if (i->v0) {						\
+			HC_FREE(i->v0);					\
+			i->v0 = NULL;					\
+		}							\
 	}								\
 	static inline struct name *_##name##_next_f(struct name##_iter *i) \
 	{								\
@@ -100,9 +114,7 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 			return NULL;					\
 		}							\
 		if (i->l0-- == 0) {					\
-			HC_FREE(i->v0);					\
-			i->v0 = NULL;					\
-			i->v1 = NULL;					\
+			_##name##_end_f(i);				\
 			return NULL;					\
 		}							\
 		i->v1 = r + 1;						\
@@ -110,31 +122,23 @@ typedef int hcns(bool);   /* 0 = false, 1 = true */
 	}								\
 	spec void name##_forward(struct name *x, struct name##_iter *i)	\
 	{								\
-		i->i0 = 'f';						\
+		i->next = _##name##_next_f;				\
+		i->end = _##name##_end_f;				\
 		i->v0 = name##_as_array(x);				\
 		i->v1 = i->v0;						\
 		i->l0 = x->pos + 1;					\
 	}								\
 	spec struct name *name##_next(struct name##_iter *i)		\
 	{								\
-		switch (i->i0) {					\
-		case 'b': return _##name##_next_b(i);			\
-		case 'f': return _##name##_next_f(i);			\
-		default:						\
-			HC_FATAL("exhausted");				\
+		if (i->next) {						\
+			return ((name##_next_func*)i->next)(i);		\
 		}							\
 		return NULL;						\
 	}								\
 	spec void name##_end(struct name##_iter *i)			\
 	{								\
-		if (i->i0 == 'f') {					\
-			if (i->v0) {					\
-				HC_FREE(i->v0);				\
-				i->v0 = NULL;				\
-			}						\
-		} else if (i->i0 == 'b') {				\
-		} else {						\
-			HC_FATAL("exhausted");				\
+		if (i->end) {						\
+			((name##_end_func*)i->end)(i);			\
 		}							\
 	}
 
