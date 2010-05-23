@@ -7,7 +7,20 @@
 #define hcns(v) higherc_##v
 #endif
 
+/* todo: ensure sizes below (u4, i2, ...)
+ */
+
 typedef int hcns(bool);   /* 0 = false, 1 = true */
+
+typedef signed char hcns(i1);  /* some compilers or compiler flag set char to be unsigned by default */
+typedef signed short hcns(i2);
+typedef signed int hcns(i4);
+//typedef unsigned long hcns(u8);  // future
+
+typedef unsigned char hcns(u1);
+typedef unsigned short hcns(u2);
+typedef unsigned int hcns(u4);
+//typedef unsigned long hcns(u8);  // future
 
 #define HC_TRUE 1
 #define HC_FALSE 0

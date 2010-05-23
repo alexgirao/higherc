@@ -11,28 +11,27 @@ struct hcns(s) {
 #define HC_ST_S struct hcns(s)
 #define HC_DEF_S(sym) HC_ST_S sym[1] = {HC_NULL_S}
 
-hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n);
-hcns(bool) hcns(s_free)(struct hcns(s) *x);
+hcns(bool) hcns(s_alloc)(HC_ST_S *x, int n);
+hcns(bool) hcns(s_free)(HC_ST_S *x);
 
-hcns(bool) hcns(s_copyn)(struct hcns(s) *, const char *, int);
-hcns(bool) hcns(s_copy)(struct hcns(s) *, const struct hcns(s) *);
-hcns(bool) hcns(s_copyz)(struct hcns(s) *, const char *);
+hcns(bool) hcns(s_copyn)(HC_ST_S *, const char *, int);
+hcns(bool) hcns(s_copy)(HC_ST_S *, const HC_ST_S *);
+hcns(bool) hcns(s_copyz)(HC_ST_S *, const char *);
 
-hcns(bool) hcns(s_catn)(struct hcns(s) *, const char *, int);
-hcns(bool) hcns(s_cat)(struct hcns(s) *, const struct hcns(s) *);
-hcns(bool) hcns(s_catz)(struct hcns(s) *, const char *);
+hcns(bool) hcns(s_catn)(HC_ST_S *, const char *, int);
+hcns(bool) hcns(s_cat)(HC_ST_S *, const HC_ST_S *);
+hcns(bool) hcns(s_catz)(HC_ST_S *, const char *);
 
-int hcns(s_bdiff)(struct hcns(s) *a, char *b, int bl);
-int hcns(s_sdiff)(struct hcns(s) *a, char *b);
+void hcns(s_cat_i4_dec)(HC_ST_S *, hcns(i4));
+void hcns(s_cat_u4_dec)(HC_ST_S *, hcns(u4));
 
-void hcns(s_upper)(struct hcns(s) *s);
-void hcns(s_lower)(struct hcns(s) *s);
+int hcns(s_diffn)(HC_ST_S *a, char *b, int bl);
+int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b);
+int hcns(s_diffz)(HC_ST_S *a, char *b);
 
-#define HC_SAFE_CSTR(s) do {						\
-		if (!hcns(s_catn)(s, "\0", 1)) {			\
-			HC_FATAL("HC_SAFE_CSTR(%p)", s);		\
-		}							\
-		--(s)->len;						\
-	} while (0)
+void hcns(s_upper)(HC_ST_S *s);
+void hcns(s_lower)(HC_ST_S *s);
+
+#define HC_SAFE_CSTR(s) do {hcns(s_catn)(s, "\0", 1); --(s)->len;} while (0)
 
 #endif

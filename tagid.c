@@ -17,7 +17,7 @@
 
 HC_DECL_PUBLIC_I(hcns(tag));
 
-#define CMP_EXPR hcns(s_bdiff)(a->value, b->value->s, b->value->len)
+#define CMP_EXPR hcns(s_diff)(a->value, b->value)
 
 HC_DECL_PUBLIC_I_USORT(hcns(tag), a, b, CMP_EXPR);
 
@@ -58,9 +58,43 @@ hcns(bool) hcns(tag_is_valid)(struct hcns(s) *s)
 
 hcns(bool) hcns(tag_setz)(struct hcns(tag) *x, char *z)
 {
-	if (!hcns(s_copyz)(x->value, z)) {
-		HC_FATAL("hcns(s_copyz)(%p, %p)", x, z);
-	}
+	hcns(s_copyz)(x->value, z);
 	hcns(s_lower)(x->value); /* tags are lower case only */
 	return hcns(tag_is_valid)(x->value);
+}
+
+/* tagid
+ */
+
+void hcns(tagid_set)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
+{
+	HC_ST_TAG **taglist;
+	int i, len;
+	HC_DEF_SHA1(E0);
+
+	assert(tag);
+
+	taglist = hcns(tag_as_array)(tag);
+	len = hcns(tag_usort)(taglist, hcns(tag_len)(tag));
+
+	hcns(s_cat)(tagid->A, taglist[0]->value);
+	for (i=1; i<len; i++) {
+		hcns(s_catn)(tagid->A, "-", 1);
+		hcns(s_cat)(tagid->A, taglist[i]->value);
+	}
+
+	tagid->B = len;
+	tagid->C = tagid->A->len;
+	tagid->D = hcns(crc32)(0, tagid->A->s, tagid->A->len);
+
+	hcns(sha1_init)(E0);
+	hcns(sha1_update)(E0, tagid->A->s, tagid->A->len);
+	hcns(sha1_final)(E0, tagid->E);
+
+	HC_FREE(taglist);
+}
+
+void hcns(tagid_free)(HC_ST_TAGID *tagid)
+{
+	hcns(s_free)(tagid->A);
 }

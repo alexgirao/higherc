@@ -30,7 +30,7 @@
 
 HC_DECL_PUBLIC_I(hcns(aa));
 
-#define AA_CMPEXPR hcns(s_bdiff)(x->tag, y->tag->s, y->tag->len)
+#define AA_CMPEXPR hcns(s_diff)(x->tag, y->tag)
 
 HC_DECL_PRIVATE_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
 HC_DECL_PRIVATE_I_USORT(hcns(aa), x, y, AA_CMPEXPR);

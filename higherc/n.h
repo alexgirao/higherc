@@ -11,11 +11,6 @@
  * always use native integer types or compiler supported larger types
  */
 
-typedef unsigned char hcns(u1);
-typedef unsigned short hcns(u2);
-typedef unsigned int hcns(u4);
-//typedef unsigned long hcns(u8);  // future
-
 #define HC_HALF_BITS 16
 typedef hcns(u2) hcns(h);    /* half word, at least 16-bit */
 typedef hcns(u4) hcns(f);    /* full word, at least 32-bit */

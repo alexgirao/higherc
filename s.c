@@ -21,6 +21,7 @@ hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n)
 				x->s = p;
 				return 1;
 			}
+			HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
 			return 0;
 		}
 		return 1;
@@ -31,6 +32,7 @@ hcns(bool) hcns(s_alloc)(struct hcns(s) *x, int n)
 		x->len = 0;
 		return 1;
 	}
+	HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
 	return 0;
 }
 
@@ -51,8 +53,9 @@ hcns(bool) hcns(s_free)(struct hcns(s) *x)
 
 hcns(bool) hcns(s_copyn)(struct hcns(s) *sa, const char *s, int n)
 {
-	if (!hcns(s_alloc)(sa, n + 1))
+	if (!hcns(s_alloc)(sa, n + 1)) {
 		return 0;
+	}
 	hcns(bcopyl)(sa->s, n, s);
 	sa->len = n;
 	sa->s[n] = 'Z';		/* ``offensive programming'' */
@@ -74,10 +77,12 @@ hcns(bool) hcns(s_copyz)(struct hcns(s) *sa, const char *s)
 
 hcns(bool) hcns(s_catn)(struct hcns(s) *sa, const char *s, int n)
 {
-	if (!sa->s)
+	if (!sa->s) {
 		return hcns(s_copyn)(sa, s, n);
-	if (!hcns(s_alloc)(sa, sa->len + n + 1))
+	}
+	if (!hcns(s_alloc)(sa, sa->len + n + 1)) {
 		return 0;
+	}
 	hcns(bcopyl)(sa->s + sa->len, n, s);
 	sa->len += n;
 	sa->s[sa->len] = 'Z';	/* ``offensive programming'' */
@@ -94,10 +99,36 @@ hcns(bool) hcns(s_catz)(struct hcns(s) *sa, const char *s)
 	return hcns(s_catn)(sa, s, hcns(slen)(s));
 }
 
+/* cat numeric values
+ */
+
+void hcns(s_cat_u4_dec)(HC_ST_S *s, hcns(u4) v)
+{
+	int s_len0 = s->len;
+	hcns(s_alloc)(s, s->len + 10);  /* 4-bytes can't hold more
+					 * than 10 decimal digits (max
+					 * decimal value is
+					 * 4294967296) */
+	while (v) {
+		s->s[s->len++] = HC_DEC_DIGIT(v % 10);
+		v = v / 10;
+	}
+	hcns(brev)(s->s + s_len0, s->len - s_len0);
+}
+
+void hcns(s_cat_i4_dec)(HC_ST_S *s, hcns(i4) v)
+{
+	if (v < 0) {
+		hcns(s_catn)(s, "-", 1);
+		v = -v;
+	}
+	hcns(s_cat_u4_dec)(s, v);
+}
+
 /* diff
  */
 
-int hcns(s_bdiff)(struct hcns(s) *a, char *b, int bl)
+int hcns(s_diffn)(struct hcns(s) *a, char *b, int bl)
 {
 	int x = a->len - bl;
 	int y = 0;
@@ -114,10 +145,15 @@ int hcns(s_bdiff)(struct hcns(s) *a, char *b, int bl)
 	return y ? y : x;
 }
 
-int hcns(s_sdiff)(struct hcns(s) *a, char *b)
+int hcns(s_diffz)(struct hcns(s) *a, char *b)
 {
 	hcns(s_catn)(a, "\0", 1);
 	return hcns(sdiffn)(a->s, b, a->len--);
+}
+
+int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b)
+{
+	return hcns(sdiffn)(a->s, b->s, b->len);
 }
 
 /* case change

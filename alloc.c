@@ -36,9 +36,13 @@ void *hcns(alloc)(int n)
 	int *r;
 	_initialize();
 	r = malloc(sizeof(int) + n);
-	*r = sizeof(int) + n;
-	_nallocs++;
-	return r + 1;
+	if (r) {
+		*r = sizeof(int) + n;
+		_nallocs++;
+		return r + 1;
+	}
+	HC_FATAL("hcns(alloc)(%i)", n); /* it's better be safer than sorry */
+	return NULL;
 }
 
 void *hcns(alloc_z)(int n)
@@ -46,16 +50,19 @@ void *hcns(alloc_z)(int n)
 	int *r;
 	_initialize();
 	r = calloc(1, sizeof(int) + n);
-	*r = sizeof(int) + n;
-	_nallocs++;
-	return r + 1;
+	if (r) {
+		*r = sizeof(int) + n;
+		_nallocs++;
+		return r + 1;
+	}
+	HC_FATAL("hcns(alloc_z)(%i)", n); /* it's better be safer than sorry */
+	return NULL;
 }
 
 void hcns(alloc_free)(void *x)
 {
 	int *r = x;
 	r--;
-	/* printf("dirtying %i bytes at %p\n", *r, r); */
 	hcns(bset)(r, *r, 0x7f); /* ``offensive programming'' */
 	free(r);
 	_nallocs--;
