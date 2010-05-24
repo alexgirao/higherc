@@ -111,7 +111,7 @@ extern const signed char hcns(hexval_table)[256];
 		unsigned char *__s=(unsigned char *)(s);		\
 		for (;__i<__n;__i++,__s++) {				\
 			*__d++ = HC_HEX_DIGIT(*__s >> 4);		\
-			*__d++ = HC_HEX_DIGIT(*__s);			\
+			*__d++ = HC_HEX_DIGIT(*__s & 0xf);		\
 		}							\
 	} while (0);
 

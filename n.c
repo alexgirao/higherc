@@ -223,10 +223,10 @@ void hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
 		if (d) {
 			int j;
 
-			t[0] = HC_HEX_DIGIT(d >> 12);
-			t[1] = HC_HEX_DIGIT(d >> 8);
-			t[2] = HC_HEX_DIGIT(d >> 4);
-			t[3] = HC_HEX_DIGIT(d);
+			t[0] = HC_HEX_DIGIT((d >> 12) & 0xf);
+			t[1] = HC_HEX_DIGIT((d >> 8) & 0xf);
+			t[2] = HC_HEX_DIGIT((d >> 4) & 0xf);
+			t[3] = HC_HEX_DIGIT(d & 0xf);
 
 			j = 0;
 			while (j < 4 && t[j] == '0') j++;
@@ -244,10 +244,10 @@ void hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
 		char t[4];
 		hcns(h) d = n->d[i--];
 
-		t[0] = HC_HEX_DIGIT(d >> 12);
-		t[1] = HC_HEX_DIGIT(d >> 8);
-		t[2] = HC_HEX_DIGIT(d >> 4);
-		t[3] = HC_HEX_DIGIT(d);
+		t[0] = HC_HEX_DIGIT((d >> 12) & 0xf);
+		t[1] = HC_HEX_DIGIT((d >> 8) & 0xf);
+		t[2] = HC_HEX_DIGIT((d >> 4) & 0xf);
+		t[3] = HC_HEX_DIGIT(d & 0xf);
 
 		hcns(s_catn)(s, t, 4);
 	}
