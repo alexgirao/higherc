@@ -31,10 +31,10 @@ static void test0()
 	HC_DEF_TAGID(tagid);
 	HC_ST_TAG *h = NULL;
 
-	h = hcns(tag_new)(h, "a");
-	h = hcns(tag_new)(h, "b");
-	h = hcns(tag_new)(h, "c");
-	h = hcns(tag_new)(h, "d");
+	h = hcns(tag_newz)(h, "a");
+	h = hcns(tag_newz)(h, "b");
+	h = hcns(tag_newz)(h, "c");
+	h = hcns(tag_newz)(h, "d");
 
 	hcns(tagid_set_tags)(tagid, h);
 	hcns(tagid_cat_id)(tagid, tid);
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	HC_DEF_S(tid);
 
 	for (i=1; i<argc; i++) {
-		h = hcns(tag_new)(h, argv[i]);
+		h = hcns(tag_newz)(h, argv[i]);
 		if (h == NULL) {
 			HC_FATAL("invalid tag at arg %i", i);
 		}

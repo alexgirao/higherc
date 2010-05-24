@@ -21,7 +21,17 @@ HC_DECL_PUBLIC_I(hcns(tag));
 
 HC_DECL_PUBLIC_I_USORT(hcns(tag), a, b, CMP_EXPR);
 
-struct hcns(tag) *hcns(tag_new)(struct hcns(tag) *x, char *z)
+struct hcns(tag) *hcns(tag_new)(struct hcns(tag) *x, HC_ST_S *s)
+{
+	HC_ST_TAG *r = hcns(tag_new0)(x);
+	if (!hcns(tag_set)(r, s)) {
+		hcns(s_free)(r->value);
+		return NULL;
+	}
+	return r;
+}
+
+struct hcns(tag) *hcns(tag_newz)(struct hcns(tag) *x, char *z)
 {
 	HC_ST_TAG *r = hcns(tag_new0)(x);
 	if (!hcns(tag_setz)(r, z)) {
@@ -54,6 +64,13 @@ hcns(bool) hcns(tag_is_valid)(struct hcns(s) *s)
 		}
 	}
 	return HC_TRUE;
+}
+
+hcns(bool) hcns(tag_set)(struct hcns(tag) *x, HC_ST_S *s)
+{
+	hcns(s_copy)(x->value, s);
+	hcns(s_lower)(x->value); /* tags are lower case only */
+	return hcns(tag_is_valid)(x->value);
 }
 
 hcns(bool) hcns(tag_setz)(struct hcns(tag) *x, char *z)

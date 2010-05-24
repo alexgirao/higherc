@@ -16,10 +16,14 @@ HC_DECL_PUBLIC_I_USORT_HEADER(hcns(tag));
 
 #define HC_ST_TAG struct hcns(tag)
 
-struct hcns(tag) *hcns(tag_new)(struct hcns(tag) *x, char *z);
+struct hcns(tag) *hcns(tag_new)(struct hcns(tag) *x, HC_ST_S *s);
+struct hcns(tag) *hcns(tag_newz)(struct hcns(tag) *x, char *z);
+
 void hcns(tag_free)(struct hcns(tag) *x);
 
 hcns(bool) hcns(tag_is_valid)(struct hcns(s) *s);
+
+hcns(bool) hcns(tag_set)(struct hcns(tag) *x, HC_ST_S *s);
 hcns(bool) hcns(tag_setz)(struct hcns(tag) *x, char *z);
 
 /* tagid
