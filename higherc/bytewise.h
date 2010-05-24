@@ -131,22 +131,20 @@ extern const signed char hcns(hexval_table)[256];
 /* ctype
  */
 
-#define HC_SPACE 0x01
-#define HC_DIGIT 0x02
-#define HC_ALPHA 0x04
-#define HC_GLOB 0x08 /* do not match ] */
-#define HC_REGEX_META 0x10 /* meta chars: do not match ] and } */
-#define HC_REGEX_CHAR 0x20 /* character class: \, ^, -, [, ] */
-#define HC_BLANK 0x40
-#define HC_PUNCT 0x80  /* not HC_GLOB_SPECIAL nor HC_REGEX_SPECIAL */
+#define HC_SPACE 0x1
+#define HC_DIGIT 0x2
+#define HC_ALPHA 0x4
+#define HC_ALNUM 0x8
+#define HC_GLOB 0x10 /* do not match ] */
+#define HC_REGEX_META 0x20 /* meta chars: do not match ] and } */
+#define HC_REGEX_CHAR 0x40 /* character class: \, ^, -, [, ] */
+#define HC_BLANK 0x80
+#define HC_PUNCT 0x100  /* not HC_GLOB_SPECIAL nor HC_REGEX_SPECIAL */
 
-extern unsigned char hcns(ctypetbl)[256];
+extern hcns(u2) hcns(ctypetbl)[256];
 
+#define HC_CTYPE_FLAGS(x) (hcns(ctypetbl)[(unsigned char)(x)])
 #define HC_SANE_ISTEST(x, mask) ((hcns(ctypetbl)[(unsigned char)(x)] & (mask)) != 0)
-
-#define HC_MASK_ALNUM (HC_ALPHA | HC_DIGIT)
-#define HC_MASK_GRAPH (HC_MASK_ALNUM | HC_GLOB | HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT)
-#define HC_MASK_PRINT (HC_MASK_GRAPH | HC_SPACE)
 
 #define HC_ISASCII(x) (((x) & ~0x7f) == 0)
 #define HC_ISSPACE(x) HC_SANE_ISTEST(x, HC_SPACE)
@@ -155,13 +153,17 @@ extern unsigned char hcns(ctypetbl)[256];
 #define HC_ISALPHA(x) HC_SANE_ISTEST(x, HC_ALPHA)
 #define HC_ISALPHA_UPPER(x) ((x & 0x20) == 0)
 #define HC_ISALPHA_LOWER(x) ((x & 0x20) != 0)
-#define HC_ISALNUM(x) HC_SANE_ISTEST(x, HC_MASK_ALNUM)
-#define HC_ISGRAPH(x) HC_SANE_ISTEST(x, HC_MASK_GRAPH)
-#define HC_ISPRINT(x) HC_SANE_ISTEST(x, HC_MASK_PRINT)
-#define HC_ISPUNCT(x) HC_SANE_ISTEST(x, HC_MASK_GRAPH & ~HC_MASK_ALNUM)
+#define HC_ISALNUM(x) HC_SANE_ISTEST(x, HC_ALNUM)
+#define HC_ISPUNCT(x) HC_SANE_ISTEST(x, HC_PUNCT)
 #define HC_ISGLOB(x) HC_SANE_ISTEST(x, HC_GLOB)
 #define HC_ISREGEX_META(x) HC_SANE_ISTEST(x, HC_REGEX_META)
 #define HC_ISREGEX_CHAR(x) HC_SANE_ISTEST(x, HC_REGEX_CHAR)
+
+#define HC_MASK_GRAPH (HC_ALNUM | HC_PUNCT)
+#define HC_MASK_PRINT (HC_MASK_GRAPH | HC_SPACE)
+
+#define HC_ISGRAPH(x) HC_SANE_ISTEST(x, HC_MASK_GRAPH)
+#define HC_ISPRINT(x) HC_SANE_ISTEST(x, HC_MASK_PRINT)
 
 #define HC_TOLOWER(x) (HC_ISALPHA(x) ? x | 0x20 : x)
 #define HC_TOUPPER(x) (HC_ISALPHA(x) ? x & ~0x20 : x)

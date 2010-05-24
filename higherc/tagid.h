@@ -1,6 +1,10 @@
 #ifndef tid030fbf737660l0zwyeopvkr8gjzzzn66o6r52281hsa /* higherc-tagid-h */
 #define tid030fbf737660l0zwyeopvkr8gjzzzn66o6r52281hsa /* higherc-tagid-h */
 
+#ifndef tid030b8ac9b6bbmv6xgcvtam0vl49kzcezeu1cy2wuzd5 /* higherc-s-h */
+#error higherc-s-h not included
+#endif
+
 /* tag
  */
 

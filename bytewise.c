@@ -41,23 +41,21 @@ const signed char hcns(hexval_table)[256] = {
 
 enum {
 	S = HC_SPACE,
-	A = HC_ALPHA,
-	D = HC_DIGIT,
-	G = HC_GLOB,
-	R = HC_REGEX_META,
-	H = HC_REGEX_CHAR,
-	K = HC_BLANK,
 	P = HC_PUNCT,
 	/* composite type
 	 */
+	A = HC_ALPHA | HC_ALNUM,
+	D = HC_DIGIT | HC_ALNUM,
 	C = HC_SPACE | HC_BLANK,
-	B = HC_GLOB | HC_REGEX_META,
-	I = HC_GLOB | HC_REGEX_CHAR,
-	J = HC_GLOB | HC_REGEX_META | HC_REGEX_CHAR,
-	E = HC_REGEX_META | HC_REGEX_CHAR
+	B = HC_GLOB | HC_REGEX_META | HC_PUNCT,
+	R = HC_REGEX_META | HC_PUNCT,
+	H = HC_REGEX_CHAR | HC_PUNCT,
+	I = HC_GLOB | HC_REGEX_CHAR | HC_PUNCT,
+	J = HC_GLOB | HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT,
+	E = HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT
 };
 
-unsigned char hcns(ctypetbl)[256] = {
+hcns(u2) hcns(ctypetbl)[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, C, S, S, S, S, 0, 0,		/*   0.. 15 */
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/*  16.. 31 */
 	C, P, P, P, R, P, P, P, R, R, B, R, P, H, R, P,		/*  32.. 47 */
