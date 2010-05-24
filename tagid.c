@@ -66,7 +66,7 @@ hcns(bool) hcns(tag_setz)(struct hcns(tag) *x, char *z)
 /* tagid
  */
 
-void hcns(tagid_set)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
+void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
 {
 	HC_ST_TAG **taglist;
 	int i, len;
@@ -77,7 +77,7 @@ void hcns(tagid_set)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
 	taglist = hcns(tag_as_array)(tag);
 	len = hcns(tag_usort)(taglist, hcns(tag_len)(tag));
 
-	hcns(s_cat)(tagid->A, taglist[0]->value);
+	hcns(s_copy)(tagid->A, taglist[0]->value);
 	for (i=1; i<len; i++) {
 		hcns(s_catn)(tagid->A, "-", 1);
 		hcns(s_cat)(tagid->A, taglist[i]->value);
@@ -92,6 +92,15 @@ void hcns(tagid_set)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
 	hcns(sha1_final)(E0, tagid->E);
 
 	HC_FREE(taglist);
+}
+
+void hcns(tagid_cat_id)(HC_ST_TAGID *tagid, HC_ST_S *tid)
+{
+	hcns(s_copyn)(tid, "tid", 3);
+	hcns(s_shiftr)(tid, tid->len-1, 2 - hcns(s_cat_u4_hex)(tid, tagid->B & 0xff), '0');
+	hcns(s_shiftr)(tid, tid->len-1, 2 - hcns(s_cat_u4_hex)(tid, tagid->C & 0xff), '0');
+	hcns(s_shiftr)(tid, tid->len-1, 8 - hcns(s_cat_u4_hex)(tid, tagid->D), '0');
+	hcns(n_be1_as_base36)(tid, tagid->E, sizeof(tagid->E));
 }
 
 void hcns(tagid_free)(HC_ST_TAGID *tagid)

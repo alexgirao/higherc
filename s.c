@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include "higherc/higherc.h"
 #include "higherc/byte.h"
@@ -206,7 +207,7 @@ int hcns(s_diffz)(HC_ST_S *a, char *b)
 
 int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b)
 {
-	return hcns(sdiffn)(a->s, b->s, b->len);
+	return hcns(s_diffn)(a, b->s, b->len);
 }
 
 /* case change
@@ -234,4 +235,33 @@ void hcns(s_lower)(HC_ST_S *s)
 			s->s[i] = HC_TOLOWER(c);
 		}
 	}
+}
+
+/* shift
+ */
+
+void hcns(s_shiftr)(HC_ST_S *s, int start, int n, char pad)
+{
+	int i;
+
+	assert(n >= 0);
+	assert(start >= 0);
+	assert(start <= s->len);
+
+	hcns(s_alloc)(s, s->len + n);
+	hcns(bcopyr)(s->s + start + n, s->len - start, s->s + start);
+	s->len += n;
+	for (i=0; i<n; i++) {
+		s->s[start + i] = pad;
+	}
+}
+
+void hcns(s_shiftl)(HC_ST_S *s, int start, int n)
+{
+	assert(n >= 0);
+	assert(start >= 0);
+	assert((start + n) <= s->len);
+
+	hcns(bcopyl)(s->s + start, s->len - start - n, s->s + start + n);
+	s->len -= n;
 }

@@ -38,6 +38,9 @@ int hcns(s_diffz)(HC_ST_S *a, char *b);
 void hcns(s_upper)(HC_ST_S *s);
 void hcns(s_lower)(HC_ST_S *s);
 
+void hcns(s_shiftr)(HC_ST_S *s, int start, int n, char pad);
+void hcns(s_shiftl)(HC_ST_S *s, int start, int n);
+
 #define HC_SAFE_CSTR(s) do {hcns(s_catn)(s, "\0", 1); --(s)->len;} while (0)
 
 #endif

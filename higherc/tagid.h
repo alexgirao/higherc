@@ -33,7 +33,8 @@ struct hcns(tagid) {
 #define HC_ST_TAGID struct hcns(tagid)
 #define HC_DEF_TAGID(sym) HC_ST_TAGID sym[1] = {HC_NULL_TAGID}
 
-void hcns(tagid_set)(HC_ST_TAGID *tagid, HC_ST_TAG *tag);
+void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag);
 void hcns(tagid_free)(HC_ST_TAGID *tagid);
+void hcns(tagid_cat_id)(HC_ST_TAGID *tagid, HC_ST_S *tid);
 
 #endif
