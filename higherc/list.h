@@ -40,7 +40,7 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 
 /* return: false (0) if reference count less than or equal zero
  */
-hcns(bool) hcns(list_free)(struct hcns(list) *list);
+void hcns(list_free)(struct hcns(list) *list);
 
 /*
  * index: item position at list, start at 0

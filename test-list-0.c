@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 		printf("{%i, %.2f, %s}\n", ms->alpha, ms->bravo, ms->charlie);
 	}
 
-	assert(hcns(list_free)(list) == 1);
+	hcns(list_free)(list);
 
 	return 0;
 }

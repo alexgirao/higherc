@@ -15,15 +15,16 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 {
 	int allocsz0 = sizeof(struct hcns(list)) + length * sizeof(struct hcns(item));
 	int allocsz = allocsz0 + bufsz;
+	struct hcns(list) *r = NULL;
 
 	if (tail) {
 		/* not implemented-yet, see TODO */
 		return NULL;
 	}
 
-	struct hcns(list) *r = hcns(alloc_z)(allocsz);
-	if (!r) {
-		return NULL;
+	r = hcns(alloc_z)(allocsz);
+	if (r == NULL) {
+		HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
 	}
 
 	r->refcnt = 1;
@@ -40,11 +41,10 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 	return r;
 }
 
-hcns(bool) hcns(list_free)(struct hcns(list) *list)
+void hcns(list_free)(struct hcns(list) *list)
 {
-	if (list->refcnt <= 0) {
-		return 0;
-	}
+	assert(list->refcnt > 0);
+
 	if (--list->refcnt == 0) {
 #ifdef HIGHERC_LIST_DEBUG
 		printf("list_free(%p), 0 references, freeing\n", list);
@@ -56,7 +56,6 @@ hcns(bool) hcns(list_free)(struct hcns(list) *list)
 		printf("list_free(%p), new refcnt %i\n", list, list->refcnt);
 	}
 #endif
-	return 1;
 }
 
 void *hcns(item_setup)(struct hcns(list) *list, int index, int size)

@@ -27,9 +27,11 @@ struct hcns(pbuf) {
 };
 
 #define HC_NULL_PBUF {NULL, 0, 0, 0}
+#define HC_ST_PBUF struct hcns(pbuf)
+#define HC_DEF_PBUF(sym) HC_ST_PBUF sym[1] = {HC_NULL_PBUF}
 
-hcns(bool) hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int length, int itemsz);
-hcns(bool) hcns(pbuf_free)(struct hcns(pbuf) *pbuf);
+void hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int len, int itemsz);
+void hcns(pbuf_free)(struct hcns(pbuf) *pbuf);
 
 /* get remaining slots at cyclic queue, before dequeue is required
  */

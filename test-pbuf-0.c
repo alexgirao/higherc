@@ -20,82 +20,77 @@ int main(int argc, char **argv)
 {
 	int len = 10;
 	int itemsiz = sizeof(struct mydata);
-	struct hcns(pbuf) pbuf = HC_NULL_PBUF;
+	int i, j;
+	HC_DEF_PBUF(pbuf);
 
-	if (!hcns(pbuf_alloc)(&pbuf, len, itemsiz)) {
-		HC_FATAL("failed to create a pbuf with %i items and %i bytes item size", len, itemsiz);
-	}
+	hcns(pbuf_alloc)(pbuf, len, itemsiz);
 
-	{
-		int i, j;
-
-		j = 2;
-		while (j--) {
-		    /* enqueue up to len
-		     */
-
-		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
-			   hcns(remaining)(&pbuf));
-
-		    for (i=0; i<len; i++) {
-			    assert(pbuf.next == i);
-			    void *p = hcns(enqueue)(&pbuf);
-			    printf("enqueued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
-		    }
-
-		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
-			   hcns(remaining)(&pbuf));
-
-		    assert(hcns(remaining)(&pbuf) == 0);
-
-		    /* dequeue up to len
-		     */
-
-		    for (i=0; i<len; i++) {
-			    assert(hcns(remaining)(&pbuf) == i);
-			    void *p = hcns(dequeue)(&pbuf);
-			    printf("dequeued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
-		    }
-
-    		    assert(hcns(remaining)(&pbuf) == len);
-		}
-
-		/*
+	j = 2;
+	while (j--) {
+		/* enqueue up to len
 		 */
 
-		assert(len >= 5);
+		printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf->next, pbuf->enqueued, pbuf->list->length,
+			hcns(remaining)(pbuf));
 
-		j = 5;
-		while (j--) {
-		    /* enqueue up to len
-		     */
+		for (i=0; i<len; i++) {
+			assert(pbuf->next == i);
+			void *p = hcns(enqueue)(pbuf);
+			printf("enqueued %p, remaining %i, next %i\n", p, hcns(remaining)(pbuf), pbuf->next);
+		}
 
-		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
-			   hcns(remaining)(&pbuf));
+		printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf->next, pbuf->enqueued, pbuf->list->length,
+			hcns(remaining)(pbuf));
 
-		    for (i=0; i<3; i++) {
-			    void *p = hcns(enqueue)(&pbuf);
-			    printf("enqueued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
-		    }
+		assert(hcns(remaining)(pbuf) == 0);
 
-		    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length,
-			   hcns(remaining)(&pbuf));
+		/* dequeue up to len
+		 */
 
-		    /* dequeue up to len
-		     */
+		for (i=0; i<len; i++) {
+			assert(hcns(remaining)(pbuf) == i);
+			void *p = hcns(dequeue)(pbuf);
+			printf("dequeued %p, remaining %i, next %i\n", p, hcns(remaining)(pbuf), pbuf->next);
+		}
 
-		    for (i=0; i<3; i++) {
-			    void *p = hcns(dequeue)(&pbuf);
-			    printf("dequeued %p, remaining %i, next %i\n", p, hcns(remaining)(&pbuf), pbuf.next);
-		    }
+		assert(hcns(remaining)(pbuf) == len);
+	}
 
-		    if (j == 0) {
-			    printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf.next, pbuf.enqueued, pbuf.list->length, hcns(remaining)(&pbuf));
-		    }
+	/*
+	 */
+
+	assert(len >= 5);
+
+	j = 5;
+	while (j--) {
+		/* enqueue up to len
+		 */
+
+		printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf->next, pbuf->enqueued, pbuf->list->length,
+			hcns(remaining)(pbuf));
+
+		for (i=0; i<3; i++) {
+			void *p = hcns(enqueue)(pbuf);
+			printf("enqueued %p, remaining %i, next %i\n", p, hcns(remaining)(pbuf), pbuf->next);
+		}
+
+		printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf->next, pbuf->enqueued, pbuf->list->length,
+			hcns(remaining)(pbuf));
+
+		/* dequeue up to len
+		 */
+
+		for (i=0; i<3; i++) {
+			void *p = hcns(dequeue)(pbuf);
+			printf("dequeued %p, remaining %i, next %i\n", p, hcns(remaining)(pbuf), pbuf->next);
+		}
+
+		if (j == 0) {
+			printf("debug: next=%i enqueued=%i len=%i rem=%i\n", pbuf->next, pbuf->enqueued, pbuf->list->length, hcns(remaining)(pbuf));
 		}
 	}
 
-	assert(hcns(pbuf_free)(&pbuf) == 1);
+	hcns(pbuf_free)(pbuf);
 
 	return 0;
 }

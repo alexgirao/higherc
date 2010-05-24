@@ -10,37 +10,25 @@
 #include "higherc/list.h"
 #include "higherc/pbuf.h"
 
-hcns(bool) hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int length, int itemsiz)
+void hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int len, int itemsiz)
 {
+	int i;
 	struct hcns(list) *list;
 
-	if (pbuf->list) {
-		/* list must be initialized with HIGHERC_NULL_PBUF */
-		return 0;
-	}
+	assert(pbuf->list == NULL);
+	assert(len > 0);
 
-	if (length < 1) {
-		/* invalid length */
-		return 0;
-	}
-
-	list = hcns(list_alloc)(length, length * itemsiz, NULL);
-	if (list == NULL) {
-		return 0;
-	}
+	list = hcns(list_alloc)(len, len * itemsiz, NULL);
 
 	/* setup items
 	 */
 
-	{
-		int i;
-		for (i=0; i<length; i++) {
-			void *p = hcns(item_setup)(list, i, itemsiz);
-			if (p == NULL) {
-				hcns(list_free)(list);
-				list = NULL;
-				return 1;
-			}
+	for (i=0; i<len; i++) {
+		void *p = hcns(item_setup)(list, i, itemsiz);
+		if (p == NULL) {
+			hcns(list_free)(list);
+			list = NULL;
+			return;
 		}
 	}
 
@@ -48,20 +36,16 @@ hcns(bool) hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int length, int itemsiz)
 	pbuf->itemsiz = itemsiz;
 	pbuf->next = 0;
 	pbuf->enqueued = 0;
-
-	return 1;
 }
 
-hcns(bool) hcns(pbuf_free)(struct hcns(pbuf) *pbuf)
+void hcns(pbuf_free)(struct hcns(pbuf) *pbuf)
 {
-	int r = 1;
 	if (pbuf->list) {
 		struct hcns(list) *l = pbuf->list;
 		pbuf->list = NULL;
 		pbuf->itemsiz = 0;
-		r = hcns(list_free)(l);
+		hcns(list_free)(l);
 	}
-	return r;
 }
 
 int hcns(remaining)(struct hcns(pbuf) *pbuf)
