@@ -17,10 +17,12 @@ void hcns(s_free)(HC_ST_S *x);
 void hcns(s_copyn)(HC_ST_S *, const char *, int);
 void hcns(s_copy)(HC_ST_S *, const HC_ST_S *);
 void hcns(s_copyz)(HC_ST_S *, const char *);
+void hcns(s_copyc)(HC_ST_S *sa, int c);
 
 void hcns(s_catn)(HC_ST_S *, const char *, int);
 void hcns(s_cat)(HC_ST_S *, const HC_ST_S *);
 void hcns(s_catz)(HC_ST_S *, const char *);
+void hcns(s_catc)(HC_ST_S *sa, int c);
 
 /* s_cat_* return amount of written digits and sign '-'
  */

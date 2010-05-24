@@ -30,7 +30,11 @@ int main(int argc, char **argv)
 	hcns(s_catn)(s, "hi ", 3);
 	fwrite(s->s, s->len, 1, stdout);
 
-	hcns(s_copyz)(s, "folks!\n");
+	hcns(s_copyc)(s, 'f');
+	hcns(s_catz)(s, "olk");
+	hcns(s_catc)(s, 's');
+	hcns(s_catc)(s, '!');
+	hcns(s_catc)(s, '\n');
 	fwrite(s->s, s->len, 1, stdout);
 
 	hcns(s_upper)(s);

@@ -67,6 +67,15 @@ void hcns(s_copyz)(HC_ST_S *sa, const char *s)
 	hcns(s_copyn)(sa, s, hcns(slen)(s));
 }
 
+void hcns(s_copyc)(HC_ST_S *sa, int c)
+{
+	if (sa->len == 0) {
+		hcns(s_alloc)(sa, 1);
+	}
+	sa->s[0] = c;
+	sa->len = 1;
+}
+
 /* cat
  */
 
@@ -90,6 +99,14 @@ void hcns(s_cat)(HC_ST_S *to, const HC_ST_S *from)
 void hcns(s_catz)(HC_ST_S *sa, const char *s)
 {
 	hcns(s_catn)(sa, s, hcns(slen)(s));
+}
+
+void hcns(s_catc)(HC_ST_S *sa, int c)
+{
+	if (sa->len == sa->a) {
+		hcns(s_alloc)(sa, sa->len + 1);
+	}
+	sa->s[sa->len++] = c;
 }
 
 /* cat numeric values

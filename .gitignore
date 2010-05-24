@@ -1,10 +1,8 @@
 *~
 *.o
-test
-test2
 *.a
 test-list-0
-test-stralloc-0
+test-s-0
 test-pbuf-0
 test-tok-0
 sample-cat
