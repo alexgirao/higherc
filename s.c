@@ -276,7 +276,6 @@ void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
 	assert(start <= s->len);
 
 	window_size = end - start;
-	ss = s->s + start;
 
 	assert(end >= 0);
 	assert(start <= end);
@@ -288,6 +287,7 @@ void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
 		hcns(s_alloc)(s, end);
 		s->len = end;
 	}
+	ss = s->s + start;
 	hcns(bcopyr)(ss + n, window_size - n, ss);
 
 	for (i=0; i<n; i++) {
@@ -295,13 +295,11 @@ void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
 	}
 }
 
-void hcns(s_shiftr2)(HC_ST_S *s, int start, int n, int pad)
-{
-	hcns(s_shiftr)(s, start, s->len + n, n, pad);
-}
-
 void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
 {
+	int i, window_size;
+	char *ss;
+
 	if (start < 0) {
 		start = s->len + start;
 	}
@@ -312,12 +310,31 @@ void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
 
 	assert(n >= 0);
 	assert(start >= 0);
-	assert((start + n) <= s->len);
+	assert(start <= s->len);
+
+	window_size = end - start;
 
 	assert(end >= 0);
-	assert(end <= s->len);
 	assert(start <= end);
+	assert(n <= window_size);
 
-	hcns(bcopyl)(s->s + start, s->len - start - n, s->s + start + n);
-	s->len -= n;
+	assert(end <= s->len);
+
+	ss = s->s + start;
+	hcns(bcopyl)(ss, window_size - n, ss + n);
+
+	ss += window_size - n;
+	for (i=0; i<n; i++) {
+		ss[i] = pad;
+	}
+}
+
+void hcns(s_shiftr2)(HC_ST_S *s, int start, int n, int pad)
+{
+	hcns(s_shiftr)(s, start, s->len + n, n, pad);
+}
+
+void hcns(s_shiftl2)(HC_ST_S *s, int start, int n, int pad)
+{
+	hcns(s_shiftl)(s, start, s->len, n, pad);
 }
