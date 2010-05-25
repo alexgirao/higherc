@@ -20,3 +20,4 @@ test-sha1
 test-tagid
 test-byte
 test-s-1
+test-pbuf-1

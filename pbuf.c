@@ -50,6 +50,7 @@ void hcns(pbuf_free)(struct hcns(pbuf) *pbuf)
 
 int hcns(remaining)(struct hcns(pbuf) *pbuf)
 {
+	assert(pbuf->enqueued >= 0);
 	return pbuf->list->length - pbuf->enqueued;
 }
 
@@ -59,18 +60,44 @@ void *hcns(enqueue)(struct hcns(pbuf) *pbuf)
 
 	assert(pos >= 0);
 	assert(pos < pbuf->list->length);
+
+	assert(pbuf->enqueued >= 0);
 	assert(pbuf->enqueued <= pbuf->list->length);
 
 	if (pbuf->enqueued == pbuf->list->length) {
-		/* queue is full */
+		/* queue is full
+		 */
 		return NULL;
 	}
 
-	/* cycle */
+	/* cycle
+	 */
 	pbuf->next = (pbuf->next + 1) % pbuf->list->length;
 	pbuf->enqueued++;
 
 	return hcns(item_get)(pbuf->list, pos, NULL);
+}
+
+void *hcns(shift)(struct hcns(pbuf) *pbuf)
+{
+	assert(pbuf->next >= 0);
+	assert(pbuf->next < pbuf->list->length);
+
+	assert(pbuf->enqueued >= 0);
+	assert(pbuf->enqueued <= pbuf->list->length);
+
+	if (pbuf->enqueued == 0) {
+		/* queue is empty
+		 */
+		return NULL;
+	}
+
+	/* cycle (backward)
+	 */
+	pbuf->next = (pbuf->next + pbuf->list->length - 1) % pbuf->list->length;
+	pbuf->enqueued--;
+
+	return hcns(item_get)(pbuf->list, pbuf->next, NULL);
 }
 
 void *hcns(dequeue)(struct hcns(pbuf) *pbuf)
@@ -80,7 +107,8 @@ void *hcns(dequeue)(struct hcns(pbuf) *pbuf)
 	assert(pbuf->enqueued >= 0);
 
 	if (pbuf->enqueued == 0) {
-		/* queue is empty */
+		/* queue is empty
+		 */
 		return NULL;
 	}
 

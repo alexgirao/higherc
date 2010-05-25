@@ -23,7 +23,9 @@ struct hcns(pbuf) {
 	struct hcns(list) *list;
 	int itemsiz;
 	int next; /* next available item */
-	int enqueued;  /* how many items enqueued */
+	int enqueued; /* how many items enqueued, decreasing by N has
+			 the effect of dequeueing N items
+			 immediately */
 };
 
 #define HC_NULL_PBUF {NULL, 0, 0, 0}
@@ -42,7 +44,12 @@ int hcns(remaining)(struct hcns(pbuf) *pbuf);
  */
 void *hcns(enqueue)(struct hcns(pbuf) *pbuf);
 
-/* get item for read
+/* get last enqueued item for read
+ * return: NULL on error or if queue is empty
+ */
+void *hcns(shift)(struct hcns(pbuf) *pbuf);
+
+/* get first enqueued item for read
  * return: NULL on error or if queue is empty
  */
 void *hcns(dequeue)(struct hcns(pbuf) *pbuf);
