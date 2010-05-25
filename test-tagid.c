@@ -9,6 +9,7 @@
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 #include "higherc/alloc.h"
+#include "higherc/str.h"
 #include "higherc/s.h"
 #include "higherc/n.h"
 #include "higherc/sha1.h"
@@ -30,6 +31,7 @@ static void test0()
 	HC_DEF_S(tid);
 	HC_DEF_TAGID(tagid);
 	HC_ST_TAG *h = NULL;
+	char *check = "tid04079a5157de2jeg2ovjrtl0hfk79vsjjfva7prvj24";
 
 	h = hcns(tag_newz)(h, "a");
 	h = hcns(tag_newz)(h, "b");
@@ -39,7 +41,7 @@ static void test0()
 	hcns(tagid_set_tags)(tagid, h);
 	hcns(tagid_cat_id)(tagid, tid);
 
-	assert(hcns(s_diffz)(tid, "tid04079a5157de2jeg2ovjrtl0hfk79vsjjfva7prvj24") == 0);
+	assert(hcns(s_diffz)(tid, check) == 0);
 
 	hcns(s_free)(tid);
 	hcns(tag_free)(h);

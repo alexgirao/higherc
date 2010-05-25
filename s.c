@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 
 #include "higherc/higherc.h"
@@ -257,27 +258,65 @@ void hcns(s_lower)(HC_ST_S *s)
 /* shift
  */
 
-void hcns(s_shiftr)(HC_ST_S *s, int start, int n, char pad)
+void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
 {
-	int i;
+	int i, window_size;
+	char *ss;
+
+	if (start < 0) {
+		start = s->len + start;
+	}
+
+	if (end < 0) {
+		end = s->len + end;
+	}
 
 	assert(n >= 0);
 	assert(start >= 0);
 	assert(start <= s->len);
 
-	hcns(s_alloc)(s, s->len + n);
-	hcns(bcopyr)(s->s + start + n, s->len - start, s->s + start);
-	s->len += n;
+	window_size = end - start;
+	ss = s->s + start;
+
+	assert(end >= 0);
+	assert(start <= end);
+	assert(n <= window_size);
+
+	if (end > s->len) {
+		/* end is exclusive, so its len compatible
+		 */
+		hcns(s_alloc)(s, end);
+		s->len = end;
+	}
+	hcns(bcopyr)(ss + n, window_size - n, ss);
+
 	for (i=0; i<n; i++) {
-		s->s[start + i] = pad;
+		ss[i] = pad;
 	}
 }
 
-void hcns(s_shiftl)(HC_ST_S *s, int start, int n)
+void hcns(s_shiftr2)(HC_ST_S *s, int start, int n, int pad)
 {
+	hcns(s_shiftr)(s, start, s->len + n, n, pad);
+}
+
+void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
+{
+	if (start < 0) {
+		start = s->len + start;
+	}
+
+	if (end < 0) {
+		end = s->len + end;
+	}
+
 	assert(n >= 0);
 	assert(start >= 0);
 	assert((start + n) <= s->len);
+
+	assert(end >= 0);
+	assert(end <= s->len);
+	assert(start <= end);
 
 	hcns(bcopyl)(s->s + start, s->len - start - n, s->s + start + n);
 	s->len -= n;

@@ -19,3 +19,4 @@ test-crc32
 test-sha1
 test-tagid
 test-byte
+test-s-1

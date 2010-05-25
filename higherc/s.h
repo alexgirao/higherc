@@ -40,8 +40,16 @@ int hcns(s_diffz)(HC_ST_S *a, char *b);
 void hcns(s_upper)(HC_ST_S *s);
 void hcns(s_lower)(HC_ST_S *s);
 
-void hcns(s_shiftr)(HC_ST_S *s, int start, int n, char pad);
-void hcns(s_shiftl)(HC_ST_S *s, int start, int n);
+/* s_shiftr:
+ *   start .. end range: 0 .. len (exclusive, -1 allowed for both (means: len - abs(end)))
+ * s_shiftr2:
+ *   likewise, end is always len + n (always expand)
+ */
+
+void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad);
+void hcns(s_shiftr2)(HC_ST_S *s, int start, int n, int pad);
+
+void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad);
 
 #define HC_SAFE_CSTR(s) do {hcns(s_catn)(s, "\0", 1); --(s)->len;} while (0)
 
