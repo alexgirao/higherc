@@ -96,7 +96,7 @@ void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
 
 	hcns(s_copy)(tagid->A, taglist[0]->value);
 	for (i=1; i<len; i++) {
-		hcns(s_catn)(tagid->A, "-", 1);
+		hcns(s_catc)(tagid->A, '-');
 		hcns(s_cat)(tagid->A, taglist[i]->value);
 	}
 

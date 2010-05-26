@@ -205,7 +205,7 @@ void hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
 	if (n->d == NULL || n->len == 0) {
 		/* uninitialized
 		 */
-		hcns(s_catn)(s, "0", 1);
+		hcns(s_catc)(s, '0');
 		return;
 	}
 
@@ -253,7 +253,7 @@ void hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
 	}
 
 	if (s_start_len == s->len) {
-		hcns(s_catn)(s, "0", 1);
+		hcns(s_catc)(s, '0');
 	}
 }
 
@@ -264,7 +264,7 @@ void hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
 	int s_len0 = s->len;
 
 	if (HC_IS_ZERO(n)) {
-		hcns(s_catn)(s, "0", 1);
+		hcns(s_catc)(s, '0');
 		return;
 	}
 
@@ -299,7 +299,7 @@ void hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
 	int s_len0 = s->len;
 
 	if (HC_IS_ZERO(n)) {
-		hcns(s_catn)(s, "0", 1);
+		hcns(s_catc)(s, '0');
 		return;
 	}
 

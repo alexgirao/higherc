@@ -56,6 +56,6 @@ void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad);
 void hcns(s_shiftr2)(HC_ST_S *s, int start, int n, int pad);
 void hcns(s_shiftl2)(HC_ST_S *s, int start, int n, int pad);
 
-#define HC_SAFE_CSTR(s) do {hcns(s_catn)(s, "\0", 1); --(s)->len;} while (0)
+#define HC_SAFE_CSTR(s) do {hcns(s_catc)(s, '\0'); --(s)->len;} while (0)
 
 #endif
