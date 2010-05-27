@@ -39,6 +39,7 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 	int len = 0;
 
 	assert(bufsz > 0);
+	assert(errno == 0);
 
 	for (;;) {
 		int n;
