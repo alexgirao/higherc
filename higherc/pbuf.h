@@ -35,23 +35,40 @@ struct hcns(pbuf) {
 void hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int len, int itemsz);
 void hcns(pbuf_free)(struct hcns(pbuf) *pbuf);
 
-/* get remaining slots at cyclic queue, before dequeue is required
- */
-int hcns(remaining)(struct hcns(pbuf) *pbuf);
-
 /* get item for write
  * return: NULL on error or if queue is full
  */
-void *hcns(enqueue)(struct hcns(pbuf) *pbuf);
+void *hcns(pbuf_enqueue)(struct hcns(pbuf) *pbuf);
 
 /* get last enqueued item for read
  * return: NULL on error or if queue is empty
  */
-void *hcns(shift)(struct hcns(pbuf) *pbuf);
+void *hcns(pbuf_shift)(struct hcns(pbuf) *pbuf);
 
 /* get first enqueued item for read
  * return: NULL on error or if queue is empty
  */
-void *hcns(dequeue)(struct hcns(pbuf) *pbuf);
+void *hcns(pbuf_dequeue)(struct hcns(pbuf) *pbuf);
+
+/* get first remaining item
+ */
+int hcns(pbuf_enqueued_first)(struct hcns(pbuf) *pbuf);
+int hcns(pbuf_enqueued_last)(struct hcns(pbuf) *pbuf);
+int hcns(pbuf_enqueued_len)(struct hcns(pbuf) *pbuf);
+
+int hcns(pbuf_remaining_first)(struct hcns(pbuf) *pbuf);
+int hcns(pbuf_remaining_last)(struct hcns(pbuf) *pbuf);
+int hcns(pbuf_remaining_len)(struct hcns(pbuf) *pbuf);
+
+/* pbuf's length
+ */
+int hcns(pbuf_len)(struct hcns(pbuf) *pbuf);
+
+int hcns(pbuf_next)(struct hcns(pbuf) *pbuf, int pos);
+int hcns(pbuf_prior)(struct hcns(pbuf) *pbuf, int pos);
+
+/* get item at slot, queued or not
+ */
+void * hcns(pbuf_item)(struct hcns(pbuf) *pbuf, int pos);
 
 #endif

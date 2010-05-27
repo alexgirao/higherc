@@ -48,13 +48,7 @@ void hcns(pbuf_free)(struct hcns(pbuf) *pbuf)
 	}
 }
 
-int hcns(remaining)(struct hcns(pbuf) *pbuf)
-{
-	assert(pbuf->enqueued >= 0);
-	return pbuf->list->length - pbuf->enqueued;
-}
-
-void *hcns(enqueue)(struct hcns(pbuf) *pbuf)
+void *hcns(pbuf_enqueue)(struct hcns(pbuf) *pbuf)
 {
 	int pos = pbuf->next;
 
@@ -78,7 +72,7 @@ void *hcns(enqueue)(struct hcns(pbuf) *pbuf)
 	return hcns(item_get)(pbuf->list, pos, NULL);
 }
 
-void *hcns(shift)(struct hcns(pbuf) *pbuf)
+void *hcns(pbuf_shift)(struct hcns(pbuf) *pbuf)
 {
 	assert(pbuf->next >= 0);
 	assert(pbuf->next < pbuf->list->length);
@@ -100,7 +94,7 @@ void *hcns(shift)(struct hcns(pbuf) *pbuf)
 	return hcns(item_get)(pbuf->list, pbuf->next, NULL);
 }
 
-void *hcns(dequeue)(struct hcns(pbuf) *pbuf)
+void *hcns(pbuf_dequeue)(struct hcns(pbuf) *pbuf)
 {
 	int pos;
 
@@ -114,10 +108,68 @@ void *hcns(dequeue)(struct hcns(pbuf) *pbuf)
 
 	pos = pbuf->next - pbuf->enqueued;
 	if (pos < 0) {
-		/* two's complement of queue length */
+		/* two's complement of queue length
+		 */
 		pos = pbuf->list->length - -pos;
 	}
 	pbuf->enqueued--;
 
 	return hcns(item_get)(pbuf->list, pos, NULL);
+}
+
+int hcns(pbuf_enqueued_len)(struct hcns(pbuf) *pbuf)
+{
+	return pbuf->enqueued;
+}
+
+int hcns(pbuf_enqueued_first)(struct hcns(pbuf) *pbuf)
+{
+	int pos = pbuf->next - pbuf->enqueued;
+	if (pos < 0) {
+		/* two's complement of queue length
+		 */
+		pos = pbuf->list->length - -pos;
+	}
+	return pos;
+}
+
+int hcns(pbuf_enqueued_last)(struct hcns(pbuf) *pbuf)
+{
+	return (pbuf->next + pbuf->list->length - 1) % pbuf->list->length;
+}
+
+int hcns(pbuf_remaining_len)(struct hcns(pbuf) *pbuf)
+{
+	return pbuf->list->length - pbuf->enqueued;
+}
+
+int hcns(pbuf_remaining_first)(struct hcns(pbuf) *pbuf)
+{
+	return pbuf->next;
+}
+
+int hcns(pbuf_remaining_last)(struct hcns(pbuf) *pbuf)
+{
+	return (hcns(pbuf_enqueued_first)(pbuf) + pbuf->list->length - 1) % pbuf->list->length;
+}
+
+int hcns(pbuf_len)(struct hcns(pbuf) *pbuf)
+{
+	return pbuf->list->length;
+}
+
+int hcns(pbuf_next)(struct hcns(pbuf) *pbuf, int pos)
+{
+	return (pos + 1) % pbuf->list->length;
+}
+
+int hcns(pbuf_prior)(struct hcns(pbuf) *pbuf, int pos)
+{
+	return (pos + pbuf->list->length - 1) % pbuf->list->length;
+}
+
+void *hcns(pbuf_item)(struct hcns(pbuf) *pbuf, int pos)
+{
+	assert(pos >= 0);
+	return hcns(item_get)(pbuf->list, pos % pbuf->list->length, NULL);
 }
