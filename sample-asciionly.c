@@ -12,6 +12,7 @@
 #include "higherc/tagid.h"
 #include "higherc/list.h"
 #include "higherc/pbuf.h"
+#include "higherc/alloc.h"
 #include "higherc/readfd.h"
 
 #define VALID_LINE 1
@@ -24,6 +25,7 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 	int n, c;
 	const char *start = buf;
 	int state = VALID_LINE;
+	int line_end = 0;  /* be it valid or not */
 
 	for (n=0;n<len;) {
 		c = buf[n++];
@@ -31,6 +33,7 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 		if (state == VALID_LINE) {
 			if (c == 10 /* LF */) {
 				assert(start != NULL);
+				line_end = n;
 				fwrite(start, (buf + n) - start, 1, stdout);
 				start = buf + n;
 			} else if (!HC_ISASCII(c)) {
@@ -42,6 +45,7 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 		} else if (state == SKIP_LINE) {
 			if (c == 10 /* LF */) {
 				assert(start == NULL);
+				line_end = n;
 				state = VALID_LINE;
 				start = buf + n;
 			}
@@ -50,15 +54,30 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 		HC_FATAL("exhausted");
 	}
 
-	if (start) {
-		fwrite(start, (buf + n) - start, 1, stdout);
+	if (eof) {
+		if (start) {
+			fwrite(start, (buf + n) - start, 1, stdout);
+		}
+		return len;
 	}
 
-	return len;
+	/* do not consume partial lines
+	 */
+	return line_end;
 }
 
 int main(int argc, char **argv)
 {
-	fprintf(stderr, "total bytes read: %i\n", hcns(readfd)(0 /* STDIN */, doit));
+	int bufsz = 1024 * 1024;
+	void *buf = hcns(alloc)(bufsz);
+	if (buf == NULL) {
+		HC_FATAL("hcns(alloc)(%i)", bufsz);
+	}
+
+	fprintf(stderr, "total bytes read: %i\n", hcns(readfd)(0 /* STDIN */, buf, bufsz, doit));
+
+	hcns(alloc_free)(buf);
+	buf = NULL;
+
 	return 0;
 }

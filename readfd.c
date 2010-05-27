@@ -33,33 +33,34 @@ static int safe_read(int fd, char *buf, int count)
 	return r;
 }
 
-int hcns(readfd)(int fd, int (*doit)(const char *buf, int len, hcns(bool) eof))
+int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int len, hcns(bool) eof))
 {
-	char buf[0x10000];
 	int total = 0;
 	int len = 0;
+
+	assert(bufsz > 0);
 
 	for (;;) {
 		int n;
 		hcns(bool) eof = 0;
 
-		if (len < sizeof(buf)) {
+		if (len < bufsz) {
 			/* still data to read and room to feed
 			 * processing function
 			 */
 			do {
 				/* read until buffer is full or EOF
 				 */
-				n = safe_read(fd, buf + len, sizeof(buf) - len);
+				n = safe_read(fd, buf + len, bufsz - len);
 				eof = n == 0;
 				if (eof) {
 					/* EOF */
 					break;
 				}
 				len += n;
-			} while (len < sizeof(buf));
+			} while (len < bufsz);
 
-			assert(len <= sizeof(buf));
+			assert(len <= bufsz);
 
 			if (len == 0) {
 				/* no data at STDIN

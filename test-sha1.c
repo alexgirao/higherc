@@ -12,6 +12,7 @@ find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test-sha1 < iii' > ../b
 #include <string.h>
 
 #include "higherc/higherc.h"
+#include "higherc/alloc.h"
 #include "higherc/readfd.h"
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
@@ -19,6 +20,8 @@ find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test-sha1 < iii' > ../b
 
 int main()
 {
+	int bufsz;
+	void *buf;
 	struct hcns(sha1) ctx;
 	unsigned char sha1_1[20];
 	unsigned char sha1_2[20];
@@ -33,9 +36,18 @@ int main()
     		return len;
 	}
 
+	bufsz = 1024 * 1024;
+	buf = hcns(alloc)(bufsz);
+	if (buf == NULL) {
+		HC_FATAL("hcns(alloc)(%i)", bufsz);
+	}
+
 	hcns(sha1_init)(&ctx);
-	int i = hcns(readfd)(0 /* STDIN */, doit);
+	int i = hcns(readfd)(0 /* STDIN */, buf, bufsz, doit);
 	hcns(sha1_final)(&ctx, sha1_1);
+
+	hcns(alloc_free)(buf);
+	buf = NULL;
 
 	fprintf(stderr, "total bytes read: %i\n", i);
 
