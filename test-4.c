@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 	usorted = hcns(aa_as_array)(h);
 	newlen = hcns(aa_usort_desc)(usorted, hcns(aa_len)(h));
 
-	fprintf(stdout, "sorted traverse (from uniquely sorted array)\n");
+	fprintf(stdout, "sorted traverse (from uniquely sorted array, descending order)\n");
 
 	for (i=0, j=newlen; i<j; i++) {
 		struct hcns(aa) *tmp = usorted[i];

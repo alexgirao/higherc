@@ -131,10 +131,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		i->next = NULL;						\
 		i->end = NULL;						\
 		i->v1 = NULL;						\
-		if (i->v0) {						\
-			HC_FREE(i->v0);					\
-			i->v0 = NULL;					\
-		}							\
+		HC_FREE(i->v0);						\
 	}								\
 	static inline struct name *_##name##_next_f(struct name##_iter *i) \
 	{								\
