@@ -31,7 +31,7 @@ static inline void _initialize(void)
 
 #ifdef HC_CONF_ALLOC_OFFENSIVE_MODE
 
-void *hcns(alloc)(int n)
+void *hcns(_p_alloc)(int n)
 {
 	int *r;
 	_initialize();
@@ -41,11 +41,10 @@ void *hcns(alloc)(int n)
 		_nallocs++;
 		return r + 1;
 	}
-	HC_FATAL("hcns(alloc)(%i)", n); /* it's better be safer than sorry */
 	return NULL;
 }
 
-void *hcns(alloc_z)(int n)
+void *hcns(_p_alloc_z)(int n)
 {
 	int *r;
 	_initialize();
@@ -55,11 +54,10 @@ void *hcns(alloc_z)(int n)
 		_nallocs++;
 		return r + 1;
 	}
-	HC_FATAL("hcns(alloc_z)(%i)", n); /* it's better be safer than sorry */
 	return NULL;
 }
 
-void hcns(alloc_free)(void *x)
+void hcns(_p_alloc_free)(void *x)
 {
 	int *r = x;
 	r--;
@@ -70,7 +68,7 @@ void hcns(alloc_free)(void *x)
 
 #else
 
-void *hcns(alloc)(int n)
+void *hcns(_p_alloc)(int n)
 {
 	void *r;
 	_initialize();
@@ -79,7 +77,7 @@ void *hcns(alloc)(int n)
 	return r;
 }
 
-void *hcns(alloc_z)(int n)
+void *hcns(_p_alloc_z)(int n)
 {
 	void *r;
 	_initialize();
@@ -88,7 +86,7 @@ void *hcns(alloc_z)(int n)
 	return r;
 }
 
-void hcns(alloc_free)(void *x)
+void hcns(_p_alloc_free)(void *x)
 {
 	free(x);
 	_nallocs--;
@@ -96,21 +94,21 @@ void hcns(alloc_free)(void *x)
 
 #endif
 
+void hcns(_p_alloc_fatal_error_happend)(void)
+{
+	_dont_report = 1;
+}
+
 void *hcns(alloc_re)(void *x, int m, int n)
 {
-	void *y = hcns(alloc)(n);
+	void *y = hcns(_p_alloc)(n);
 	if (!y)	return NULL;
 	hcns(bcopyl)(y, m, x);
-	hcns(alloc_free)(x);
+	hcns(_p_alloc_free)(x);
 	return y;
 }
 
 int hcns(alloc_delta)(void)
 {
 	return _nallocs;
-}
-
-void hcns(alloc_fatal_error_happend)(void)
-{
-	_dont_report = 1;
 }

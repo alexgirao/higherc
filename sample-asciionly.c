@@ -69,15 +69,13 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 int main(int argc, char **argv)
 {
 	int bufsz = 1024 * 1024;
-	void *buf = hcns(alloc)(bufsz);
-	if (buf == NULL) {
-		HC_FATAL("hcns(alloc)(%i)", bufsz);
-	}
+	void *buf;
+
+	HC_ALLOC(buf, bufsz);
 
 	fprintf(stderr, "total bytes read: %i\n", hcns(readfd)(0 /* STDIN */, buf, bufsz, doit));
 
-	hcns(alloc_free)(buf);
-	buf = NULL;
+	HC_FREE(buf);
 
 	return 0;
 }

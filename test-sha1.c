@@ -37,17 +37,13 @@ int main()
 	}
 
 	bufsz = 1024 * 1024;
-	buf = hcns(alloc)(bufsz);
-	if (buf == NULL) {
-		HC_FATAL("hcns(alloc)(%i)", bufsz);
-	}
+	HC_ALLOC(buf, bufsz);
 
 	hcns(sha1_init)(&ctx);
 	int i = hcns(readfd)(0 /* STDIN */, buf, bufsz, doit);
 	hcns(sha1_final)(&ctx, sha1_1);
 
-	hcns(alloc_free)(buf);
-	buf = NULL;
+	HC_FREE(buf);
 
 	fprintf(stderr, "total bytes read: %i\n", i);
 

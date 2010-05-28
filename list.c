@@ -22,11 +22,7 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 		return NULL;
 	}
 
-	r = hcns(alloc_z)(allocsz);
-	if (r == NULL) {
-		HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
-	}
-
+	HC_ALLOC_Z(r, allocsz);
 	r->refcnt = 1;
 	r->length = length;
 	r->bufsiz = bufsz;
@@ -49,7 +45,7 @@ void hcns(list_free)(struct hcns(list) *list)
 #ifdef HIGHERC_LIST_DEBUG
 		printf("list_free(%p), 0 references, freeing\n", list);
 #endif
-		hcns(alloc_free)((void *)list);
+		HC_FREE(list);
 	}
 #ifdef HIGHERC_LIST_DEBUG
 	else {

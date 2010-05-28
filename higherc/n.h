@@ -62,10 +62,11 @@ struct hcns(n) {
 
 #define HC_IS_ZERO(n) ((n) == NULL || (n)->len == 0 || ((n)->len == 1 && (n)->d[0] == HC_H(0)))
 
-hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n);
-hcns(bool) hcns(n_free)(struct hcns(n) *x);
-hcns(bool) hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n);
-hcns(bool) hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
+void hcns(n_alloc)(struct hcns(n) *x, int n);
+void hcns(n_free)(struct hcns(n) *x);
+
+void hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n);
+void hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
 
 void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v);
 

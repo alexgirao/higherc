@@ -40,7 +40,7 @@
 /* alloc/free
  */
 
-hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n)
+void hcns(n_alloc)(struct hcns(n) *x, int n)
 {
 	if (x->d) {
 		if (n > x->a) {
@@ -49,51 +49,42 @@ hcns(bool) hcns(n_alloc)(struct hcns(n) *x, int n)
 			if (p) {
 				x->a = i;
 				x->d = p;
-				return 1;
+				return;
 			}
 			HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
-			return 0;
 		}
-		return 1;
+		return;
 	}
-	x->d = hcns(alloc)(n * sizeof(hcns(h)));
-	if (x->d) {
-		x->a = n;
-		x->len = 0;
-		return 1;
-	}
-	HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
-	return 0;
+	HC_ALLOC(x->d, n * sizeof(hcns(h)));
+	x->a = n;
+	x->len = 0;
 }
 
-hcns(bool) hcns(n_free)(struct hcns(n) *x)
+void hcns(n_free)(struct hcns(n) *x)
 {
 	if (x->d) {
 		void *p = x->d;
 		x->d = NULL;
 		x->len = 0;
 		x->a = 0;
-		hcns(alloc_free)(p);
+		HC_FREE(p);
 	}
-	return 1;
 }
 
 /* copy
  */
 
-hcns(bool) hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n)
+void hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n)
 {
-	if (!hcns(n_alloc)(x, (n + 1) * sizeof(hcns(h))))
-		return 0;
+	hcns(n_alloc)(x, (n + 1) * sizeof(hcns(h)));
 	hcns(bcopyl)(x->d, n * sizeof(hcns(h)), d);
 	x->len = n;
 	x->d[x->len] = HALF_OFFENSE;   /* ``offensive programming'' */ 
-	return 1;
 }
 
-hcns(bool) hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from)
+void hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from)
 {
-	return hcns(n_copyn)(to, from->d, from->len);
+	hcns(n_copyn)(to, from->d, from->len);
 }
 
 /*
@@ -103,9 +94,7 @@ hcns(bool) hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from)
 
 void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v)
 {
-	if (!hcns(n_alloc)(n, 2)) {
-		return;
-	}
+	hcns(n_alloc)(n, 2);
 	n->d[0] = HC_LOW(v);
 	n->d[1] = HC_HIGH(v);
 	n->len = n->d[1] ? 2 : 1;
@@ -116,9 +105,7 @@ void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len)
 	int i, ndigits = len / HC_HALF_BYTES;
 	hcns(u1) *v = x;
 
-	if (!hcns(n_alloc)(r, ndigits)) {
-		return;
-	}
+	hcns(n_alloc)(r, ndigits);
 	r->len = ndigits;
 
 	for (i=ndigits-1; i>=0; i--) {
@@ -148,9 +135,7 @@ void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n)
 	nbytes = (n + 1) / 2;
 	ndigits = (nbytes + (HC_HALF_BYTES-1)) / HC_HALF_BYTES;
 
-	if (!hcns(n_alloc)(r, ndigits)) {
-		return;
-	}
+	hcns(n_alloc)(r, ndigits);
 	r->len = ndigits;
 
 	i = ndigits - 1;
@@ -268,9 +253,7 @@ void hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
 		return;
 	}
 
-	if (!hcns(n_alloc)(q, n->len)) {
-		return;
-	}
+	hcns(n_alloc)(q, n->len);
 	HC_MOVE_DIGITS(q->d, n->d, n->len);
 	q->len = n->len;
 
@@ -303,9 +286,7 @@ void hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
 		return;
 	}
 
-	if (!hcns(n_alloc)(q, n->len)) {
-		return;
-	}
+	hcns(n_alloc)(q, n->len);
 	HC_MOVE_DIGITS(q->d, n->d, n->len);
 	q->len = n->len;
 

@@ -33,15 +33,30 @@ typedef unsigned int hcns(u4);
 #define HC_ALIGN16(bytes)                  HC_ALIGN_BY(bytes,16)
 
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-# define HC_FATAL(...)      hcns(fatal)(__FILE__, __LINE__, __VA_ARGS__)
+# define HC_FATAL(...)      hcns(_p_fatal)(__FILE__, __LINE__, __VA_ARGS__)
 #elif defined (__GNUC__)
-# define HC_FATAL(fmt...)   hcns(fatal)(__FILE__, __LINE__, fmt)
+# define HC_FATAL(fmt...)   hcns(_p_fatal)(__FILE__, __LINE__, fmt)
 #endif
 
-#define HC_MALLOC(p, sz) do { p = hcns(alloc)(sz); if ((p) == NULL) HC_FATAL("hcns(alloc)(%i)", sz); } while (0)
-#define HC_NEW(p, t) do { p = (t*) hcns(alloc_z)(sizeof(t)); if ((p) == NULL) HC_FATAL("hcns(alloc_z)(%i (type " #t "))", sizeof(t)); } while (0)
-#define HC_NEW_AR(p, l, t) do { p = (t*) hcns(alloc_z)((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("hcns(alloc_z)(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
-#define HC_FREE(p) do { hcns(alloc_free)(p); p = NULL; } while (0)
+/* private memory allocation functions, use macros if available
+ */
+
+void *hcns(_p_alloc)(int n);
+void *hcns(_p_alloc_z)(int n); /* allocate with memory set to zero */
+void hcns(_p_alloc_free)(void *x);
+void hcns(_p_alloc_fatal_error_happend)(void);
+
+/* memory allocation macros
+ */
+
+#define HC_ALLOC(p, sz) do { p = hcns(_p_alloc)(sz); if ((p) == NULL) HC_FATAL("HC_ALLOC(%i)", sz); } while (0)
+#define HC_ALLOC_Z(p, sz) do { p = hcns(_p_alloc_z)(sz); if ((p) == NULL) HC_FATAL("HC_ALLOC_Z(%i)", sz); } while (0)
+#define HC_NEW(p, t) do { p = (t*) hcns(_p_alloc_z)(sizeof(t)); if ((p) == NULL) HC_FATAL("HC_NEW(%i (type " #t "))", sizeof(t)); } while (0)
+#define HC_NEW_AR(p, l, t) do { p = (t*) hcns(_p_alloc_z)((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("HC_NEW_AR(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
+#define HC_FREE(p) do { hcns(_p_alloc_free)(p); p = NULL; } while (0)
+
+/* typed list/item macros
+ */
 
 #define _HC_DECL_I_HEADERS(spec, name, st_members)			\
 	struct name {							\
@@ -51,7 +66,8 @@ typedef unsigned int hcns(u4);
 	};								\
 	struct name##_iter {						\
 		void *next, *end;					\
-		void *v0, *v1;						\
+		void *v0;						\
+		struct name **v1;					\
 		int l0;							\
 	};								\
 	typedef struct name *(name##_next_func)(struct name##_iter *i);	\
@@ -122,16 +138,12 @@ typedef unsigned int hcns(u4);
 	}								\
 	static inline struct name *_##name##_next_f(struct name##_iter *i) \
 	{								\
-		struct name **r = i->v1;				\
-		if (r == NULL) {					\
-			return NULL;					\
+		if (i->l0) {						\
+			i->l0--;					\
+			return *i->v1++;				\
 		}							\
-		if (i->l0-- == 0) {					\
-			_##name##_end_f(i);				\
-			return NULL;					\
-		}							\
-		i->v1 = r + 1;						\
-		return *r;						\
+		_##name##_end_f(i);					\
+		return NULL;						\
 	}								\
 	spec void name##_forward(struct name *x, struct name##_iter *i)	\
 	{								\
@@ -276,6 +288,6 @@ typedef unsigned int hcns(u4);
 
 /* this function ceases program execution with a exit(1)
  */
-void hcns(fatal)(char *file, int line, char *fmt, ...);
+void hcns(_p_fatal)(char *file, int line, char *fmt, ...);
 
 #endif

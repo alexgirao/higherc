@@ -27,13 +27,9 @@ void hcns(s_alloc)(HC_ST_S *x, int n)
 		}
 		return;
 	}
-	x->s = hcns(alloc)(n);
-	if (x->s) {
-		x->a = n;
-		x->len = 0;
-		return;
-	}
-	HC_FATAL("memory allocation failed"); /* it's better be safer than sorry */
+	HC_ALLOC(x->s, n);
+	x->a = n;
+	x->len = 0;
 }
 
 void hcns(s_free)(HC_ST_S *x)
@@ -43,7 +39,7 @@ void hcns(s_free)(HC_ST_S *x)
 		x->s = NULL;
 		x->len = 0;
 		x->a = 0;
-		hcns(alloc_free)(p);
+		HC_FREE(p);
 	}
 }
 
