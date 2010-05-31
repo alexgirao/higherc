@@ -83,7 +83,7 @@ hcns(bool) hcns(tag_setz)(struct hcns(tag) *x, char *z)
 /* tagid
  */
 
-void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
+void hcns(tagid_set_tags0)(HC_ST_TAGID *tagid, HC_ST_S *A, HC_ST_TAG *tag)
 {
 	HC_ST_TAG **taglist;
 	int i, len;
@@ -91,24 +91,33 @@ void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
 
 	assert(tag);
 
+	A->len = 0;
+
 	taglist = hcns(tag_as_array)(tag);
 	len = hcns(tag_usort)(taglist, hcns(tag_len)(tag));
 
-	hcns(s_copy)(tagid->A, taglist[0]->value);
+	hcns(s_copy)(A, taglist[0]->value);
 	for (i=1; i<len; i++) {
-		hcns(s_catc)(tagid->A, '-');
-		hcns(s_cat)(tagid->A, taglist[i]->value);
+		hcns(s_catc)(A, '-');
+		hcns(s_cat)(A, taglist[i]->value);
 	}
 
 	tagid->B = len;
-	tagid->C = tagid->A->len;
-	tagid->D = hcns(crc32)(0, tagid->A->s, tagid->A->len);
+	tagid->C = A->len;
+	tagid->D = hcns(crc32)(0, A->s, A->len);
 
 	hcns(sha1_init)(E0);
-	hcns(sha1_update)(E0, tagid->A->s, tagid->A->len);
+	hcns(sha1_update)(E0, A->s, A->len);
 	hcns(sha1_final)(E0, tagid->E);
 
 	HC_FREE(taglist);
+}
+
+void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
+{
+	HC_DEF_S(A);
+	hcns(tagid_set_tags0)(tagid, A, tag);
+	hcns(s_free)(A);
 }
 
 void hcns(tagid_cat_id)(HC_ST_TAGID *tagid, HC_ST_S *tid)
@@ -131,5 +140,24 @@ void hcns(tagid_cat_id)(HC_ST_TAGID *tagid, HC_ST_S *tid)
 
 void hcns(tagid_free)(HC_ST_TAGID *tagid)
 {
-	hcns(s_free)(tagid->A);
+	/* nothing to do, result api evolution
+	 */
+}
+
+void hcns(tagid_put)(HC_ST_TAGID *tagid, void *out)
+{
+	unsigned char *x = out;
+	*x++ = tagid->B & 0xff;  /* 0 + 1: 1 */
+	*x++ = tagid->C & 0xff;  /* 1 + 1: 2 */
+	HC_PUT_BE4(x, tagid->D); /* 2 + 4: 6 */
+	hcns(bcopyl)(x + 4, sizeof(tagid->E), tagid->E); /* 6 + 20: 26 */
+}
+
+void hcns(tagid_get)(HC_ST_TAGID *tagid, void *in)
+{
+	unsigned char *x = in;
+	tagid->B = *x++;
+	tagid->C = *x++;
+	tagid->D = HC_GET_BE4(x);
+	hcns(bcopyl)(tagid->E, sizeof(tagid->E), x + 4);
 }

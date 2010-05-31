@@ -53,6 +53,9 @@ int main(int argc, char **argv)
 	int i;
 	HC_ST_TAG *h = NULL;
 	HC_DEF_TAGID(tagid);
+	HC_DEF_TAGID(a);
+	unsigned char b[HC_TAGID_RAW_LEN];
+	HC_DEF_S(A);
 	HC_DEF_S(tid);
 
 	for (i=1; i<argc; i++) {
@@ -74,15 +77,26 @@ int main(int argc, char **argv)
 	/*
 	 */
 
-	hcns(tagid_set_tags)(tagid, h);
+	hcns(tagid_set_tags0)(tagid, A, h);
 	hcns(tagid_cat_id)(tagid, tid);
 
-	print_s(NULL, tagid->A, " = ");
+	print_s(NULL, A, " = ");
 	print_s(NULL, tid, "\n");
+
+	/* serialization test
+	 */
+
+	hcns(tagid_put)(tagid, b);
+	hcns(tagid_get)(a, b);
+
+	hcns(tagid_cat_id)(tagid, tid);
+
+	assert(hcns(bdiff)(tagid, sizeof(HC_ST_TAGID), a) == 0);
 
         /* cleanup
 	 */
 
+	hcns(s_free)(A);
 	hcns(s_free)(tid);
 	hcns(tag_free)(h);
 	hcns(tagid_free)(tagid);
