@@ -57,7 +57,7 @@ static void test_hex_in_out()
 		}
 
 		s.len = 0;
-		hcns(n_as_hex)(&a, &s);
+		assert(hcns(n_as_hex)(&a, &s) == 40);
 		HC_SAFE_CSTR(&s);
 
 		assert(hcns(sdiffn)(s.s, hexstr, sizeof(hexstr)) == 0);
@@ -78,7 +78,7 @@ static void test_hex_in_out()
 		}
 
 		s.len = 0;
-		hcns(n_as_hex)(&a, &s);
+		assert(hcns(n_as_hex)(&a, &s) == 40);
 		HC_SAFE_CSTR(&s);
 
 		assert(hcns(sdiffn)(s.s, hexstr, sizeof(hexstr)) == 0);

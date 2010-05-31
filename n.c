@@ -182,16 +182,14 @@ void hcns(n_load_hexz)(struct hcns(n) *r, char *hex)
 	return hcns(n_load_hex)(r, hex, hcns(slen)(hex));
 }
 
-void hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
+int hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
 {
 	int i, ndigits = n->len;
 	int s_start_len = s->len;
 
-	if (n->d == NULL || n->len == 0) {
-		/* uninitialized
-		 */
+	if (HC_IS_ZERO(n)) {
 		hcns(s_catc)(s, '0');
-		return;
+		return 1;
 	}
 
 	hcns(s_alloc)(s, s->len + n->len * (HC_HALF_BYTES * 2)); /* each byte has 2 hex digits */
@@ -239,10 +237,13 @@ void hcns(n_as_hex)(struct hcns(n) *n, HC_ST_S *s)
 
 	if (s_start_len == s->len) {
 		hcns(s_catc)(s, '0');
+		return 1;
 	}
+
+	return s->len - s_start_len;
 }
 
-void hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
+int hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
 {
 	HC_DEF_N(q);
 	hcns(h) r = HC_H(0);
@@ -250,7 +251,7 @@ void hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
 
 	if (HC_IS_ZERO(n)) {
 		hcns(s_catc)(s, '0');
-		return;
+		return 1;
 	}
 
 	hcns(n_alloc)(q, n->len);
@@ -273,9 +274,11 @@ void hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
 	hcns(brev)(s->s + s_len0, s->len - s_len0);
 
 	hcns(n_free)(q);
+
+	return s->len - s_len0;
 }
 
-void hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
+int hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
 {
 	HC_DEF_N(q);
 	hcns(h) r = HC_H(0);
@@ -283,7 +286,7 @@ void hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
 
 	if (HC_IS_ZERO(n)) {
 		hcns(s_catc)(s, '0');
-		return;
+		return 1;
 	}
 
 	hcns(n_alloc)(q, n->len);
@@ -305,6 +308,8 @@ void hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
 	hcns(brev)(s->s + s_len0, s->len - s_len0);
 
 	hcns(n_free)(q);
+
+	return s->len - s_len0;
 }
 
 #else
@@ -340,28 +345,34 @@ int hcns(n_cmp_hexz)(struct hcns(n) *v, char *hex)
 	return hcns(n_cmp_hex)(v, hex, hcns(slen(hex)));
 }
 
-void hcns(n_be1_as_hex)(HC_ST_S *s, void *x, int len)
+int hcns(n_be1_as_hex)(HC_ST_S *s, void *x, int len)
 {
+	int r;
 	HC_DEF_N(n);
 	hcns(n_load_be1)(n, x, len);
-	hcns(n_as_hex)(n, s);
+	r = hcns(n_as_hex)(n, s);
 	hcns(n_free)(n);
+	return r;
 }
 
-void hcns(n_be1_as_dec)(HC_ST_S *s, void *x, int len)
+int hcns(n_be1_as_dec)(HC_ST_S *s, void *x, int len)
 {
+	int r;
 	HC_DEF_N(n);
 	hcns(n_load_be1)(n, x, len);
-	hcns(n_as_dec)(n, s);
+	r = hcns(n_as_dec)(n, s);
 	hcns(n_free)(n);
+	return r;
 }
 
-void hcns(n_be1_as_base36)(HC_ST_S *s, void *x, int len)
+int hcns(n_be1_as_base36)(HC_ST_S *s, void *x, int len)
 {
+	int r;
 	HC_DEF_N(n);
 	hcns(n_load_be1)(n, x, len);
-	hcns(n_as_base36)(n, s);
+	r = hcns(n_as_base36)(n, s);
 	hcns(n_free)(n);
+	return r;
 }
 
 /**************************************

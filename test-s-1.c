@@ -112,6 +112,9 @@ int main(int argc, char **argv)
 	assert(hcns(s_diffz)(s, "5555555555567") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
+	/* shift right
+	 */
+
 	hcns(s_shiftr2)(s, 0, 1, '4');
 	assert(hcns(s_diffz)(s, "45555555555567") == 0 && s->len == 14);
 	print_s("[", s, "]\n");
@@ -122,6 +125,10 @@ int main(int argc, char **argv)
 
 	hcns(s_shiftr)(s, 0, s->len, 1, '2');
 	assert(hcns(s_diffz)(s, "234555555555556") == 0 && s->len == 15);
+	print_s("[", s, "]\n");
+
+	hcns(s_shiftr2)(s, -1, 3, '1');
+	assert(hcns(s_diffz)(s, "234555555555551116") == 0 && s->len == 18);
 	print_s("[", s, "]\n");
 
 	hcns(s_free)(s);

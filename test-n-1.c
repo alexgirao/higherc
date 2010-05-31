@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	 */
 
 	s->len = 0; /* truncate s */
-	hcns(n_as_base36)(a, s);
+	assert(hcns(n_as_base36)(a, s) == hcns(slen)(a_b36));
 	HC_SAFE_CSTR(s);
 	assert(hcns(s_diffz)(s, a_b36) == 0);
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	 */
 
 	s->len = 0; /* truncate s */
-	hcns(n_as_dec)(a, s);
+	assert(hcns(n_as_dec)(a, s) == hcns(slen)(a_dec));
 	HC_SAFE_CSTR(s);
 	assert(hcns(s_diffz)(s, a_dec) == 0);
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	 */
 
 	s->len = 0; /* truncate s */
-	hcns(n_as_base36)(a, s);
+	assert(hcns(n_as_base36)(a, s) == 1);
 	HC_SAFE_CSTR(s);
 	assert(hcns(s_diffz)(s, "0") == 0);
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 	 */
 
 	s->len = 0; /* truncate s */
-	hcns(n_as_dec)(a, s);
+	assert(hcns(n_as_dec)(a, s) == 1);
 	HC_SAFE_CSTR(s);
 	assert(hcns(s_diffz)(s, "0") == 0);
 

@@ -113,11 +113,20 @@ void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag)
 
 void hcns(tagid_cat_id)(HC_ST_TAGID *tagid, HC_ST_S *tid)
 {
+	int r;
 	hcns(s_copyn)(tid, "tid", 3);
-	hcns(s_shiftr2)(tid, -1, 2 - hcns(s_cat_u4_hex)(tid, tagid->B & 0xff), '0');
-	hcns(s_shiftr2)(tid, -1, 2 - hcns(s_cat_u4_hex)(tid, tagid->C & 0xff), '0');
-	hcns(s_shiftr2)(tid, -1, 8 - hcns(s_cat_u4_hex)(tid, tagid->D), '0');
-	hcns(n_be1_as_base36)(tid, tagid->E, sizeof(tagid->E));
+
+	r = hcns(s_cat_u4_hex)(tid, tagid->B & 0xff);
+	hcns(s_shiftr2)(tid, -r, 2 - r, '0');
+
+	r = hcns(s_cat_u4_hex)(tid, tagid->C & 0xff);
+	hcns(s_shiftr2)(tid, -r, 2 - r, '0');
+
+	r = hcns(s_cat_u4_hex)(tid, tagid->D);
+	hcns(s_shiftr2)(tid, -r, 8 - r, '0');
+
+	r = hcns(n_be1_as_base36)(tid, tagid->E, sizeof(tagid->E));
+	hcns(s_shiftr2)(tid, -r, 31 - r, '0');
 }
 
 void hcns(tagid_free)(HC_ST_TAGID *tagid)

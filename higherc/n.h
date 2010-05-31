@@ -70,9 +70,9 @@ void hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
 
 void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v);
 
-void hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
-void hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s);
-void hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s);
+int hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
+int hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s);
+int hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s);
 
 void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len);  /* load big-endian bytes */
 void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n);  /* load hex string */
@@ -81,9 +81,9 @@ void hcns(n_load_hexz)(struct hcns(n) *r, char *hex); /* likewise */
 int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n);
 int hcns(n_cmp_hexz)(struct hcns(n) *v, char *hex);
 
-void hcns(n_be1_as_hex)(struct hcns(s) *s, void *x, int len);
-void hcns(n_be1_as_dec)(struct hcns(s) *s, void *x, int len);
-void hcns(n_be1_as_base36)(struct hcns(s) *s, void *x, int len);
+int hcns(n_be1_as_hex)(struct hcns(s) *s, void *x, int len);
+int hcns(n_be1_as_dec)(struct hcns(s) *s, void *x, int len);
+int hcns(n_be1_as_base36)(struct hcns(s) *s, void *x, int len);
 
 int D_mul(hcns(h) *x, int xl, hcns(h) d, hcns(h) *r);
 int D_div(hcns(h) *x, int xl, hcns(h) d, hcns(h) *q, hcns(h) *r);
