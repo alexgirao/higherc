@@ -33,6 +33,63 @@ static int safe_read(int fd, char *buf, int count)
 	return r;
 }
 
+static int safe_write(int fd, char *buf, int count)
+{
+	ssize_t r = write(fd, buf, count);
+	if (r < 0) {
+		assert(r == -1);  // just to detect weird systems/weird bugs
+		fprintf(stderr, "write() = %li, errno: %i\n", (long int) r, errno);
+		fflush(stderr);
+		perror("write()");
+		exit(1);
+	}
+	if (r == 0 && errno) {
+		if (errno != ENOTTY /* Not a typewriter */) {
+			/* interesting values to check: EWOULDBLOCK
+			 * and EAGAIN for non-blocking descriptors */
+			fprintf(stderr, "write() = 0 and errno set, errno: %i\n", errno);
+			fflush(stderr);
+			perror("write()");
+			exit(1);
+		}
+	}
+	return r;
+}
+
+int hcns(read_exact)(int fd, void *buf, int len)
+{
+	int i, got = 0;
+
+	do {
+		if ((i = safe_read(fd, buf + got, len - got)) <= 0) {
+			/* EOF
+			 */
+			return i;
+		}
+		assert(i >= 0);
+		got += i;
+	} while (got < len);
+
+	return len;
+}
+
+int hcns(write_exact)(int fd, void *buf, int len)
+{
+	int i, wrote = 0;
+
+	do {
+		if ((i = safe_write(fd, buf + wrote, len - wrote)) <= 0) {
+			/* EOF
+			 */
+			return i;
+		}
+		assert(i >= 0);
+		wrote += i;
+	} while (wrote < len);
+
+	return len;
+}
+
 int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int len, hcns(bool) eof))
 {
 	int total = 0;
