@@ -1,6 +1,10 @@
 #ifndef tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 /* higherc-bytewise-h */
 #define tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 /* higherc-bytewise-h */
 
+#ifndef tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
+#error higherc-h not included
+#endif
+
 /* code from: git-1.7.1/compat/bswap.h
  */
 

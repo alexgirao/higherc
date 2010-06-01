@@ -1,6 +1,10 @@
 #ifndef tid030e0d917b07m4dxiqcl0ri46t6yjalx6vdbq75qv5v /* higherc-sha1-h */
 #define tid030e0d917b07m4dxiqcl0ri46t6yjalx6vdbq75qv5v /* higherc-sha1-h */
 
+#ifndef tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
+#error higherc-h not included
+#endif
+
 /*
  * SHA1 routine optimized to do word accesses rather than byte accesses,
  * and to avoid unnecessary copies into the context array.

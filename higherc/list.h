@@ -1,6 +1,10 @@
 #ifndef tid030e7a6b9335mgxvfwvibrqr0ijzf3izqrur4b9eavc /* higherc-list-h */
 #define tid030e7a6b9335mgxvfwvibrqr0ijzf3izqrur4b9eavc /* higherc-list-h */
 
+#ifndef tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
+#error higherc-h not included
+#endif
+
 /* list: a mixture of linked list and array intended for heavy, fast,
  * flexible list processing
  */

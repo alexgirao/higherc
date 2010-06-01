@@ -1,6 +1,10 @@
 #ifndef tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
 #define tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
 
+#ifndef tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
+#error higherc-h not included
+#endif
+
 #include <stdarg.h>
 
 #ifndef hcns /* higherc namespace */

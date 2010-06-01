@@ -1,6 +1,10 @@
 #ifndef tid030e7d411279fs42u4err9cv1o9g9gwl992ba0mr6x1 /* higherc-byte-h */
 #define tid030e7d411279fs42u4err9cv1o9g9gwl992ba0mr6x1 /* higherc-byte-h */
 
+#ifndef tid0209a64d4a69ik72qqii2sl0nhqrza49rb6ltavx6ug /* higherc-higherc-h */
+#error higherc-h not included
+#endif
+
 int hcns(bchrl)(const void *s, int n, int c);
 int hcns(bchrr)(const void *s, int n, int c);
 
