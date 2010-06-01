@@ -13,7 +13,6 @@ find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test-sha1 < iii' > ../b
 
 #include "higherc/higherc.h"
 #include "higherc/alloc.h"
-#include "higherc/readfd.h"
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 #include "higherc/sha1.h"

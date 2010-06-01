@@ -13,7 +13,6 @@
 #include "higherc/list.h"
 #include "higherc/pbuf.h"
 #include "higherc/alloc.h"
-#include "higherc/readfd.h"
 
 #define VALID_LINE 1
 #define SKIP_LINE 2

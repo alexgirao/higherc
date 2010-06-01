@@ -287,4 +287,14 @@ void hcns(_p_alloc_fatal_error_happend)(void);
  */
 void hcns(_p_fatal)(char *file, int line, char *fmt, ...);
 
+/* io functions
+ */
+
+int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int len, hcns(bool) eof));
+
+/* read_exact/write_exact: return len or less/equal than 0 on error
+ */
+int hcns(read_exact)(int fd, void *buf, int len);
+int hcns(write_exact)(int fd, void *buf, int len);
+
 #endif

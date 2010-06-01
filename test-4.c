@@ -17,7 +17,6 @@
 #include <string.h>
 
 #include "higherc/higherc.h"
-#include "higherc/readfd.h"
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 #include "higherc/alloc.h"

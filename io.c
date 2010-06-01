@@ -6,7 +6,6 @@
 
 #include "higherc/higherc.h"
 #include "higherc/byte.h"
-#include "higherc/readfd.h"
 
 /* safe_read: when you must fail, fail noisily and as soon as possible
  */

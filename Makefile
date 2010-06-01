@@ -3,13 +3,13 @@ CFLAGS = -Wall -g
 LDFLAGS = -L.
 LIBS = -lhigherc
 
-LIB_OBJS = byte.o alloc.o str.o list.o s.o pbuf.o bytewise.o readfd.o	\
+LIB_OBJS = byte.o alloc.o str.o list.o s.o pbuf.o bytewise.o io.o	\
 fatal.o rand.o n.o crc32.o sha1.o tagid.o
 
 LIB_HEADERS = higherc/alloc.h higherc/byte.h higherc/higherc.h		\
 higherc/list.h higherc/pbuf.h higherc/s.h higherc/str.h higherc/tok.h	\
-higherc/bytewise.h higherc/readfd.h higherc/rand.h higherc/n.h		\
-higherc/crc32.h higherc/sha1.h higherc/tagid.h
+higherc/bytewise.h higherc/rand.h higherc/n.h higherc/crc32.h		\
+higherc/sha1.h higherc/tagid.h
 
 PROGS = test-0 test-1 test-2 test-3 test-4 test-list-0 test-s-0		\
 test-s-1 test-pbuf-0 test-pbuf-1 test-tok-0 sample-cat test-bytewise	\
@@ -44,7 +44,7 @@ s.o: higherc/higherc.h higherc/byte.h higherc/str.h higherc/s.h
 list.o: higherc/higherc.h higherc/byte.h higherc/str.h higherc/alloc.h higherc/list.h
 pbuf.o: higherc/higherc.h higherc/byte.h higherc/str.h higherc/alloc.h higherc/list.h higherc/pbuf.h
 bytewise.o: higherc/higherc.h higherc/bytewise.h
-readfd.o: higherc/higherc.h higherc/byte.h higherc/readfd.h
+io.o: higherc/higherc.h higherc/byte.h
 n.o: higherc/higherc.h higherc/byte.h higherc/n.h
 tagid.o: higherc/higherc.h higherc/byte.h higherc/n.h higherc/s.h
 
