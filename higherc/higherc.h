@@ -96,7 +96,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 	}								\
 	spec void name##_free0(struct name *x)				\
 	{								\
-		assert(x);						\
+		assert(x != NULL);						\
 		while (x) {						\
 			struct name *t = x->tail;			\
 			HC_FREE(x);					\
