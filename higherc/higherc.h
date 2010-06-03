@@ -6,6 +6,7 @@
 #endif
 
 #include <stdarg.h>
+#include <assert.h>
 
 #ifndef hcns /* higherc namespace */
 #define hcns(v) higherc_##v
@@ -80,8 +81,8 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 	spec void name##_free0(struct name *x);				\
 	spec struct name **name##_as_array(struct name *x);		\
 	spec int name##_len(struct name *x);				\
-	spec void name##_backward(struct name *x, struct name##_iter *i); \
-	spec void name##_forward(struct name *x, struct name##_iter *i); \
+	spec void name##_backward(struct name##_iter *i, struct name *x); \
+	spec void name##_forward(struct name##_iter *i, struct name *x); \
 	spec void name##_end(struct name##_iter *i);			\
 	spec struct name *name##_next(struct name##_iter *i)
 
@@ -95,6 +96,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 	}								\
 	spec void name##_free0(struct name *x)				\
 	{								\
+		assert(x);						\
 		while (x) {						\
 			struct name *t = x->tail;			\
 			HC_FREE(x);					\
@@ -124,7 +126,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		i->v0 = r->tail;					\
 		return r;						\
 	}								\
-	spec void name##_backward(struct name *x, struct name##_iter *i) \
+	spec void name##_backward(struct name##_iter *i, struct name *x) \
 	{								\
 		i->next = _##name##_next_b;				\
 		i->end = NULL;						\
@@ -146,7 +148,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		_##name##_end_f(i);					\
 		return NULL;						\
 	}								\
-	spec void name##_forward(struct name *x, struct name##_iter *i)	\
+	spec void name##_forward(struct name##_iter *i, struct name *x)	\
 	{								\
 		i->next = _##name##_next_f;				\
 		i->end = _##name##_end_f;				\

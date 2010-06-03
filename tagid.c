@@ -45,7 +45,7 @@ void hcns(tag_free)(struct hcns(tag) *x)
 	struct hcns(tag_iter) iter[1];
 	HC_ST_TAG *t;
 
-	hcns(tag_backward)(x, iter);
+	hcns(tag_backward)(iter, x);
 	while ((t = hcns(tag_next)(iter))) {
 		hcns(s_free)(t->value);
 	}

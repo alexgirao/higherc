@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 
 	fprintf(stdout, "backward traverse\n");
 
-	i_backward(h, c);
+	i_backward(c, h);
 	while ((t = i_next(c))) {
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
 	}
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
 	fprintf(stdout, "forward traverse\n");
 
-	i_forward(h, c);
+	i_forward(c, h);
 	while ((t = i_next(c))) {
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", t->tag->s, t->a, t->b, t->c);
 	}
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 
 	HC_FREE(r);
 
-	i_backward(h, c);
+	i_backward(c, h);
 	while ((t = i_next(c))) {
 		hcns(s_free)(t->tag);
 	}

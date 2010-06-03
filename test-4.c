@@ -52,7 +52,7 @@ static void aa_free(struct hcns(aa) *h)
 {
 	struct hcns(aa) *t;
 	struct hcns(aa_iter) c[1];
-	hcns(aa_backward)(h, c);
+	hcns(aa_backward)(c, h);
 	while ((t = hcns(aa_next)(c))) {
 		hcns(s_free)(t->tag);
 	}
