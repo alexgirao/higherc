@@ -154,6 +154,36 @@ static void test_ctype()
 	}
 }
 
+static int xx_le(void);
+static int xx_be(void);
+static int xx_detect(void);
+static int (*xx_final)(void) = xx_detect;
+
+int xx(void)
+{
+	return xx_final();
+}
+
+int xx_le(void)
+{
+	puts("little-endian routine");
+	return 1;
+}
+
+int xx_be(void)
+{
+	puts("big-endian routine");
+	return 2;
+}
+
+int xx_detect(void)
+{
+	int v = 0xdeadbeef;
+	puts("detecting endianess");
+	xx_final = *((unsigned char*)&v) == 0xef ? xx_le : xx_be;
+	return xx();
+}
+
 int main(int argc, char **argv)
 {
 	int x = 0xdeadbeef;
@@ -199,6 +229,26 @@ int main(int argc, char **argv)
 	 */
 
 	test_ctype();
+
+	/* binary data
+	 */
+
+	{
+		unsigned char bin[] = "\x01\x02\x03\xff";
+
+		assert(bin[0] == 1);
+		assert(bin[1] == 2);
+		assert(bin[2] == 3);
+		assert(bin[3] == 0xff);
+	}
+
+	/* endianess auto-detect
+	 */
+
+	xx();
+	xx();
+	xx();
+	xx();
 
 	return 0;
 }
