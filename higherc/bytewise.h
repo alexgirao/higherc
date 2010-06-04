@@ -135,14 +135,14 @@ extern const signed char hcns(hexval_table)[256];
 /* ctype
  */
 
-#define HC_SPACE 0x1
+#define HC_SPACE 0x1 /* space, '\f', '\n', '\r', '\t', '\v' */
 #define HC_DIGIT 0x2
 #define HC_ALPHA 0x4
 #define HC_ALNUM 0x8
 #define HC_GLOB 0x10 /* do not match ] */
 #define HC_REGEX_META 0x20 /* meta chars: do not match ] and } */
 #define HC_REGEX_CHAR 0x40 /* character class: \, ^, -, [, ] */
-#define HC_BLANK 0x80
+#define HC_BLANK 0x80 /* space or '\t' */
 #define HC_PUNCT 0x100  /* not HC_GLOB_SPECIAL nor HC_REGEX_SPECIAL */
 
 extern hcns(u2) hcns(ctypetbl)[256];

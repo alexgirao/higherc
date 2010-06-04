@@ -62,4 +62,8 @@ void hcns(s_shiftl2)(HC_ST_S *s, int start, int n, int pad);
 
 #define HC_SAFE_CSTR(s) do {hcns(s_catc)(s, '\0'); --(s)->len;} while (0)
 
+void hcns(s_reprn)(HC_ST_S *s_repr, void *s, int n);
+void hcns(s_repr)(HC_ST_S *s_repr, HC_ST_S *s);
+void hcns(s_reprz)(HC_ST_S *s_repr, char *s);
+
 #endif

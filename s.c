@@ -334,3 +334,35 @@ void hcns(s_shiftl2)(HC_ST_S *s, int start, int n, int pad)
 {
 	hcns(s_shiftl)(s, start, s->len, n, pad);
 }
+
+/* repr
+ */
+
+void hcns(s_reprn)(HC_ST_S *s_repr, void *s, int n)
+{
+	unsigned char *x = s;
+	int c, flags;
+	while (n--) {
+		c = *x++;
+		flags = HC_CTYPE_FLAGS(c);
+		if (flags & (HC_ALNUM | HC_PUNCT | HC_BLANK)) {
+			hcns(s_catc)(s_repr, c);
+		} else {
+			hcns(s_alloc)(s_repr, s_repr->len + 4); /* \xNN */
+			s_repr->s[s_repr->len++] = '\\';
+			s_repr->s[s_repr->len++] = 'x';
+			s_repr->s[s_repr->len++] = HC_HEX_DIGIT((c >> 4) & 0xf);
+			s_repr->s[s_repr->len++] = HC_HEX_DIGIT(c & 0xf);
+		}
+	}
+}
+
+void hcns(s_repr)(HC_ST_S *s_repr, HC_ST_S *s)
+{
+	hcns(s_reprn)(s_repr, s->s, s->len);
+}
+
+void hcns(s_reprz)(HC_ST_S *s_repr, char *s)
+{
+	hcns(s_reprn)(s_repr, s, hcns(slen)(s));
+}
