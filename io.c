@@ -28,6 +28,7 @@ static int safe_read(int fd, char *buf, int count)
 			perror("read()");
 			exit(1);
 		}
+		errno = 0; /* discard error */
 	}
 	return r;
 }
@@ -51,6 +52,7 @@ static int safe_write(int fd, char *buf, int count)
 			perror("write()");
 			exit(1);
 		}
+		errno = 0; /* discard error */
 	}
 	return r;
 }
@@ -95,7 +97,7 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 	int len = 0;
 
 	assert(bufsz > 0);
-	assert(errno == 0);
+	assert(errno == 0 || errno == ENOTTY);
 
 	for (;;) {
 		int n;

@@ -25,6 +25,7 @@ test-byte.o sample-asciionly.o
 all: libhigherc.a $(PROGS)
 
 libhigherc.a: $(LIB_OBJS)
+	rm -f $@
 	ar cr $@ $^
 	ranlib $@
 
