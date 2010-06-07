@@ -6,6 +6,7 @@
 
 #include "higherc/higherc.h"
 #include "higherc/byte.h"
+#include "higherc/bytewise.h"
 
 /* safe_read: when you must fail, fail noisily and as soon as possible
  */
@@ -156,4 +157,23 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
     	}
 
 	return total;
+}
+
+hcns(u4) hcns(readfd_be4)(int fd, void *buf)
+{
+	hcns(u1) plen0[4]; /* packet len */
+	int len;
+
+	assert(errno == 0 || errno == ENOTTY);
+
+	len = hcns(read_exact)(fd, plen0, sizeof(plen0));
+	if (len == 0) {
+		/* EOF
+		 */
+		return -1;
+	}
+
+	assert(len == 4);
+
+	return HC_GET_BE4(plen0);
 }

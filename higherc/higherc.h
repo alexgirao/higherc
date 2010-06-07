@@ -303,4 +303,9 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 int hcns(read_exact)(int fd, void *buf, int len);
 int hcns(write_exact)(int fd, void *buf, int len);
 
+/* returns the value at the next 4 bytes disposed in big-endian order,
+ * returns -1 if EOF
+ */
+hcns(u4) hcns(readfd_be4)(int fd, void *buf);
+
 #endif
