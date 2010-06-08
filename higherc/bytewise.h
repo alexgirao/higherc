@@ -172,4 +172,13 @@ extern hcns(u2) hcns(ctypetbl)[256];
 #define HC_TOLOWER(x) (HC_ISALPHA(x) ? x | 0x20 : x)
 #define HC_TOUPPER(x) (HC_ISALPHA(x) ? x & ~0x20 : x)
 
+/*
+ * big-endian, 7-bit encoding, msb is set at last digit
+ *
+ * len0 needs at least 5 digits
+ *
+ */
+int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v);
+hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0);
+
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */

@@ -1,4 +1,5 @@
 #include "higherc/higherc.h"
+#include "higherc/byte.h"
 #include "higherc/bytewise.h"
 
 const signed char hcns(hexval_table)[256] = {
@@ -66,6 +67,65 @@ hcns(u2) hcns(ctypetbl)[256] = {
 	A, A, A, A, A, A, A, A, A, A, A, R, R, P, P, 0,		/* 112..127 */
 	/* Nothing in the 128.. range */
 };
+
+/*
+ * big-endian, 7-bit encoding, msb is set at last digit
+ *
+ * len0 needs at least 5 digits
+ *
+ */
+int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
+{
+	hcns(u1) *len=len0;
+	hcns(u4) q=v, r;
+
+	/* printf("encoding %08x", q); */
+
+	for (;;) {
+		r = q & 0x7f;
+		q = q >> 7;
+		/* printf(" q/r=%06x/%02x", q, r); */
+		if (q == 0) {
+			*len++ = r;
+			break;
+		} else {
+			*len++ = r;
+		}
+	}
+	len0[0] |= 0x80; /* this will be the last digit */
+	hcns(brev)(len0, len - len0); /* make big-endian (simpler to decode) */
+
+	/* printf(" -> %02x %02x %02x %02x %02x (%i effective bytes)\n", len0[0], len0[1], len0[2], len0[3], len0[4], (int)(len - len0)); */
+
+	return len - len0;
+}
+
+hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0)
+{
+	hcns(u1) *len=len0;
+	hcns(u4) q=0, r;
+
+#define ITER 						\
+		r = *len++;				\
+		if (r & 0x80) {				\
+			q = (q << 7) | (r & 0x7f);	\
+			break;				\
+		} else {				\
+			q = (q << 7) | r;		\
+		}
+
+	do {
+		ITER;
+		ITER;
+		ITER;
+		ITER;
+		ITER;
+	} while (0);
+
+#undef ITER
+
+	return q;
+}
 
 /*
  */

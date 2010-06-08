@@ -4,8 +4,10 @@
 #include <unistd.h>
 #include <errno.h>
 #include <assert.h>
+#include <stdint.h>
 
 #include "higherc/higherc.h"
+#include "higherc/byte.h"
 #include "higherc/s.h"
 #include "higherc/bytewise.h"
 
@@ -184,6 +186,36 @@ int xx_detect(void)
 	return xx();
 }
 
+void len_enc(void)
+{
+	hcns(u4) tests[] = {
+		0, 1, /*1,*/ 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946,
+		17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578,
+		5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 102334155, 165580141, 267914296, 433494437, 701408733, 1134903170, 1836311903,
+		INT8_MAX, UINT8_MAX, INT16_MAX, UINT16_MAX, INT32_MAX, UINT32_MAX
+	};
+	int tests_len = sizeof(tests) / sizeof(hcns(u4));
+	int i;
+	hcns(u1) e[5];
+	int e_len;
+
+	for (i=0; i<tests_len; i++) {
+		hcns(bzero)(e, 5);
+		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
+		assert(tests[i] == hcns(dec_u4_be_7x8)(e));
+	}
+
+	for (i=0; i<tests_len; i++) {
+		e[0] = tests[(i+0) % tests_len];
+		e[1] = tests[(i+1) % tests_len];
+		e[2] = tests[(i+2) % tests_len];
+		e[3] = tests[(i+3) % tests_len];
+		e[4] = tests[(i+4) % tests_len];
+		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
+		assert(tests[i] == hcns(dec_u4_be_7x8)(e));
+	}
+}
+
 int main(int argc, char **argv)
 {
 	int x = 0xdeadbeef;
@@ -249,6 +281,11 @@ int main(int argc, char **argv)
 	xx();
 	xx();
 	xx();
+
+	/* length encoding
+	 */
+
+	len_enc();
 
 	return 0;
 }
