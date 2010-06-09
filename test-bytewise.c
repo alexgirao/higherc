@@ -197,12 +197,13 @@ void len_enc(void)
 	int tests_len = sizeof(tests) / sizeof(hcns(u4));
 	int i;
 	hcns(u1) e[5];
-	int e_len;
+	int e_len, e_len2;
 
 	for (i=0; i<tests_len; i++) {
 		hcns(bzero)(e, 5);
 		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
-		assert(tests[i] == hcns(dec_u4_be_7x8)(e));
+		assert(tests[i] == hcns(dec_u4_be_7x8)(e, &e_len2));
+		assert(e_len == e_len2);
 	}
 
 	for (i=0; i<tests_len; i++) {
@@ -212,7 +213,8 @@ void len_enc(void)
 		e[3] = tests[(i+3) % tests_len];
 		e[4] = tests[(i+4) % tests_len];
 		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
-		assert(tests[i] == hcns(dec_u4_be_7x8)(e));
+		assert(tests[i] == hcns(dec_u4_be_7x8)(e, &e_len2));
+		assert(e_len == e_len2);
 		assert(e_len == hcns(enc_u4_be_7x8)(NULL, tests[i]));
 	}
 }

@@ -103,7 +103,7 @@ int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
 	return len - len0;
 }
 
-hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0)
+hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0, int *lenp)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=0, r;
@@ -126,6 +126,10 @@ hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0)
 	} while (0);
 
 #undef ITER
+
+	if (lenp) {
+		*lenp = len - len0;
+	}
 
 	return q;
 }

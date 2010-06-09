@@ -180,6 +180,6 @@ extern hcns(u2) hcns(ctypetbl)[256];
  *
  */
 int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v);
-hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0);
+hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0, int *lenp);
 
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */
