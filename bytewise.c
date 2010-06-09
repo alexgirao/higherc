@@ -85,17 +85,20 @@ int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
 		r = q & 0x7f;
 		q = q >> 7;
 		/* printf(" q/r=%06x/%02x", q, r); */
-		if (q == 0) {
+		if (len0) {
 			*len++ = r;
-			break;
 		} else {
-			*len++ = r;
+			len++;
+		}
+		if (q == 0) {
+			break;
 		}
 	}
-	len0[0] |= 0x80; /* this will be the last digit */
-	hcns(brev)(len0, len - len0); /* make big-endian (simpler to decode) */
-
-	/* printf(" -> %02x %02x %02x %02x %02x (%i effective bytes)\n", len0[0], len0[1], len0[2], len0[3], len0[4], (int)(len - len0)); */
+	if (len0) {
+		len0[0] |= 0x80; /* this will be the last digit */
+		hcns(brev)(len0, len - len0); /* make big-endian (simpler to decode) */
+		/* printf(" -> %02x %02x %02x %02x %02x (%i effective bytes)\n", len0[0], len0[1], len0[2], len0[3], len0[4], (int)(len - len0)); */
+	}
 
 	return len - len0;
 }

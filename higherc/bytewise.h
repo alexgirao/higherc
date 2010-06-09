@@ -175,7 +175,8 @@ extern hcns(u2) hcns(ctypetbl)[256];
 /*
  * big-endian, 7-bit encoding, msb is set at last digit
  *
- * len0 needs at least 5 digits
+ * len0 needs at least 5 digits, use NULL as len0 to get length in enc
+ * function
  *
  */
 int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v);

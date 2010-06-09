@@ -213,6 +213,7 @@ void len_enc(void)
 		e[4] = tests[(i+4) % tests_len];
 		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
 		assert(tests[i] == hcns(dec_u4_be_7x8)(e));
+		assert(e_len == hcns(enc_u4_be_7x8)(NULL, tests[i]));
 	}
 }
 
