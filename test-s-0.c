@@ -150,6 +150,31 @@ int main(int argc, char **argv)
 	/*
 	 */
 
+	{
+		void *out;
+		int putlen;
+		HC_DEF_S(t);
+
+		hcns(s_copyz)(s, "hello world of possibilities!");
+		putlen = hcns(s_putlen)(s);
+
+		HC_ALLOC(out, putlen);
+
+		assert(hcns(s_put)(s, out) == putlen);
+		assert(hcns(s_get)(t, out) == putlen);
+		assert(hcns(s_diff)(s, t) == 0);
+
+		s->len = 0;
+		hcns(s_reprn)(s, out, putlen);
+		print_s("[", s, "]\n");
+
+		HC_FREE(out);
+		hcns(s_free)(t);
+	}
+
+	/*
+	 */
+
 	hcns(s_free)(s);
 
 	return 0;

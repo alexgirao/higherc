@@ -78,28 +78,32 @@ int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=v, r;
-
-	/* printf("encoding %08x", q); */
-
-	for (;;) {
-		r = q & 0x7f;
-		q = q >> 7;
-		/* printf(" q/r=%06x/%02x", q, r); */
+	if (q) {
 		if (len0) {
-			*len++ = r;
+			while (q) {
+				r = q & 0x7f;
+				q = q >> 7;
+				*len++ = r;
+			}
+			len0[0] |= 0x80; /* this will be the last digit */
+			hcns(brev)(len0, len - len0); /* make big-endian (simpler to decode) */
 		} else {
-			len++;
+			if (q & ~HC_BITMASK(28)) {
+				return 5;
+			} else if (q & ~HC_BITMASK(21)) {
+				return 4;
+			} else if (q & ~HC_BITMASK(14)) {
+				return 3;
+			} else if (q & ~HC_BITMASK(7)) {
+				return 2;
+			}
+			return 1;
 		}
-		if (q == 0) {
-			break;
-		}
+	} else if (len0) {
+		*len++ = 0x80;
+	} else {
+		return 1;
 	}
-	if (len0) {
-		len0[0] |= 0x80; /* this will be the last digit */
-		hcns(brev)(len0, len - len0); /* make big-endian (simpler to decode) */
-		/* printf(" -> %02x %02x %02x %02x %02x (%i effective bytes)\n", len0[0], len0[1], len0[2], len0[3], len0[4], (int)(len - len0)); */
-	}
-
 	return len - len0;
 }
 

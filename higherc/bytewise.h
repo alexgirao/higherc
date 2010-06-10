@@ -92,6 +92,8 @@ static inline unsigned int hcns(swab32)(unsigned int val)
 
 #endif
 
+#define HC_BITMASK(c) ((1 << (c)) - 1)
+
 /* hex
  */
 

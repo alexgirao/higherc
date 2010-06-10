@@ -66,4 +66,17 @@ void hcns(s_reprn)(HC_ST_S *s_repr, void *s, int n);
 void hcns(s_repr)(HC_ST_S *s_repr, HC_ST_S *s);
 void hcns(s_reprz)(HC_ST_S *s_repr, char *s);
 
+/* serialization
+ */
+
+int hcns(s_putlen)(HC_ST_S *x);
+
+/* return bytes written
+ */
+int hcns(s_put)(HC_ST_S *x, void *out);
+
+/* return bytes read
+ */
+int hcns(s_get)(HC_ST_S *x, void *in);
+
 #endif

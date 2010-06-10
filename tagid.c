@@ -143,6 +143,9 @@ void hcns(tagid_free)(HC_ST_TAGID *tagid)
 	 */
 }
 
+/* serialization
+ */
+
 void hcns(tagid_put)(HC_ST_TAGID *tagid, void *out)
 {
 	unsigned char *x = out;

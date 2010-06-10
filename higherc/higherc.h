@@ -30,7 +30,7 @@ typedef unsigned int hcns(u4);
 #define HC_TRUE 1
 #define HC_FALSE 0
 
-#define HC_OFFSET(p, c)                ((char*)(p)+(int)(c))
+#define HC_OFFSET(p, c)                ((unsigned char*)(p)+(int)(c))
 
 #define HC_ALIGN_BY(bytes,alignment)       ((bytes + alignment) & ~(alignment-1))
 #define HC_ALIGN4(bytes)                   HC_ALIGN_BY(bytes,4)
