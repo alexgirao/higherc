@@ -196,7 +196,8 @@ void len_enc(void)
 		HC_BITMASK(7+7+7+7), HC_BITMASK(7+7+7), HC_BITMASK(7+7), HC_BITMASK(7),
 		~HC_BITMASK(7+7+7+7), ~HC_BITMASK(7+7+7), ~HC_BITMASK(7+7), ~HC_BITMASK(7),
 		HC_BITMASK(7+7+7+7)+1, HC_BITMASK(7+7+7)+1, HC_BITMASK(7+7)+1, HC_BITMASK(7)+1,
-		~HC_BITMASK(7+7+7+7)-1, ~HC_BITMASK(7+7+7)-1, ~HC_BITMASK(7+7)-1, ~HC_BITMASK(7)-1
+		~HC_BITMASK(7+7+7+7)-1, ~HC_BITMASK(7+7+7)-1, ~HC_BITMASK(7+7)-1, ~HC_BITMASK(7)-1,
+		0xdeadbeef
 	};
 	int tests_len = sizeof(tests) / sizeof(hcns(u4));
 	int i;

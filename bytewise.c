@@ -74,7 +74,7 @@ hcns(u2) hcns(ctypetbl)[256] = {
  * len0 needs at least 5 digits
  *
  */
-int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
+int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=v, r;
@@ -85,8 +85,8 @@ int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
 				q = q >> 7;
 				*len++ = r;
 			}
-			len0[0] |= 0x80; /* this will be the last digit */
-			hcns(brev)(len0, len - len0); /* make big-endian (simpler to decode) */
+			((hcns(u1)*)len0)[0] |= 0x80; /* this will be the last digit */
+			hcns(brev)(len0, len - (hcns(u1)*)len0); /* make big-endian (simpler to decode) */
 		} else {
 			if (q & ~HC_BITMASK(28)) {
 				return 5;
@@ -104,10 +104,10 @@ int hcns(enc_u4_be_7x8)(hcns(u1) *len0, hcns(u4) v)
 	} else {
 		return 1;
 	}
-	return len - len0;
+	return len - (hcns(u1)*)len0;
 }
 
-hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0, int *lenp)
+hcns(u4) hcns(dec_u4_be_7x8)(void *len0, int *lenp)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=0, r;
@@ -132,7 +132,7 @@ hcns(u4) hcns(dec_u4_be_7x8)(hcns(u1) *len0, int *lenp)
 #undef ITER
 
 	if (lenp) {
-		*lenp = len - len0;
+		*lenp = len - (hcns(u1)*)len0;
 	}
 
 	return q;
