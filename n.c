@@ -472,6 +472,7 @@ int I_comp(hcns(h) *x, int xl, hcns(h) *y, int yl)
 	}
 }
 
+#if 0
 /*
 ** Add digits in x and y and store them in r
 ** assumption: (xl >= yl)
@@ -505,6 +506,8 @@ static int I_add(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r)
 	}
 	return sz;
 }
+#endif
+
 /*
 ** Add a digits in v1 and store result in vr
 */
@@ -665,6 +668,7 @@ int I_mul(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r)
 		return (rt - r0) + 1;
 }
 
+#if 0
 /*
 ** Square digits in x store in r (x & r may point into a common area)
 ** Assumption: x is destroyed if common area and digits in r are zero
@@ -727,6 +731,7 @@ static int I_sqr(hcns(h) *x, int xl, hcns(h) *r)
 	else
 		return (s - r0) + 1;
 }
+#endif
 
 /*
  * Multiply digits d with digits in x and store in r
@@ -964,6 +969,7 @@ int I_div(hcns(h) *x, int xl, hcns(h) *y, int yl,
 	return ql;
 }
 
+#if 0
 /*
 ** Remainder of digits in x and a digit d
 */
@@ -1454,3 +1460,4 @@ static int I_lg(hcns(h) *x, int xl)
 	}
 	return sz - 1;
 }
+#endif
