@@ -10,6 +10,7 @@
 #include "higherc/byte.h"
 #include "higherc/s.h"
 #include "higherc/bytewise.h"
+#include "higherc/rand.h"
 
 #define bval(v, pos) (((unsigned char *)&v)[pos])
 
@@ -200,27 +201,50 @@ void len_enc(void)
 		0xdeadbeef
 	};
 	int tests_len = sizeof(tests) / sizeof(hcns(u4));
+	hcns(u4) a[10000];
+	int a_len = sizeof(a) / sizeof(a[0]);
 	int i;
 	hcns(u1) e[5];
 	int e_len, e_len2;
+	struct hcns(entropy) re[1];
+
+	/* fillup a with some pre-defined values and random values
+	 */
 
 	for (i=0; i<tests_len; i++) {
+		a[i] = tests[i];
+	}
+
+	hcns(time_seed)(re);
+
+	for (; i<a_len; i++) {
+		a[i] = hcns(rand4)(re);
+	}
+
+	/* tests
+	 */
+
+	for (i=0; i<a_len; i++) {
 		hcns(bzero)(e, 5);
-		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
-		assert(tests[i] == hcns(dec_u4_be_7x8)(e, &e_len2));
+		e_len = hcns(enc_u4_be_7x8)(e, a[i]);
+		assert(a[i] == hcns(dec_u4_be_7x8)(e, &e_len2));
 		assert(e_len == e_len2);
 	}
 
-	for (i=0; i<tests_len; i++) {
-		e[0] = tests[(i+0) % tests_len];
-		e[1] = tests[(i+1) % tests_len];
-		e[2] = tests[(i+2) % tests_len];
-		e[3] = tests[(i+3) % tests_len];
-		e[4] = tests[(i+4) % tests_len];
-		e_len = hcns(enc_u4_be_7x8)(e, tests[i]);
-		assert(tests[i] == hcns(dec_u4_be_7x8)(e, &e_len2));
+	for (i=0; i<a_len; i++) {
+		/* dirty `e' (just being offensive)
+		 */
+		e[0] = a[(i+0) % a_len];
+		e[1] = a[(i+1) % a_len];
+		e[2] = a[(i+2) % a_len];
+		e[3] = a[(i+3) % a_len];
+		e[4] = a[(i+4) % a_len];
+		/*
+		 */
+		e_len = hcns(enc_u4_be_7x8)(e, a[i]);
+		assert(a[i] == hcns(dec_u4_be_7x8)(e, &e_len2));
 		assert(e_len == e_len2);
-		assert(e_len == hcns(enc_u4_be_7x8)(NULL, tests[i]));
+		assert(e_len == hcns(enc_u4_be_7x8)(NULL, a[i]));
 	}
 }
 

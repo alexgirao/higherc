@@ -78,6 +78,7 @@ int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=v, r;
+
 	if (q) {
 		if (len0) {
 			while (q) {
@@ -88,22 +89,23 @@ int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v)
 			((hcns(u1)*)len0)[0] |= 0x80; /* this will be the last digit */
 			hcns(brev)(len0, len - (hcns(u1)*)len0); /* make big-endian (simpler to decode) */
 		} else {
-			if (q & ~HC_BITMASK(28)) {
-				return 5;
-			} else if (q & ~HC_BITMASK(21)) {
-				return 4;
-			} else if (q & ~HC_BITMASK(14)) {
-				return 3;
-			} else if (q & ~HC_BITMASK(7)) {
+			if ((q & ~HC_BITMASK(7)) == 0) {
+				return 1;
+			} else if ((q & ~HC_BITMASK(14)) == 0) {
 				return 2;
+			} else if ((q & ~HC_BITMASK(21)) == 0) {
+				return 3;
+			} else if ((q & ~HC_BITMASK(28)) == 0) {
+				return 4;
 			}
-			return 1;
+			return 5;
 		}
 	} else if (len0) {
 		*len++ = 0x80;
 	} else {
 		return 1;
 	}
+
 	return len - (hcns(u1)*)len0;
 }
 
