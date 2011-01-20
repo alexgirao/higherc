@@ -63,14 +63,12 @@ int hcns(read_exact)(int fd, void *buf, int len)
 	int i, got = 0;
 
 	do {
-		if ((i = safe_read(fd, buf + got, len - got)) <= 0) {
-			/* EOF
-			 */
-			return i;
-		}
-		assert(i >= 0);
+		i = safe_read(fd, buf + got, len - got);
+		assert(i > 0);
 		got += i;
 	} while (got < len);
+
+	assert(got == len);
 
 	return len;
 }
@@ -80,14 +78,12 @@ int hcns(write_exact)(int fd, void *buf, int len)
 	int i, wrote = 0;
 
 	do {
-		if ((i = safe_write(fd, buf + wrote, len - wrote)) <= 0) {
-			/* EOF
-			 */
-			return i;
-		}
-		assert(i >= 0);
+		i = safe_write(fd, buf + wrote, len - wrote);
+		assert(i > 0);
 		wrote += i;
 	} while (wrote < len);
+
+	assert(wrote == len);
 
 	return len;
 }
@@ -123,7 +119,7 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 			assert(len <= bufsz);
 
 			if (len == 0) {
-				/* no data at STDIN
+				/* no data to process
 				 */
 				break;
 			}
@@ -159,7 +155,7 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 	return total;
 }
 
-hcns(u4) hcns(readfd_be4)(int fd, void *buf)
+hcns(u4) hcns(readfd_be4)(int fd)
 {
 	hcns(u1) plen0[4]; /* packet len */
 	int len;
@@ -167,12 +163,6 @@ hcns(u4) hcns(readfd_be4)(int fd, void *buf)
 	assert(errno == 0 || errno == ENOTTY);
 
 	len = hcns(read_exact)(fd, plen0, sizeof(plen0));
-	if (len == 0) {
-		/* EOF
-		 */
-		return -1;
-	}
-
 	assert(len == 4);
 
 	return HC_GET_BE4(plen0);

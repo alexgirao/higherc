@@ -224,6 +224,28 @@ void len_enc(void)
 	/* tests
 	 */
 
+	assert(hcns(enc_u4_be_7x8)(e, 0) == 1);
+	assert(hcns(enc_u4_be_7x8)(e, 1) == 1);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7)) == 1);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+1)) == 2);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+7)) == 2);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+7+1)) == 3);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+7+7)) == 3);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+7+7+1)) == 4);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+7+7+7)) == 4);
+	assert(hcns(enc_u4_be_7x8)(e, HC_BITMASK(7+7+7+7+1)) == 5);
+
+	assert(hcns(enc_u4_be_7x8)(NULL, 0) == 1);
+	assert(hcns(enc_u4_be_7x8)(NULL, 1) == 1);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7)) == 1);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+1)) == 2);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+7)) == 2);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+7+1)) == 3);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+7+7)) == 3);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+7+7+1)) == 4);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+7+7+7)) == 4);
+	assert(hcns(enc_u4_be_7x8)(NULL, HC_BITMASK(7+7+7+7+1)) == 5);
+
 	for (i=0; i<a_len; i++) {
 		hcns(bzero)(e, 5);
 		e_len = hcns(enc_u4_be_7x8)(e, a[i]);
