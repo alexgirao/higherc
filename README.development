@@ -1,0 +1,15 @@
+
+tools versions
+--------------------------------------------------------------------------------
+
+autoconf (GNU Autoconf) 2.65
+automake (GNU automake) 1.11.1
+ltmain.sh (GNU libtool) 2.2.6b
+
+from bootstrap to tarball creation (distcheck)
+--------------------------------------------------------------------------------
+
+autoreconf --install
+./configure
+make
+make distcheck
