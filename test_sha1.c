@@ -1,7 +1,7 @@
 /*
 
 find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; sha1sum < iii | cut -d" " -f1' > ../a
-find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test-sha1 < iii' > ../b
+find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test_sha1 < iii' > ../b
 
 */
 

@@ -25,7 +25,7 @@
 /*
  */
 
-#include "test-4.h"
+#include "test_4.h"
 
 HC_DECL_PUBLIC_I(hcns(aa));
 

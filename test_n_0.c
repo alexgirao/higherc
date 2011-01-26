@@ -204,7 +204,7 @@ static void test_hex_in_out()
 static void test_muln()
 {
 	char *tests0[] = {
-		#include "sandbox/bignum.escript--c_verify"
+		#include "bignum.escript--c_verify"
 		NULL
 	};
 	char **tests = tests0;
@@ -269,7 +269,7 @@ static void test_muln()
 static void test_divn()
 {
 	char *tests0[] = {
-		#include "sandbox/bignum2.escript--c_verify"
+		#include "bignum2.escript--c_verify"
 		NULL
 	};
 	char **tests = tests0;

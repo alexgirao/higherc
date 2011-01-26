@@ -1,12 +1,5 @@
 
-smart build system (see baselib)
+platform optimizations
 
-	- detect byte ordering (little-endian, big-endian)
-	- ensure sizeof(long int) IS sizeof(void *)
-	- ensure sizeof(byte) IS 1, sizeof(short) IS 2 and sizeof(int) IS 4,
-	  FAIL if no (exhaust possibilities, C code has to adapt to
-	  architecture)
-
-thread safe memory allocation
-
-       - see git-1.7.1/compat/nedmalloc
+	 - byte ordering (little-endian, big-endian)
+	 - word size (4 or 8)
