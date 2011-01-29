@@ -1,29 +1,4 @@
 /*
- * Copyright (C) 2010 Alexandre Girao <alexgirao@gmail.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/*
- * This source code has chunks of code from git project version
- * 1.7.3.5, original code is at 3rd/git-1.7.3.5/block-sha1/sha1.{c,h}
- * and is licensed under GNU GENERAL PUBLIC LICENSE Version 2 see file
- * at 3rd/git-1.7.3.5/COPYING for complete description.
- */
-
-/*
  * SHA1 routine optimized to do word accesses rather than byte accesses,
  * and to avoid unnecessary copies into the context array.
  *
@@ -32,12 +7,9 @@
  */
 
 /* this is only to get definitions for memcpy(), ntohl() and htonl() */
-//#include "../git-compat-util.h"
+#include "../git-compat-util.h"
 
-#include "higherc/higherc.h"
-#include "higherc/byte.h"
-#include "higherc/bytewise.h"
-#include "higherc/sha1.h"
+#include "sha1.h"
 
 #if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 
@@ -90,6 +62,38 @@
   #define setW(x, val) (W(x) = (val))
 #endif
 
+/*
+ * Performance might be improved if the CPU architecture is OK with
+ * unaligned 32-bit loads and a fast ntohl() is available.
+ * Otherwise fall back to byte loads and shifts which is portable,
+ * and is faster on architectures with memory alignment issues.
+ */
+
+#if defined(__i386__) || defined(__x86_64__) || \
+    defined(_M_IX86) || defined(_M_X64) || \
+    defined(__ppc__) || defined(__ppc64__) || \
+    defined(__powerpc__) || defined(__powerpc64__) || \
+    defined(__s390__) || defined(__s390x__)
+
+#define get_be32(p)	ntohl(*(unsigned int *)(p))
+#define put_be32(p, v)	do { *(unsigned int *)(p) = htonl(v); } while (0)
+
+#else
+
+#define get_be32(p)	( \
+	(*((unsigned char *)(p) + 0) << 24) | \
+	(*((unsigned char *)(p) + 1) << 16) | \
+	(*((unsigned char *)(p) + 2) <<  8) | \
+	(*((unsigned char *)(p) + 3) <<  0) )
+#define put_be32(p, v)	do { \
+	unsigned int __v = (v); \
+	*((unsigned char *)(p) + 0) = __v >> 24; \
+	*((unsigned char *)(p) + 1) = __v >> 16; \
+	*((unsigned char *)(p) + 2) = __v >>  8; \
+	*((unsigned char *)(p) + 3) = __v >>  0; } while (0)
+
+#endif
+
 /* This "rolls" over the 512-bit array */
 #define W(x) (array[(x)&15])
 
@@ -97,7 +101,7 @@
  * Where do we get the source from? The first 16 iterations get it from
  * the input data, the next mix it from the 512-bit array.
  */
-#define SHA_SRC(t) HC_GET_BE4(data + t)
+#define SHA_SRC(t) get_be32(data + t)
 #define SHA_MIX(t) SHA_ROL(W(t+13) ^ W(t+8) ^ W(t+2) ^ W(t), 1)
 
 #define SHA_ROUND(t, input, fn, constant, A, B, C, D, E) do { \
@@ -111,7 +115,7 @@
 #define T_40_59(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, ((B&C)+(D&(B^C))) , 0x8f1bbcdc, A, B, C, D, E )
 #define T_60_79(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, (B^C^D) ,  0xca62c1d6, A, B, C, D, E )
 
-static void blk_SHA1_Block(struct hcns(sha1) *ctx, const unsigned int *data)
+static void blk_SHA1_Block(blk_SHA_CTX *ctx, const unsigned int *data)
 {
 	unsigned int A,B,C,D,E;
 	unsigned int array[16];
@@ -219,7 +223,7 @@ static void blk_SHA1_Block(struct hcns(sha1) *ctx, const unsigned int *data)
 	ctx->H[4] += E;
 }
 
-void hcns(sha1_init)(struct hcns(sha1) *ctx)
+void blk_SHA1_Init(blk_SHA_CTX *ctx)
 {
 	ctx->size = 0;
 
@@ -231,18 +235,18 @@ void hcns(sha1_init)(struct hcns(sha1) *ctx)
 	ctx->H[4] = 0xc3d2e1f0;
 }
 
-void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long len)
+void blk_SHA1_Update(blk_SHA_CTX *ctx, const void *data, unsigned long len)
 {
-	int lenW = ctx->size & 63;
+	unsigned int lenW = ctx->size & 63;
 
 	ctx->size += len;
 
 	/* Read the data into W and process blocks as they get full */
 	if (lenW) {
-		int left = 64 - lenW;
+		unsigned int left = 64 - lenW;
 		if (len < left)
 			left = len;
-		hcns(bcopyl)(lenW + (char *)ctx->W, left, data);
+		memcpy(lenW + (char *)ctx->W, data, left);
 		lenW = (lenW + left) & 63;
 		len -= left;
 		data = ((const char *)data + left);
@@ -256,29 +260,24 @@ void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long l
 		len -= 64;
 	}
 	if (len)
-		hcns(bcopyl)((char*)ctx->W, len, data);
+		memcpy(ctx->W, data, len);
 }
 
-void hcns(sha1_final)(struct hcns(sha1) *ctx, unsigned char hashout[20])
+void blk_SHA1_Final(unsigned char hashout[20], blk_SHA_CTX *ctx)
 {
 	static const unsigned char pad[64] = { 0x80 };
 	unsigned int padlen[2];
 	int i;
 
-	/* pad with a binary 1 (ie 0x80), then zeroes, then length
-	 */
-	HC_PUT_BE4(&padlen[0], ctx->size >> 29);
-	HC_PUT_BE4(&padlen[1], ctx->size << 3);
+	/* Pad with a binary 1 (ie 0x80), then zeroes, then length */
+	padlen[0] = htonl((uint32_t)(ctx->size >> 29));
+	padlen[1] = htonl((uint32_t)(ctx->size << 3));
 
 	i = ctx->size & 63;
-	hcns(sha1_update)(ctx, pad, 1 + (63 & (55 - i)));
-	hcns(sha1_update)(ctx, padlen, 8);
+	blk_SHA1_Update(ctx, pad, 1+ (63 & (55 - i)));
+	blk_SHA1_Update(ctx, padlen, 8);
 
-	/* output hash
-	 */
-	HC_PUT_BE4(hashout + 0*4, ctx->H[0]);
-	HC_PUT_BE4(hashout + 1*4, ctx->H[1]);
-	HC_PUT_BE4(hashout + 2*4, ctx->H[2]);
-	HC_PUT_BE4(hashout + 3*4, ctx->H[3]);
-	HC_PUT_BE4(hashout + 4*4, ctx->H[4]);
+	/* Output hash */
+	for (i = 0; i < 5; i++)
+		put_be32(hashout + i*4, ctx->H[i]);
 }

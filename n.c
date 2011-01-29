@@ -1,3 +1,29 @@
+/*
+ * Copyright (C) 2010 Alexandre Girao <alexgirao@gmail.com>
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
+ * This source code has chunks of code from erlang/otp project version
+ * R14B01, original code is at
+ * 3rd/otp_src_R14B01/erts/emulator/beam/big.{c,h} and is licensed
+ * under ERLANG PUBLIC LICENSE Version 1.1 see file at
+ * 3rd/otp_src_R14B01/EPLICENCE for complete description.
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
