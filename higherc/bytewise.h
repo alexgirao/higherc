@@ -92,7 +92,7 @@ static inline unsigned int hcns(swab32)(unsigned int val)
 
 #endif
 
-#define HC_BITMASK(c) ((1 << (c)) - 1)
+#define HC_BITMASK(c) ((1 << (c)) - ((hcns(u4))1))
 
 /* hex
  */
@@ -139,13 +139,14 @@ extern const signed char hcns(hexval_table)[256];
 
 #define HC_SPACE 0x1 /* space, '\f', '\n', '\r', '\t', '\v' */
 #define HC_DIGIT 0x2
-#define HC_ALPHA 0x4
-#define HC_ALNUM 0x8
-#define HC_GLOB 0x10 /* do not match ] */
-#define HC_REGEX_META 0x20 /* meta chars: do not match ] and } */
-#define HC_REGEX_CHAR 0x40 /* character class: \, ^, -, [, ] */
-#define HC_BLANK 0x80 /* space or '\t' */
-#define HC_PUNCT 0x100  /* not HC_GLOB_SPECIAL nor HC_REGEX_SPECIAL */
+#define HC_HEXDIGIT 0x4
+#define HC_ALPHA 0x8
+#define HC_ALNUM 0x10
+#define HC_GLOB 0x20 /* do not match ] */
+#define HC_REGEX_META 0x40 /* meta chars: do not match ] and } */
+#define HC_REGEX_CHAR 0x80 /* character class: \, ^, -, [, ] */
+#define HC_BLANK 0x100 /* space or '\t' */
+#define HC_PUNCT 0x200  /* not HC_GLOB nor HC_REGEX_* */
 
 extern hcns(u2) hcns(ctypetbl)[256];
 
@@ -156,6 +157,7 @@ extern hcns(u2) hcns(ctypetbl)[256];
 #define HC_ISSPACE(x) HC_SANE_ISTEST(x, HC_SPACE)
 #define HC_ISBLANK(x) HC_SANE_ISTEST(x, HC_BLANK)
 #define HC_ISDIGIT(x) HC_SANE_ISTEST(x, HC_DIGIT)
+#define HC_ISHEXDIGIT(x) HC_SANE_ISTEST(x, HC_HEXDIGIT)
 #define HC_ISALPHA(x) HC_SANE_ISTEST(x, HC_ALPHA)
 #define HC_ISALPHA_UPPER(x) ((x & 0x20) == 0)
 #define HC_ISALPHA_LOWER(x) ((x & 0x20) != 0)
@@ -181,7 +183,7 @@ extern hcns(u2) hcns(ctypetbl)[256];
  * function
  *
  */
-int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v);
-hcns(u4) hcns(dec_u4_be_7x8)(void *len0, int *lenp);
+int hcns(enc_u4_be)(void *len0, hcns(u4) v);
+hcns(u4) hcns(dec_u4_be)(void *len0, int *lenp);
 
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */

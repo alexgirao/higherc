@@ -26,7 +26,7 @@
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 
-int main(int argc, char **argv)
+void test0()
 {
 	char a[] = "123alpha";
 	char b[] = "bravo123";
@@ -45,6 +45,32 @@ int main(int argc, char **argv)
 
 	printf("[%s]\n", a);
 	printf("[%s]\n", b);
+}
 
+void test1()
+{
+	char a[] = "123alpha";
+	char b[] = "bravo123";
+
+	/* shift left
+	 */
+	hcns(bcopy)(a, 5, a + 3);
+
+	/* shift right
+	 */
+
+	hcns(bcopy)(b + 3, 5, b);
+
+	assert(hcns(bdiff)(a, 8, "alphapha") == 0);
+	assert(hcns(bdiff)(b, 8, "brabravo") == 0);
+
+	printf("[%s]\n", a);
+	printf("[%s]\n", b);
+}
+
+int main(int argc, char **argv)
+{
+	test0();
+	test1();
 	return 0;
 }

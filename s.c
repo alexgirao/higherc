@@ -390,13 +390,13 @@ void hcns(s_reprz)(HC_ST_S *s_repr, char *s)
 
 int hcns(s_putlen)(HC_ST_S *x)
 {
-	return hcns(enc_u4_be_7x8)(NULL, x->len) + x->len;
+	return hcns(enc_u4_be)(NULL, x->len) + x->len;
 }
 
 int hcns(s_put)(HC_ST_S *x, void *out)
 {
 	int r;
-	r = hcns(enc_u4_be_7x8)(out, x->len);
+	r = hcns(enc_u4_be)(out, x->len);
 	hcns(bcopyl)(HC_OFFSET(out, r), x->len, x->s);
 	return r + x->len;
 }
@@ -404,7 +404,7 @@ int hcns(s_put)(HC_ST_S *x, void *out)
 int hcns(s_get)(HC_ST_S *x, void *in)
 {
 	int r;
-	int len = hcns(dec_u4_be_7x8)(in, &r);
+	int len = hcns(dec_u4_be)(in, &r);
 	hcns(s_alloc)(x, len);
 	x->len = len;
 	hcns(bcopyl)(x->s, len, HC_OFFSET(in, r));

@@ -139,6 +139,15 @@ void hcns(bcopyr)(void *to, int n, const void *from)
 	}
 }
 
+void hcns(bcopy)(void *to, int n, const void *from)
+{
+	if (from > to) {
+		return hcns(bcopyl)(to, n, from);
+	} else if (from < to) {
+		return hcns(bcopyr)(to, n, from);
+	}
+}
+
 int hcns(bdiff)(const void *s, int n, const void *t)
 {
 	const char *x=s;

@@ -18,6 +18,10 @@ void hcns(bcopyl)(void *to, int n, const void *from);
  */
 void hcns(bcopyr)(void *to, int n, const void *from);
 
+/* use bcopyl or bcopyr automatically
+ */
+void hcns(bcopy)(void *to, int n, const void *from);
+
 int hcns(bdiff)(const void *s, int n, const void *t);
 void hcns(bzero)(void *s, int n);
 void hcns(brev)(void *s, int n);

@@ -71,7 +71,8 @@ enum {
 	H = HC_REGEX_CHAR | HC_PUNCT,
 	I = HC_GLOB | HC_REGEX_CHAR | HC_PUNCT,
 	J = HC_GLOB | HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT,
-	E = HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT
+	E = HC_REGEX_META | HC_REGEX_CHAR | HC_PUNCT,
+	F = HC_ALPHA | HC_ALNUM | HC_HEXDIGIT
 };
 
 hcns(u2) hcns(ctypetbl)[256] = {
@@ -79,9 +80,9 @@ hcns(u2) hcns(ctypetbl)[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/*  16.. 31 */
 	C, P, P, P, R, P, P, P, R, R, B, R, P, H, R, P,		/*  32.. 47 */
 	D, D, D, D, D, D, D, D, D, D, P, P, P, P, P, B,		/*  48.. 63 */
-	P, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A,		/*  64.. 79 */
+	P, F, F, F, F, F, F, A, A, A, A, A, A, A, A, A,		/*  64.. 79 */
 	A, A, A, A, A, A, A, A, A, A, A, J, J, H, E, P,		/*  80.. 95 */
-	P, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A,		/*  96..111 */
+	P, F, F, F, F, F, F, A, A, A, A, A, A, A, A, A,		/*  96..111 */
 	A, A, A, A, A, A, A, A, A, A, A, R, R, P, P, 0,		/* 112..127 */
 	/* Nothing in the 128.. range */
 };
@@ -92,7 +93,7 @@ hcns(u2) hcns(ctypetbl)[256] = {
  * len0 needs at least 5 digits
  *
  */
-int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v)
+int hcns(enc_u4_be)(void *len0, hcns(u4) v)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=v, r;
@@ -102,24 +103,24 @@ int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v)
 			while (q) {
 				r = q & 0x7f;
 				q = q >> 7;
-				*len++ = r;
+				*len++ = r | 0x80;
 			}
-			((hcns(u1)*)len0)[0] |= 0x80; /* this will be the last digit */
+			((hcns(u1)*)len0)[0] &= 0x7f; /* clear the last digit bit */
 			hcns(brev)(len0, len - (hcns(u1)*)len0); /* make big-endian (simpler to decode) */
 		} else {
 			if ((q & ~HC_BITMASK(7)) == 0) {
 				return 1;
-			} else if ((q & ~HC_BITMASK(14)) == 0) {
+			} else if ((q & ~HC_BITMASK(7+7)) == 0) {
 				return 2;
-			} else if ((q & ~HC_BITMASK(21)) == 0) {
+			} else if ((q & ~HC_BITMASK(7+7+7)) == 0) {
 				return 3;
-			} else if ((q & ~HC_BITMASK(28)) == 0) {
+			} else if ((q & ~HC_BITMASK(7+7+7+7)) == 0) {
 				return 4;
 			}
 			return 5;
 		}
 	} else if (len0) {
-		*len++ = 0x80;
+		*len++ = 0;
 	} else {
 		return 1;
 	}
@@ -127,19 +128,19 @@ int hcns(enc_u4_be_7x8)(void *len0, hcns(u4) v)
 	return len - (hcns(u1)*)len0;
 }
 
-hcns(u4) hcns(dec_u4_be_7x8)(void *len0, int *lenp)
+hcns(u4) hcns(dec_u4_be)(void *len0, int *lenp)
 {
 	hcns(u1) *len=len0;
 	hcns(u4) q=0, r;
 
 #define ITER 						\
-		r = *len++;				\
-		if (r & 0x80) {				\
-			q = (q << 7) | (r & 0x7f);	\
-			break;				\
-		} else {				\
-			q = (q << 7) | r;		\
-		}
+	r = *len++;					\
+	if ((r & 0x80) == 0) {				\
+		q = (q << 7) | r;			\
+		break;					\
+	} else {					\
+		q = (q << 7) | (r & 0x7f);		\
+	}
 
 	do {
 		ITER;
@@ -157,6 +158,3 @@ hcns(u4) hcns(dec_u4_be_7x8)(void *len0, int *lenp)
 
 	return q;
 }
-
-/*
- */
