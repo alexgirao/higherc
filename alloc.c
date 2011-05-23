@@ -25,15 +25,16 @@
 
 #define HC_CONF_ALLOC_OFFENSIVE_MODE
 
-static int _nallocs = 0;
+static int _n_alloc = 0;
+static int _n_free = 0;
 static int _dont_report = 0;
 
 static void _alloc_check(void)
 {
-	if (_nallocs && !_dont_report) {
+	if ((_n_alloc - _n_free) && !_dont_report) {
 		/* unbalanced allocations, memory is leaking
 		 */
-		fprintf(stderr, "Oh, you're screwed It's over. You're flushed: %i.\n", _nallocs);
+		fprintf(stderr, "Oh, you're screwed It's over. You're flushed: %i unallocated items out of %i allocations.\n", _n_alloc - _n_free, _n_alloc);
 		fflush(stderr);
 	}
 }
@@ -56,7 +57,7 @@ void *hcns(_p_alloc)(int n)
 	r = malloc(sizeof(int) + n);
 	if (r) {
 		*r = sizeof(int) + n;
-		_nallocs++;
+		_n_alloc++;
 		return r + 1;
 	}
 	return NULL;
@@ -69,7 +70,7 @@ void *hcns(_p_alloc_z)(int n)
 	r = calloc(1, sizeof(int) + n);
 	if (r) {
 		*r = sizeof(int) + n;
-		_nallocs++;
+		_n_alloc++;
 		return r + 1;
 	}
 	return NULL;
@@ -81,7 +82,7 @@ void hcns(_p_alloc_free)(void *x)
 	r--;
 	hcns(bset)(r, *r, 0x7f); /* ``offensive programming'' */
 	free(r);
-	_nallocs--;
+	_n_free++;
 }
 
 #else
@@ -91,7 +92,7 @@ void *hcns(_p_alloc)(int n)
 	void *r;
 	_initialize();
 	r = malloc(n);
-	_nallocs++;
+	_n_alloc++;
 	return r;
 }
 
@@ -100,14 +101,14 @@ void *hcns(_p_alloc_z)(int n)
 	void *r;
 	_initialize();
 	r = calloc(1, n);
-	_nallocs++;
+	_n_alloc++;
 	return r;
 }
 
 void hcns(_p_alloc_free)(void *x)
 {
 	free(x);
-	_nallocs--;
+	_n_free--;
 }
 
 #endif
@@ -128,5 +129,5 @@ void *hcns(alloc_re)(void *x, int m, int n)
 
 int hcns(alloc_delta)(void)
 {
-	return _nallocs;
+	return _n_alloc - _n_free;
 }

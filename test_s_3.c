@@ -30,9 +30,9 @@
 
 void puts_s(HC_ST_S *s)
 {
-  assert(s->s);
-  fwrite(s->s, s->len, 1, stdout);
-  fputs("\n", stdout);
+	assert(s->s);
+	fwrite(s->s, s->len, 1, stdout);
+	fputs("\n", stdout);
 }
 
 int main(int argc, char **argv)
