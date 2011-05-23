@@ -49,8 +49,8 @@ HC_DECL_PUBLIC_I(hcns(aa));
 
 #define AA_CMPEXPR hcns(s_diff)(x->tag, y->tag)
 
-HC_DECL_PRIVATE_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
-HC_DECL_PRIVATE_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PUBLIC_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PUBLIC_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
 
 static struct hcns(aa) *aa_new(struct hcns(aa) *h, int argc, char *arg)
 {

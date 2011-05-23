@@ -28,6 +28,10 @@ void hcns(s_cat)(HC_ST_S *, const HC_ST_S *);
 void hcns(s_catz)(HC_ST_S *, const char *);
 void hcns(s_catc)(HC_ST_S *sa, int c);
 
+void hcns(s_vformat)(HC_ST_S *sa, hcns(bool) cat, const char *fmt, va_list va);
+void hcns(s_copyf)(HC_ST_S *sa, const char *fmt, ...);
+void hcns(s_catf)(HC_ST_S *sa, const char *fmt, ...);
+
 /* s_cat_* return amount of written digits and sign '-'
  */
 int hcns(s_cat_i4_hex)(HC_ST_S *, hcns(i4));

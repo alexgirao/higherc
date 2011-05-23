@@ -40,3 +40,5 @@ test_sha1
 test_tagid
 sample_asciionly
 sample_cat
+test_5
+test_s_3

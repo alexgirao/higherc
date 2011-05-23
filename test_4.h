@@ -6,5 +6,5 @@ HC_DECL_PUBLIC_I_HEADERS(hcns(aa),
 	int c;
 );
 
-//HC_DECL_PUBLIC_I_SORT_HEADER(hcns(aa));
-//HC_DECL_PUBLIC_I_USORT_HEADER(hcns(aa));
+HC_DECL_PUBLIC_I_SORT_HEADER(hcns(aa));
+HC_DECL_PUBLIC_I_USORT_HEADER(hcns(aa));

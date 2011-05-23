@@ -124,6 +124,73 @@ void hcns(s_catc)(HC_ST_S *sa, int c)
 	sa->s[sa->len++] = c;
 }
 
+/* format
+ */
+
+void hcns(s_vformat)(HC_ST_S *sa, hcns(bool) cat, const char *fmt, va_list va)
+{
+	char buf0[0x1fff], *buf;
+	int buf_len;
+	int n;
+
+	buf = buf0;
+	buf_len = sizeof(buf);
+
+	n = vsnprintf(buf, buf_len, fmt, va);
+	if (n >= buf_len) {
+		/* truncated, try with more space
+		 */
+		buf_len = 0x7fff;
+		HC_ALLOC(buf, buf_len);
+		n = vsnprintf(buf, buf_len, fmt, va);
+		if (n >= buf_len) {
+			HC_FREE(buf);
+			buf_len = 0x1ffff;
+			HC_ALLOC(buf, buf_len);
+			n = vsnprintf(buf, buf_len, fmt, va);
+			if (n >= buf_len) {
+				HC_FREE(buf);
+				buf_len = 0x7fffff; /* 8388607 bytes! */
+				HC_ALLOC(buf, buf_len);
+				n = vsnprintf(buf, buf_len, fmt, va);
+				if (n >= buf_len) {
+					/* give up
+					 */
+					HC_FREE(buf);
+					fprintf(stderr, "error: str_copyf(): too large input (> %i)\n", 0x7fffff);
+					exit(1);
+				}
+			}
+		}
+	}
+
+	assert(buf != NULL);
+
+	if (cat) {
+		hcns(s_catn)(sa, buf, n);
+	} else {
+		hcns(s_copyn)(sa, buf, n);
+	}
+
+	HC_FREE(buf);
+}
+
+void hcns(s_copyf)(HC_ST_S *sa, const char *fmt, ...)
+{
+	va_list	va;
+	va_start(va, fmt);
+	hcns(s_vformat)(sa, 0, fmt, va);
+	va_end(va);
+}
+
+void hcns(s_catf)(HC_ST_S *sa, const char *fmt, ...)
+{
+	va_list	va;
+	va_start(va, fmt);
+	hcns(s_vformat)(sa, 1, fmt, va);
+	va_end(va);
+}
+
 /* cat numeric values
  */
 
@@ -157,7 +224,7 @@ int hcns(s_cat_i4_hex)(HC_ST_S *s, hcns(i4) v)
 int hcns(s_cat_u4_dec)(HC_ST_S *s, hcns(u4) v)
 {
 	int s_len0 = s->len;
-	hcns(s_alloc)(s, s->len + 10);  /* 4-bytes can't hold more
+	hcns(s_alloc)(s, s->len + 10);	/* 4-bytes can't hold more
 					 * than 10 decimal digits (max
 					 * decimal value is
 					 * 4294967296) */
