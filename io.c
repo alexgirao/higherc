@@ -153,6 +153,10 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 					   * consume ALL data upon
 					   * EOF */
 
+		if (n == 0 && len == bufsz) {
+			HC_FATAL("buffer too small");
+		}
+
 		if (eof) {
 			total += len;
 			break;

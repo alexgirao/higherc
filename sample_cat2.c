@@ -16,18 +16,23 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/* line oriented processing
+ */
+
 /* test with:
  *
- *    echo -n | ./sample_cat | wc -c
+ *    echo -n | ./sample_cat2 | wc -c
  *
- *    ./sample_cat < README 2>/dev/null | sha1sum
+ *    ./sample_cat2 < README 2>/dev/null | sha1sum
  *    cat < README | sha1sum
  *
- *    bzcat /usr/src/linux-source-2.6.28.tar.bz2 | dd bs=4096 count=1024 2>/dev/null | ./sample_cat | sha1sum
+ *    bzcat /usr/src/linux-source-2.6.28.tar.bz2 | dd bs=4096 count=1024 2>/dev/null | ./sample_cat2 | sha1sum
  *    bzcat /usr/src/linux-source-2.6.28.tar.bz2 | dd bs=4096 count=1024 2>/dev/null | sha1sum
  *    bzcat /usr/src/linux-source-2.6.28.tar.bz2 | dd bs=4096 count=1024 2>/dev/null | wc -c && echo $((4096*1024))
  *
  */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,39 +41,61 @@
 #include "higherc/higherc.h"
 #include "higherc/alloc.h"
 
-static int aaa = 0;
+static int goto_newline(const char *buf, int len)
+{
+	const char *cp = buf;
+	while (*cp != '\n' && cp < (buf + len)) {
+		cp++;
+	}
+	return cp - buf;
+}
+
+static const char *get_line(const char *buf, int buflen, int *llenp)
+{
+	const char *cp = buf;
+	while (*cp != '\n' && (cp - buf) < buflen) {
+		cp++;
+	}
+	*llenp = cp - buf;
+	return buf;
+}
 
 /* processing function, return amount of successfully processed data
  */
 static int doit(const char *buf, int len, hcns(bool) eof)
 {
 	int i;
+	const char *line;
+	int line_len;
 
-	if (eof) {
-		/* we are at EOF, MUST consume ALL data
-		 */
-		i = 0;
-		do {
-			int n = write(1 /* STDOUT */, buf + i, 10 < len - i ? 10 : len - i);
-			if (n <= 0) {
-				/* write must block until it can write
-				 * something successfully
-				 */
-				perror("write");
-				exit(1);
+	i = 0;
+	while (i < len && (line = get_line(buf+i, len-i, &line_len)) != NULL) {
+		assert(i + line_len <= len);
+		if (len-i == line_len) {
+			/* all data processed, no '\n' was found on
+			 * last line */
+			if (eof) {
+				/* spit last bytes */
+				fwrite(line, len-i, 1, stdout);
+				i = len;
+				break;
+			} else {
+				/* need more data to complete a line */
+				if (i == 0) {
+					/* buffer too small, line too long */
+					HC_FATAL("line too long, max allowed is %i bytes\n", line_len - 1);
+				}
+				break;
 			}
-			i += n;
-		} while (i < len);
-	} else {
-		if (aaa++ == 3) {
-			/* just a test, tells that nothing was
-			 * processed, possible only if we are not at
-			 * EOF
-			 */
-			return 0;
+		} else {
+			/* got a line */
+			fwrite(line, line_len, 1, stdout);
+			fputs("\n", stdout);
+			i += line_len + 1; /* +1 so we skip '\n' char */
 		}
-		i = write(1 /* STDOUT */, buf, len);
 	}
+
+	assert(i <= len);
 
 	fprintf(stderr, "processed %i bytes out of %i, %i left out, eof? %i\n", i, len, len - i, eof);
 	return i;
@@ -76,7 +103,7 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 
 int main(int argc, char **argv)
 {
-	int bufsz = 1024 * 1024;
+	int bufsz = 0xffff;
 	void *buf;
 
 	HC_ALLOC(buf, bufsz);
