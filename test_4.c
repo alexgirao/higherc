@@ -152,9 +152,25 @@ int main(int argc, char **argv)
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
+	/* foreach (unspecified order)
+	 */
+
+	fprintf(stdout, "foreach (unspecified order)\n");
+
+	{
+		struct hcns(aa) *tmp2[2] = {0, h};
+		while (hcns(aa_foreach)(tmp2)) {
+			struct hcns(aa) *tmp = *tmp2;
+			fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+		}
+	}
+
+	/*
+	 */
+
 	HC_FREE(usorted);
 
-        /* cleanup
+	/* cleanup
 	 */
 
 	aa_free(h);

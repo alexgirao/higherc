@@ -15,7 +15,7 @@
 /* todo: ensure sizes below (u4, i2, ...)
  */
 
-typedef int hcns(bool);   /* 0 = false, 1 = true */
+typedef int hcns(bool);	  /* 0 = false, 1 = true */
 
 typedef signed char hcns(i1);  /* some compilers or compiler flag set char to be unsigned by default */
 typedef signed short hcns(i2);
@@ -30,15 +30,15 @@ typedef unsigned int hcns(u4);
 #define HC_TRUE 1
 #define HC_FALSE 0
 
-#define HC_OFFSET(p, c)                ((unsigned char*)(p)+(int)(c))
+#define HC_OFFSET(p, c)		       ((unsigned char*)(p)+(int)(c))
 
-#define HC_ALIGN_BY(bytes,alignment)       ((bytes + alignment) & ~(alignment-1))
-#define HC_ALIGN4(bytes)                   HC_ALIGN_BY(bytes,4)
-#define HC_ALIGN8(bytes)                   HC_ALIGN_BY(bytes,8)
-#define HC_ALIGN16(bytes)                  HC_ALIGN_BY(bytes,16)
+#define HC_ALIGN_BY(bytes,alignment)	   ((bytes + alignment) & ~(alignment-1))
+#define HC_ALIGN4(bytes)		   HC_ALIGN_BY(bytes,4)
+#define HC_ALIGN8(bytes)		   HC_ALIGN_BY(bytes,8)
+#define HC_ALIGN16(bytes)		   HC_ALIGN_BY(bytes,16)
 
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-# define HC_FATAL(...)      hcns(_p_fatal)(__FILE__, __LINE__, __VA_ARGS__)
+# define HC_FATAL(...)	    hcns(_p_fatal)(__FILE__, __LINE__, __VA_ARGS__)
 #elif defined (__GNUC__)
 # define HC_FATAL(fmt...)   hcns(_p_fatal)(__FILE__, __LINE__, fmt)
 #endif
@@ -96,12 +96,20 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 	}								\
 	spec void name##_free0(struct name *x)				\
 	{								\
-		assert(x != NULL);						\
 		while (x) {						\
 			struct name *t = x->tail;			\
 			HC_FREE(x);					\
 			x = t;						\
 		}							\
+	}								\
+	spec hcns(bool) name##_foreach(struct name *x[2])		\
+	{								\
+		if (x[1]) {						\
+			x[0] = x[1];					\
+			x[1] = x[0]->tail;				\
+			return x[0] != NULL;				\
+		}							\
+		return 0;						\
 	}								\
 	spec struct name **name##_as_array(struct name *x)		\
 	{								\
