@@ -41,6 +41,8 @@ int hcns(s_cat_u4_dec)(HC_ST_S *, hcns(u4));
 int hcns(s_cat_i4_base36)(HC_ST_S *, hcns(i4));
 int hcns(s_cat_u4_base36)(HC_ST_S *, hcns(u4));
 
+int hcns(s_cat_sha1hex)(HC_ST_S *x, void *s, int n);
+
 int hcns(s_diffn)(HC_ST_S *a, char *b, int bl);
 int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b);
 int hcns(s_diffz)(HC_ST_S *a, char *b);

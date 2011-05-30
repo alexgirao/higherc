@@ -26,6 +26,7 @@
 #include "higherc/alloc.h"
 #include "higherc/s.h"
 #include "higherc/bytewise.h"
+#include "higherc/sha1.h"
 
 /* alloc/free
  */
@@ -476,4 +477,25 @@ int hcns(s_get)(HC_ST_S *x, void *in)
 	x->len = len;
 	hcns(bcopyl)(x->s, len, HC_OFFSET(in, r));
 	return r + len;
+}
+
+/* sha1
+ */
+
+int hcns(s_cat_sha1hex)(HC_ST_S *x, void *s, int n)
+{
+	HC_DEF_SHA1(E0);
+	unsigned char E[20];  /* sha1 bytes */
+
+	hcns(sha1_init)(E0);
+	hcns(sha1_update)(E0, s, n);
+	hcns(sha1_final)(E0, E);
+
+        hcns(s_alloc)(x, x->len + 40 + 1);
+	HC_PUT_HEX(x->s, 20, E);
+        x->len += 40;
+
+	x->s[40] = 'Z';		/* ``offensive programming'' */
+
+        return 40;
 }
