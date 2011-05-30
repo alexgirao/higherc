@@ -491,11 +491,11 @@ int hcns(s_cat_sha1hex)(HC_ST_S *x, void *s, int n)
 	hcns(sha1_update)(E0, s, n);
 	hcns(sha1_final)(E0, E);
 
-        hcns(s_alloc)(x, x->len + 40 + 1);
-	HC_PUT_HEX(x->s, 20, E);
-        x->len += 40;
+	hcns(s_alloc)(x, x->len + 40 + 1);
+	HC_PUT_HEX(x->s + x->len, 20, E);
+	x->len += 40;
 
 	x->s[40] = 'Z';		/* ``offensive programming'' */
 
-        return 40;
+	return 40;
 }

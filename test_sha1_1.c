@@ -43,6 +43,8 @@ int main()
 	fwrite(s->s, s->len, 1, stdout);
 	fputs("\n", stdout);
 
+	assert(hcns(s_diffz)(s, "a0546faeff640257907540e2901f5fdcbc8a90ef") == 0);
+
 	hcns(s_free)(msg);
 	hcns(s_free)(s);
 
