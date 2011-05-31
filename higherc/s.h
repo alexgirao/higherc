@@ -50,6 +50,9 @@ int hcns(s_diffz)(HC_ST_S *a, char *b);
 void hcns(s_upper)(HC_ST_S *s);
 void hcns(s_lower)(HC_ST_S *s);
 
+int hcns(s_lchr)(HC_ST_S *s, int chr);
+int hcns(s_rchr)(HC_ST_S *s, int chr);
+
 /*
  * s_shiftr:
  *   start .. end range: 0 .. ? (exclusive, -1 allowed for both (means: len - abs(end)))

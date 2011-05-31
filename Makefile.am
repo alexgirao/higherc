@@ -14,7 +14,7 @@ include_HEADERS = higherc/alloc.h higherc/byte.h higherc/bytewise.h	\
 bin_PROGRAMS = sample_asciionly sample_cat sample_cat2 test_0 test_1	\
     test_2 test_3 test_4 test_5 test_byte test_bytewise test_crc32	\
     test_list_0 test_n_0 test_n_1 test_pbuf_0 test_pbuf_1 test_rand	\
-    test_s_0 test_s_1 test_s_2 test_s_3 test_sha1 test_tagid		\
+    test_s_0 test_s_1 test_s_2 test_s_3 test_s_4 test_sha1 test_tagid	\
     test_tok_0 test_sha1_1
 
 LDADD = libhigherc.a
@@ -38,6 +38,7 @@ test_s_0_SOURCES = test_s_0.c
 test_s_1_SOURCES = test_s_1.c
 test_s_2_SOURCES = test_s_2.c
 test_s_3_SOURCES = test_s_3.c
+test_s_4_SOURCES = test_s_4.c
 test_sha1_SOURCES = test_sha1.c
 test_sha1_1_SOURCES = test_sha1_1.c
 test_tagid_SOURCES = test_tagid.c

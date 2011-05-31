@@ -337,6 +337,31 @@ void hcns(s_lower)(HC_ST_S *s)
 	}
 }
 
+/* lchr/rchr
+ */
+
+int hcns(s_lchr)(HC_ST_S *s, int chr)
+{
+	const char *start = s->s;
+	const char *end = s->s + s->len;
+	while (start < end && *start != chr) start++;
+	if (start == end) {
+		return s->len;
+	}
+	return start - s->s;
+}
+
+int hcns(s_rchr)(HC_ST_S *s, int chr)
+{
+	const char *start = s->s;
+	const char *end = s->s + s->len - 1;
+	while (end >= start && *end != chr) end--;
+	if (end < start) {
+		return s->len;
+	}
+	return end - start;
+}
+
 /* shift
  */
 
