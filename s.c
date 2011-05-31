@@ -301,8 +301,26 @@ int hcns(s_diffn)(HC_ST_S *a, char *b, int bl)
 
 int hcns(s_diffz)(HC_ST_S *a, char *b)
 {
-	hcns(s_catn)(a, "\0", 1);
-	return hcns(sdiffn)(a->s, b, a->len--);
+	char *s = a->s;
+	int len = a->len;
+	char *t = b;
+	char x;
+
+	for (;;) {
+		x = *s;
+		if (!len--) {
+			return !*t ? 0 : -1;
+		}
+		if (x != *t)
+			break;
+		if (!x)
+			break;
+		++s;
+		++t;
+	}
+
+	return ((int)(unsigned char)x)
+		- ((int)(unsigned char)*t);
 }
 
 int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b)

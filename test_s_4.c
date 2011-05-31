@@ -47,35 +47,47 @@ int main(int argc, char **argv)
 {
 	HC_DEF_S(s);
 
-	/* lchr
+	/* lchr/rchr
 	 */
 
 	hcns(s_copyz)(s, "/alpha");
-	assert(hcns(s_lchr)(s, '/') == 0);
+	assert(hcns(s_lchr)(s, '/') == 0 && hcns(s_rchr)(s, '/') == 0);
 
 	hcns(s_copyz)(s, "alpha/bravo");
-	assert(hcns(s_lchr)(s, '/') == 5);
+	assert(hcns(s_lchr)(s, '/') == 5 && hcns(s_rchr)(s, '/') == 5);
 
 	hcns(s_copyz)(s, "alpha/");
-	assert(hcns(s_lchr)(s, '/') == 5);
+	assert(hcns(s_lchr)(s, '/') == 5 && hcns(s_rchr)(s, '/') == 5);
 
 	hcns(s_copyz)(s, "alpha");
-	assert(hcns(s_lchr)(s, '/') == 5);
+	assert(hcns(s_lchr)(s, '/') == 5 && hcns(s_rchr)(s, '/') == 5);
 
-	/* rchr
+	/* pattern: occurrence/no occurrence
 	 */
 
-	hcns(s_copyz)(s, "/alpha");
-	assert(hcns(s_rchr)(s, '/') == 0);
-
 	hcns(s_copyz)(s, "alpha/bravo");
-	assert(hcns(s_rchr)(s, '/') == 5);
+	assert(hcns(s_lchr)(s, '/') < s->len);
+	assert(hcns(s_lchr)(s, '?') == s->len);
 
-	hcns(s_copyz)(s, "alpha/");
-	assert(hcns(s_rchr)(s, '/') == 5);
+	/* pattern: detect and remove a section
+	 */
 
-	hcns(s_copyz)(s, "alpha");
-	assert(hcns(s_rchr)(s, '/') == 5);
+	{
+		int i;
+		hcns(s_copyz)(s, "alpha/Attic/bravo");
+		if ((i = hcns(s_rchr)(s, '/')) < s->len && i > 6 && hcns(sdiffn)(s->s + i - 6, "/Attic/", 7) == 0) {
+			printf("%i chars before match\n", i);
+			printf("%i chars after match\n", s->len - i - 1);
+
+			hcns(s_shiftl2)(s, i - 6, 6, 'Z');
+			s->len -= 6;
+
+			assert(hcns(s_diffz)(s, "alpha/bravo") == 0);
+		}
+	}
+
+	/*
+	 */
 
 	puts("ok");
 
