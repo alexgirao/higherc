@@ -43,14 +43,20 @@
 /*
  */
 
-#include "test_4.h"
-
-HC_DECL_PUBLIC_I(hcns(aa));
-
 #define AA_CMPEXPR hcns(s_diff)(x->tag, y->tag)
 
-HC_DECL_PUBLIC_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
-HC_DECL_PUBLIC_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
+#ifndef TEST_PRIVATE
+#include "test_4.h"
+#else
+HC_DECL_PRIVATE_I(hcns(aa),
+	struct hcns(s) tag[1];
+	int a;
+	int b;
+	int c;
+);
+HC_DECL_PRIVATE_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PRIVATE_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
+#endif
 
 static struct hcns(aa) *aa_new(struct hcns(aa) *h, int argc, char *arg)
 {
@@ -206,3 +212,9 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+
+#ifndef TEST_PRIVATE
+HC_DECL_PUBLIC_I(hcns(aa));
+HC_DECL_PUBLIC_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PUBLIC_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
+#endif

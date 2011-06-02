@@ -84,7 +84,9 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 	spec void name##_backward(struct name##_iter *i, struct name *x); \
 	spec void name##_forward(struct name##_iter *i, struct name *x); \
 	spec void name##_end(struct name##_iter *i);			\
-	spec struct name *name##_next(struct name##_iter *i)
+	spec struct name *name##_next(struct name##_iter *i);		\
+	spec struct name *name##_foreach(struct name *x[2]);		\
+	spec struct name *name##_reverse(struct name *h)
 
 #define _HC_DECL_I_IMPL(spec, name)					\
 	spec struct name *name##_new0(struct name *tail) {		\
@@ -102,14 +104,14 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 			x = t;						\
 		}							\
 	}								\
-	spec hcns(bool) name##_foreach(struct name *x[2])		\
+	spec struct name *name##_foreach(struct name *x[2])		\
 	{								\
 		if (x[1]) {						\
 			x[0] = x[1];					\
 			x[1] = x[0]->tail;				\
-			return x[0] != NULL;				\
+			return x[0];                                    \
 		}							\
-		return 0;						\
+		return NULL;						\
 	}								\
 	spec struct name **name##_as_array(struct name *x)		\
 	{								\
@@ -177,7 +179,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		i->v1 = i->v0;						\
 		i->l0 = x->pos + 1;					\
 	}								\
-	struct name *name##_reverse0(struct name *parent, struct name *h) \
+	static inline struct name *name##_reverse0(struct name *parent, struct name *h) \
         {								\
 		if (h->tail) {						\
 			struct name *r;					\
@@ -188,7 +190,7 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		h->tail = parent;					\
 		return h;						\
 	}								\
-	struct name *name##_reverse(struct name *h)			\
+	spec struct name *name##_reverse(struct name *h)		\
 	{								\
 		return name##_reverse0(NULL, h);			\
 	}

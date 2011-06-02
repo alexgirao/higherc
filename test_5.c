@@ -16,22 +16,6 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <assert.h>
-#include <string.h>
+#define TEST_PRIVATE
 
-#include "higherc/higherc.h"
-#include "higherc/bytewise.h"
-#include "higherc/byte.h"
-#include "higherc/alloc.h"
-#include "higherc/s.h"
-
-
-
-int main(int argc, char **argv)
-{
-
-	return 0;
-}
+#include "test_4.c"
