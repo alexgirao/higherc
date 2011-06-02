@@ -156,14 +156,6 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		_##name##_end_f(i);					\
 		return NULL;						\
 	}								\
-	spec void name##_forward(struct name##_iter *i, struct name *x)	\
-	{								\
-		i->next = _##name##_next_f;				\
-		i->end = _##name##_end_f;				\
-		i->v0 = name##_as_array(x);				\
-		i->v1 = i->v0;						\
-		i->l0 = x->pos + 1;					\
-	}								\
 	spec struct name *name##_next(struct name##_iter *i)		\
 	{								\
 		if (i->next) {						\
@@ -176,6 +168,29 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 		if (i->end) {						\
 			((name##_end_func*)i->end)(i);			\
 		}							\
+	}								\
+	spec void name##_forward(struct name##_iter *i, struct name *x)	\
+	{								\
+		i->next = _##name##_next_f;				\
+		i->end = _##name##_end_f;				\
+		i->v0 = name##_as_array(x);				\
+		i->v1 = i->v0;						\
+		i->l0 = x->pos + 1;					\
+	}								\
+	struct name *name##_reverse0(struct name *parent, struct name *h) \
+        {								\
+		if (h->tail) {						\
+			struct name *r;					\
+			r = name##_reverse0(h, h->tail);		\
+			h->tail = parent;				\
+			return r;					\
+		}							\
+		h->tail = parent;					\
+		return h;						\
+	}								\
+	struct name *name##_reverse(struct name *h)			\
+	{								\
+		return name##_reverse0(NULL, h);			\
 	}
 
 #define _HC_DECL_I_SORT_HEADER(spec, name, fname) spec void name##_##fname(struct name **items, int len)

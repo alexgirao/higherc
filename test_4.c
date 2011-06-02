@@ -78,6 +78,14 @@ static void aa_free(struct hcns(aa) *h)
 	hcns(aa_free0)(h);
 }
 
+void traverse_post_order(struct hcns(aa) *h)
+{
+	if (h) {
+		traverse_post_order(h->tail);
+		fprintf(stdout, "  [%s][%i][%i][%i]\n", h->tag->s, h->a, h->b, h->c);
+	}
+}
+
 int main(int argc, char **argv)
 {
 	int i, j;
@@ -152,10 +160,31 @@ int main(int argc, char **argv)
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
-	/* foreach (unspecified order)
+	/* post order traversal
 	 */
 
-	fprintf(stdout, "foreach (unspecified order)\n");
+	fprintf(stdout, "post order traversal (forward order)\n");
+
+	traverse_post_order(h);
+
+	/* foreach (backward order)
+	 */
+
+	fprintf(stdout, "foreach (backward order)\n");
+
+	{
+		struct hcns(aa) *tmp2[2] = {0, h};
+		while (hcns(aa_foreach)(tmp2)) {
+			struct hcns(aa) *tmp = *tmp2;
+			fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
+		}
+	}
+
+	/* reverse
+	 */
+
+	h = hcns(aa_reverse)(h);
+	fprintf(stdout, "foreach after reverse (forward order)\n");
 
 	{
 		struct hcns(aa) *tmp2[2] = {0, h};
