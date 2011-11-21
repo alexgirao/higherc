@@ -80,7 +80,7 @@ void hcns(_p_alloc_free)(void *x)
 {
 	int *r = x;
 	r--;
-	hcns(bset)(r, *r, 0x7f); /* ``offensive programming'' */
+	hcns(b_set)(r, *r, 0x7f); /* ``offensive programming'' */
 	free(r);
 	_n_free++;
 }
@@ -122,7 +122,7 @@ void *hcns(alloc_re)(void *x, int m, int n)
 {
 	void *y = hcns(_p_alloc)(n);
 	if (!y)	return NULL;
-	hcns(bcopyl)(y, m, x);
+	hcns(b_copyl)(y, m, x);
 	hcns(_p_alloc_free)(x);
 	return y;
 }

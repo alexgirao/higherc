@@ -19,7 +19,7 @@
 #include "higherc/higherc.h"
 #include "higherc/byte.h"
 
-int hcns(bchrl)(const void *s, int n, int c)
+int hcns(b_chrl)(const void *s, int n, int c)
 {
 	char ch = c;
 	const char *t = s;
@@ -53,7 +53,7 @@ int hcns(bchrl)(const void *s, int n, int c)
 	return n;
 }
 
-int hcns(bchrr)(const void *s, int n, int c)
+int hcns(b_chrr)(const void *s, int n, int c)
 {
 	char ch = c;
 	const char *t = (char*)s + n;
@@ -85,7 +85,7 @@ int hcns(bchrr)(const void *s, int n, int c)
 	return n;
 }
 
-void hcns(bcopyl)(void *to, int n, const void *from)
+void hcns(b_copyl)(void *to, int n, const void *from)
 {
 	char *t = to;
 	const char *f = from;
@@ -112,7 +112,7 @@ void hcns(bcopyl)(void *to, int n, const void *from)
 	}
 }
 
-void hcns(bcopyr)(void *to, int n, const void *from)
+void hcns(b_copyr)(void *to, int n, const void *from)
 {
 	char *t = (char*)to + n;
 	const char *f = (char*)from + n;
@@ -139,16 +139,16 @@ void hcns(bcopyr)(void *to, int n, const void *from)
 	}
 }
 
-void hcns(bcopy)(void *to, int n, const void *from)
+void hcns(b_copy)(void *to, int n, const void *from)
 {
 	if (from > to) {
-		return hcns(bcopyl)(to, n, from);
+		return hcns(b_copyl)(to, n, from);
 	} else if (from < to) {
-		return hcns(bcopyr)(to, n, from);
+		return hcns(b_copyr)(to, n, from);
 	}
 }
 
-int hcns(bdiff)(const void *s, int n, const void *t)
+int hcns(b_diff)(const void *s, int n, const void *t)
 {
 	const char *x=s;
 	const char *y=t;
@@ -189,7 +189,7 @@ int hcns(bdiff)(const void *s, int n, const void *t)
 	    - ((int)(unsigned char)*y);
 }
 
-void hcns(bzero)(void *s, int n)
+void hcns(b_zero)(void *s, int n)
 {
 	char *x=s;
 	for (;;) {
@@ -215,7 +215,7 @@ void hcns(bzero)(void *s, int n)
 	}
 }
 
-void hcns(brev)(void *x, int n)
+void hcns(b_rev)(void *x, int n)
 {
 	char *b = x;
 	char *e = b + n - 1;
@@ -226,7 +226,7 @@ void hcns(brev)(void *x, int n)
 	}
 }
 
-void hcns(bset)(void *x, int n, char c)
+void hcns(b_set)(void *x, int n, char c)
 {
 	char *b = x;
 	while (n--) {

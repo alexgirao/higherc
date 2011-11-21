@@ -39,7 +39,7 @@ int main()
 	hcns(s_cat_sha1hex)(s, msg->s, msg->len);
 
 	fwrite(msg->s, msg->len, 1, stdout);
-	fputs("=", stdout);
+	fputs(" = ", stdout);
 	fwrite(s->s, s->len, 1, stdout);
 	fputs("\n", stdout);
 

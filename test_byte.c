@@ -33,15 +33,15 @@ void test0()
 
 	/* shift left
 	 */
-	hcns(bcopyl)(a, 5, a + 3);
+	hcns(b_copyl)(a, 5, a + 3);
 
 	/* shift right
 	 */
 
-	hcns(bcopyr)(b + 3, 5, b);
+	hcns(b_copyr)(b + 3, 5, b);
 
-	assert(hcns(bdiff)(a, 8, "alphapha") == 0);
-	assert(hcns(bdiff)(b, 8, "brabravo") == 0);
+	assert(hcns(b_diff)(a, 8, "alphapha") == 0);
+	assert(hcns(b_diff)(b, 8, "brabravo") == 0);
 
 	printf("[%s]\n", a);
 	printf("[%s]\n", b);
@@ -54,15 +54,15 @@ void test1()
 
 	/* shift left
 	 */
-	hcns(bcopy)(a, 5, a + 3);
+	hcns(b_copy)(a, 5, a + 3);
 
 	/* shift right
 	 */
 
-	hcns(bcopy)(b + 3, 5, b);
+	hcns(b_copy)(b + 3, 5, b);
 
-	assert(hcns(bdiff)(a, 8, "alphapha") == 0);
-	assert(hcns(bdiff)(b, 8, "brabravo") == 0);
+	assert(hcns(b_diff)(a, 8, "alphapha") == 0);
+	assert(hcns(b_diff)(b, 8, "brabravo") == 0);
 
 	printf("[%s]\n", a);
 	printf("[%s]\n", b);

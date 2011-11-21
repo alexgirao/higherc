@@ -167,7 +167,7 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 				/* copy unprocessed data to start of
 				 * buffer (shift left)
 				 */
-				hcns(bcopyl)(buf, len - n, buf + n);
+				hcns(b_copyl)(buf, len - n, buf + n);
 			}
 			len -= n;
 			total += n;
@@ -179,13 +179,13 @@ int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int 
 
 hcns(u4) hcns(readfd_be4)(int fd)
 {
-	hcns(u1) plen0[4]; /* packet len */
+	unsigned int val;
 	int len;
 
 	assert(errno == 0 || errno == ENOTTY);
 
-	len = hcns(read_exact)(fd, plen0, sizeof(plen0));
+	len = hcns(read_exact)(fd, &val, sizeof(val));
 	assert(len == 4);
 
-	return HC_GET_BE4(plen0);
+	return HC_GET_BE4(&val);
 }

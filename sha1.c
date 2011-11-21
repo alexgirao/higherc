@@ -242,7 +242,7 @@ void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long l
 		int left = 64 - lenW;
 		if (len < left)
 			left = len;
-		hcns(bcopyl)(lenW + (char *)ctx->W, left, data);
+		hcns(b_copyl)(lenW + (char *)ctx->W, left, data);
 		lenW = (lenW + left) & 63;
 		len -= left;
 		data = ((const char *)data + left);
@@ -256,7 +256,7 @@ void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long l
 		len -= 64;
 	}
 	if (len)
-		hcns(bcopyl)((char*)ctx->W, len, data);
+		hcns(b_copyl)((char*)ctx->W, len, data);
 }
 
 void hcns(sha1_final)(struct hcns(sha1) *ctx, unsigned char hashout[20])

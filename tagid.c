@@ -170,7 +170,7 @@ void hcns(tagid_put)(HC_ST_TAGID *tagid, void *out)
 	*x++ = tagid->B & 0xff;  /* 0 + 1: 1 */
 	*x++ = tagid->C & 0xff;  /* 1 + 1: 2 */
 	HC_PUT_BE4(x, tagid->D); /* 2 + 4: 6 */
-	hcns(bcopyl)(x + 4, sizeof(tagid->E), tagid->E); /* 6 + 20: 26 */
+	hcns(b_copyl)(x + 4, sizeof(tagid->E), tagid->E); /* 6 + 20: 26 */
 }
 
 void hcns(tagid_get)(HC_ST_TAGID *tagid, void *in)
@@ -179,5 +179,5 @@ void hcns(tagid_get)(HC_ST_TAGID *tagid, void *in)
 	tagid->B = *x++;
 	tagid->C = *x++;
 	tagid->D = HC_GET_BE4(x);
-	hcns(bcopyl)(tagid->E, sizeof(tagid->E), x + 4);
+	hcns(b_copyl)(tagid->E, sizeof(tagid->E), x + 4);
 }

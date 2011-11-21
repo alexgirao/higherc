@@ -68,23 +68,23 @@ static inline unsigned int hcns(swab32)(unsigned int val)
 
 #if defined(HC_BSWAP4) && defined(HC_ARCH_LE)
 
-#define HC_GET_BE4(p)     HC_BSWAP4(*(unsigned int *)(p))
-#define HC_PUT_BE4(p, v)  do { *(unsigned int *)(p) = HC_BSWAP4(v); } while (0)
+#define HC_GET_BE4(p)     HC_BSWAP4(*(unsigned int*)(p))
+#define HC_PUT_BE4(p, v)  do { *(unsigned int*)(p) = HC_BSWAP4(v); } while (0)
 
 #elif defined(HC_ARCH_LE)
 
 #define HC_GET_BE4(p)	( \
-	(*((unsigned char *)(p) + 0) << 24) | \
-	(*((unsigned char *)(p) + 1) << 16) | \
-	(*((unsigned char *)(p) + 2) <<  8) | \
-	(*((unsigned char *)(p) + 3) <<  0) )
+	(*((unsigned char*)(p) + 0) << 24) | \
+	(*((unsigned char*)(p) + 1) << 16) | \
+	(*((unsigned char*)(p) + 2) <<  8) | \
+	(*((unsigned char*)(p) + 3) <<  0) )
 
 #define HC_PUT_BE4(p, v)	do { \
 	unsigned int __v = (v); \
-	*((unsigned char *)(p) + 0) = __v >> 24; \
-	*((unsigned char *)(p) + 1) = __v >> 16; \
-	*((unsigned char *)(p) + 2) = __v >>  8; \
-	*((unsigned char *)(p) + 3) = __v >>  0; } while (0)
+	*((unsigned char*)(p) + 0) = __v >> 24; \
+	*((unsigned char*)(p) + 1) = __v >> 16; \
+	*((unsigned char*)(p) + 2) = __v >>  8; \
+	*((unsigned char*)(p) + 3) = __v >>  0; } while (0)
 
 #else
 

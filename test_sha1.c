@@ -76,7 +76,7 @@ int main()
 	HC_PUT_HEX(sha1_2str, 20, sha1_2);
 	sha1_2str[40] = '\0';
 
-	assert(hcns(bdiff)(sha1_1str, 41, sha1_2str) == 0);
+	assert(hcns(b_diff)(sha1_1str, 41, sha1_2str) == 0);
 
 	puts(sha1_1str);
 

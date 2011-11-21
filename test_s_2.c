@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 {
 	int i;
 	HC_DEF_S(s);
-	HC_DEF_S(s_repr);
+	HC_DEF_S(repr);
 
 	/*
 	 */
@@ -47,22 +47,22 @@ int main(int argc, char **argv)
 	for (i=0; i<=100; i++) {
 		hcns(s_catc)(s, i);
 	}
-	hcns(s_repr)(s_repr, s);
+	hcns(s_repr)(repr, s);
 
-	print_s("[", s_repr, "]\n");
-
-	/*
-	 */
-
-	s_repr->len = 0;
-	hcns(s_reprz)(s_repr, "\x1\x2\x3");
-
-	print_s("[", s_repr, "]\n");
+	print_s("[", repr, "]\n");
 
 	/*
 	 */
 
-	hcns(s_free)(s_repr);
+	repr->len = 0;
+	hcns(s_reprz)(repr, "\x1\x2\x3");
+
+	print_s("[", repr, "]\n");
+
+	/*
+	 */
+
+	hcns(s_free)(repr);
 	hcns(s_free)(s);
 
 	return 0;

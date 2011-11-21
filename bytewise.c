@@ -106,7 +106,7 @@ int hcns(enc_u4_be)(void *len0, hcns(u4) v)
 				*len++ = r | 0x80;
 			}
 			((hcns(u1)*)len0)[0] &= 0x7f; /* clear the last digit bit */
-			hcns(brev)(len0, len - (hcns(u1)*)len0); /* make big-endian (simpler to decode) */
+			hcns(b_rev)(len0, len - (hcns(u1)*)len0); /* make big-endian (simpler to decode) */
 		} else {
 			if ((q & ~HC_BITMASK(7)) == 0) {
 				return 1;

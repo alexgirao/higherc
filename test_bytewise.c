@@ -341,7 +341,7 @@ void ser_test(void)
 		assert(a[i][0] == hcns(dec_u4_be)(enc, NULL));
 		assert(enc_len == hcns(enc_u4_be(enc2, a[i][0])));
 		assert(enc_len == hcns(enc_u4_be(NULL, a[i][0])));
-		assert(hcns(bdiff)(enc, enc_len, enc2) == 0);
+		assert(hcns(b_diff)(enc, enc_len, enc2) == 0);
 	}
 }
 

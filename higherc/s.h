@@ -29,8 +29,8 @@ void hcns(s_catz)(HC_ST_S *, const char *);
 void hcns(s_catc)(HC_ST_S *sa, int c);
 
 void hcns(s_vformat)(HC_ST_S *sa, hcns(bool) cat, const char *fmt, va_list va);
-void hcns(s_copyf)(HC_ST_S *sa, const char *fmt, ...);
-void hcns(s_catf)(HC_ST_S *sa, const char *fmt, ...);
+void hcns(s_copyf)(HC_ST_S *sa, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+void hcns(s_catf)(HC_ST_S *sa, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 
 /* s_cat_* return amount of written digits and sign '-'
  */

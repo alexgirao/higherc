@@ -68,7 +68,7 @@ void hcns(s_free)(HC_ST_S *x)
 void hcns(s_copyn)(HC_ST_S *sa, const char *s, int n)
 {
 	hcns(s_alloc)(sa, n + 1);
-	hcns(bcopyl)(sa->s, n, s);
+	hcns(b_copyl)(sa->s, n, s);
 	sa->len = n;
 	sa->s[n] = 'Z';		/* ``offensive programming'' */
 }
@@ -102,7 +102,7 @@ void hcns(s_catn)(HC_ST_S *sa, const char *s, int n)
 		return;
 	}
 	hcns(s_alloc)(sa, sa->len + n + 1);
-	hcns(bcopyl)(sa->s + sa->len, n, s);
+	hcns(b_copyl)(sa->s + sa->len, n, s);
 	sa->len += n;
 	sa->s[sa->len] = 'Z';	/* ``offensive programming'' */
 }
@@ -130,50 +130,28 @@ void hcns(s_catc)(HC_ST_S *sa, int c)
 
 void hcns(s_vformat)(HC_ST_S *sa, hcns(bool) cat, const char *fmt, va_list va)
 {
-	char buf0[0x1fff], *buf;
-	int buf_len;
 	int n;
+	va_list va2;
 
-	buf = buf0;
-	buf_len = sizeof(buf);
+	va_copy(va2, va);
 
-	n = vsnprintf(buf, buf_len, fmt, va);
-	if (n >= buf_len) {
-		/* truncated, try with more space
-		 */
-		buf_len = 0x7fff;
-		HC_ALLOC(buf, buf_len);
-		n = vsnprintf(buf, buf_len, fmt, va);
-		if (n >= buf_len) {
-			HC_FREE(buf);
-			buf_len = 0x1ffff;
-			HC_ALLOC(buf, buf_len);
-			n = vsnprintf(buf, buf_len, fmt, va);
-			if (n >= buf_len) {
-				HC_FREE(buf);
-				buf_len = 0x7fffff; /* 8388607 bytes! */
-				HC_ALLOC(buf, buf_len);
-				n = vsnprintf(buf, buf_len, fmt, va);
-				if (n >= buf_len) {
-					/* give up
-					 */
-					HC_FREE(buf);
-					fprintf(stderr, "error: str_copyf(): too large input (> %i)\n", 0x7fffff);
-					exit(1);
-				}
-			}
-		}
+	/* get needed size
+	 */
+	n = vsnprintf(NULL, 0, fmt, va);
+	if (n < 0) {
+		/* error */
+		return;
 	}
-
-	assert(buf != NULL);
 
 	if (cat) {
-		hcns(s_catn)(sa, buf, n);
+		hcns(s_alloc)(sa, sa->len + n + 1); /* +1 for null terminator, snprintf requires it */
+		sa->len += vsnprintf(sa->s + sa->len, sa->a, fmt, va2);
 	} else {
-		hcns(s_copyn)(sa, buf, n);
+		hcns(s_alloc)(sa, n + 1); /* +1 for null terminator, snprintf requires it */
+		sa->len = vsnprintf(sa->s, sa->a, fmt, va2);
 	}
 
-	HC_FREE(buf);
+	va_end(va2);
 }
 
 void hcns(s_copyf)(HC_ST_S *sa, const char *fmt, ...)
@@ -206,7 +184,7 @@ int hcns(s_cat_u4_hex)(HC_ST_S *s, hcns(u4) v)
 	if (s->len == s_len0) {
 		hcns(s_catn)(s, "0", 1);
 	} else {
-		hcns(brev)(s->s + s_len0, s->len - s_len0);
+		hcns(b_rev)(s->s + s_len0, s->len - s_len0);
 	}
 	return s->len - s_len0;
 }
@@ -236,7 +214,7 @@ int hcns(s_cat_u4_dec)(HC_ST_S *s, hcns(u4) v)
 	if (s->len == s_len0) {
 		hcns(s_catn)(s, "0", 1);
 	} else {
-		hcns(brev)(s->s + s_len0, s->len - s_len0);
+		hcns(b_rev)(s->s + s_len0, s->len - s_len0);
 	}
 	return s->len - s_len0;
 }
@@ -263,7 +241,7 @@ int hcns(s_cat_u4_base36)(HC_ST_S *s, hcns(u4) v)
 	if (s->len == s_len0) {
 		hcns(s_catn)(s, "0", 1);
 	} else {
-		hcns(brev)(s->s + s_len0, s->len - s_len0);
+		hcns(b_rev)(s->s + s_len0, s->len - s_len0);
 	}
 	return s->len - s_len0;
 }
@@ -289,12 +267,12 @@ int hcns(s_diffn)(HC_ST_S *a, char *b, int bl)
 
 	if (x > 0) {
 		x = 1;
-		y = hcns(bdiff)(a->s, bl, b);
+		y = hcns(b_diff)(a->s, bl, b);
 	} else if (x < 0) {
 		x = -1;
-		y = hcns(bdiff)(a->s, a->len, b);
+		y = hcns(b_diff)(a->s, a->len, b);
 	} else {
-		y = hcns(bdiff)(a->s, a->len, b);
+		y = hcns(b_diff)(a->s, a->len, b);
 	}
 	return y ? y : x;
 }
@@ -413,7 +391,7 @@ void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
 		s->len = end;
 	}
 	ss = s->s + start;
-	hcns(bcopyr)(ss + n, window_size - n, ss);
+	hcns(b_copyr)(ss + n, window_size - n, ss);
 
 	for (i=0; i<n; i++) {
 		ss[i] = pad;
@@ -446,7 +424,7 @@ void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
 	assert(end <= s->len);
 
 	ss = s->s + start;
-	hcns(bcopyl)(ss, window_size - n, ss + n);
+	hcns(b_copyl)(ss, window_size - n, ss + n);
 
 	ss += window_size - n;
 	for (i=0; i<n; i++) {
@@ -508,7 +486,7 @@ int hcns(s_put)(HC_ST_S *x, void *out)
 {
 	int r;
 	r = hcns(enc_u4_be)(out, x->len);
-	hcns(bcopyl)(HC_OFFSET(out, r), x->len, x->s);
+	hcns(b_copyl)(HC_OFFSET(out, r), x->len, x->s);
 	return r + x->len;
 }
 
@@ -518,7 +496,7 @@ int hcns(s_get)(HC_ST_S *x, void *in)
 	int len = hcns(dec_u4_be)(in, &r);
 	hcns(s_alloc)(x, len);
 	x->len = len;
-	hcns(bcopyl)(x->s, len, HC_OFFSET(in, r));
+	hcns(b_copyl)(x->s, len, HC_OFFSET(in, r));
 	return r + len;
 }
 

@@ -9,7 +9,7 @@
 #include <assert.h>
 
 #ifndef hcns /* higherc namespace */
-#define hcns(v) higherc_##v
+#define hcns(v) v
 #endif
 
 /* todo: ensure sizes below (u4, i2, ...)

@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 
 	hcns(tagid_cat_id)(tagid, tid);
 
-	assert(hcns(bdiff)(tagid, sizeof(HC_ST_TAGID), a) == 0);
+	assert(hcns(b_diff)(tagid, sizeof(HC_ST_TAGID), a) == 0);
 
         /* cleanup
 	 */

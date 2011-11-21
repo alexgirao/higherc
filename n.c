@@ -103,7 +103,7 @@ void hcns(n_free)(struct hcns(n) *x)
 void hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n)
 {
 	hcns(n_alloc)(x, (n + 1) * sizeof(hcns(h)));
-	hcns(bcopyl)(x->d, n * sizeof(hcns(h)), d);
+	hcns(b_copyl)(x->d, n * sizeof(hcns(h)), d);
 	x->len = n;
 	x->d[x->len] = HALF_OFFENSE;   /* ``offensive programming'' */ 
 }
@@ -297,7 +297,7 @@ int hcns(n_as_dec)(struct hcns(n) *n, HC_ST_S *s)
 
 	while (s->s[s->len - 1] == '0') s->len--;
 
-	hcns(brev)(s->s + s_len0, s->len - s_len0);
+	hcns(b_rev)(s->s + s_len0, s->len - s_len0);
 
 	hcns(n_free)(q);
 
@@ -331,7 +331,7 @@ int hcns(n_as_base36)(struct hcns(n) *n, HC_ST_S *s)
 
 	while (s->s[s->len - 1] == '0') s->len--;
 
-	hcns(brev)(s->s + s_len0, s->len - s_len0);
+	hcns(b_rev)(s->s + s_len0, s->len - s_len0);
 
 	hcns(n_free)(q);
 
