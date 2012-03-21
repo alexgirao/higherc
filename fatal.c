@@ -27,13 +27,13 @@
 #include "higherc/higherc.h"
 #include "higherc/alloc.h"
 
-void hcns(_p_fatal)(char *file, int line, char *fmt, ...)
+void _p_fatal(char *file, int line, char *fmt, ...)
 {
 	va_list args;
 
 	va_start(args, fmt);
 
-	hcns(_p_alloc_fatal_error_happend)();
+	_p_alloc_fatal_error_happend();
 
 	fprintf(stderr, "fatal-error: %s: %i: ", file, (int)line);
 	vfprintf(stderr, fmt, args);

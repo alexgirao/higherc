@@ -31,12 +31,12 @@
 /* alloc/free
  */
 
-void hcns(s_alloc)(HC_ST_S *x, int n)
+void s_alloc(HC_ST_S *x, int n)
 {
 	if (x->s) {
 		if (n > x->a) {
 			int i = n + (n >> 3) + 30;
-			void *p = hcns(alloc_re)(x->s, x->len, i);
+			void *p = alloc_re(x->s, x->len, i);
 			if (p) {
 				x->a = i;
 				x->s = p;
@@ -51,7 +51,7 @@ void hcns(s_alloc)(HC_ST_S *x, int n)
 	x->len = 0;
 }
 
-void hcns(s_free)(HC_ST_S *x)
+void s_free(HC_ST_S *x)
 {
 	if (x->s) {
 		void *p = x->s;
@@ -65,28 +65,28 @@ void hcns(s_free)(HC_ST_S *x)
 /* copy
  */
 
-void hcns(s_copyn)(HC_ST_S *sa, const char *s, int n)
+void s_copyn(HC_ST_S *sa, const char *s, int n)
 {
-	hcns(s_alloc)(sa, n + 1);
-	hcns(b_copyl)(sa->s, n, s);
+	s_alloc(sa, n + 1);
+	b_copyl(sa->s, n, s);
 	sa->len = n;
 	sa->s[n] = 'Z';		/* ``offensive programming'' */
 }
 
-void hcns(s_copy)(HC_ST_S *to, const HC_ST_S *from)
+void s_copy(HC_ST_S *to, const HC_ST_S *from)
 {
-	hcns(s_copyn)(to, from->s, from->len);
+	s_copyn(to, from->s, from->len);
 }
 
-void hcns(s_copyz)(HC_ST_S *sa, const char *s)
+void s_copyz(HC_ST_S *sa, const char *s)
 {
-	hcns(s_copyn)(sa, s, hcns(slen)(s));
+	s_copyn(sa, s, slen(s));
 }
 
-void hcns(s_copyc)(HC_ST_S *sa, int c)
+void s_copyc(HC_ST_S *sa, int c)
 {
 	if (sa->len == 0) {
-		hcns(s_alloc)(sa, 1);
+		s_alloc(sa, 1);
 	}
 	sa->s[0] = c;
 	sa->len = 1;
@@ -95,32 +95,32 @@ void hcns(s_copyc)(HC_ST_S *sa, int c)
 /* cat
  */
 
-void hcns(s_catn)(HC_ST_S *sa, const char *s, int n)
+void s_catn(HC_ST_S *sa, const char *s, int n)
 {
 	if (!sa->s) {
-		hcns(s_copyn)(sa, s, n);
+		s_copyn(sa, s, n);
 		return;
 	}
-	hcns(s_alloc)(sa, sa->len + n + 1);
-	hcns(b_copyl)(sa->s + sa->len, n, s);
+	s_alloc(sa, sa->len + n + 1);
+	b_copyl(sa->s + sa->len, n, s);
 	sa->len += n;
 	sa->s[sa->len] = 'Z';	/* ``offensive programming'' */
 }
 
-void hcns(s_cat)(HC_ST_S *to, const HC_ST_S *from)
+void s_cat(HC_ST_S *to, const HC_ST_S *from)
 {
-	hcns(s_catn)(to, from->s, from->len);
+	s_catn(to, from->s, from->len);
 }
 
-void hcns(s_catz)(HC_ST_S *sa, const char *s)
+void s_catz(HC_ST_S *sa, const char *s)
 {
-	hcns(s_catn)(sa, s, hcns(slen)(s));
+	s_catn(sa, s, slen(s));
 }
 
-void hcns(s_catc)(HC_ST_S *sa, int c)
+void s_catc(HC_ST_S *sa, int c)
 {
 	if (sa->len == sa->a) {
-		hcns(s_alloc)(sa, sa->len + 1);
+		s_alloc(sa, sa->len + 1);
 	}
 	sa->s[sa->len++] = c;
 }
@@ -128,7 +128,7 @@ void hcns(s_catc)(HC_ST_S *sa, int c)
 /* format
  */
 
-void hcns(s_vformat)(HC_ST_S *sa, hcns(bool) cat, const char *fmt, va_list va)
+void s_vformat(HC_ST_S *sa, bool cat, const char *fmt, va_list va)
 {
 	int n;
 	va_list va2;
@@ -144,66 +144,66 @@ void hcns(s_vformat)(HC_ST_S *sa, hcns(bool) cat, const char *fmt, va_list va)
 	}
 
 	if (cat) {
-		hcns(s_alloc)(sa, sa->len + n + 1); /* +1 for null terminator, snprintf requires it */
+		s_alloc(sa, sa->len + n + 1); /* +1 for null terminator, snprintf requires it */
 		sa->len += vsnprintf(sa->s + sa->len, sa->a, fmt, va2);
 	} else {
-		hcns(s_alloc)(sa, n + 1); /* +1 for null terminator, snprintf requires it */
+		s_alloc(sa, n + 1); /* +1 for null terminator, snprintf requires it */
 		sa->len = vsnprintf(sa->s, sa->a, fmt, va2);
 	}
 
 	va_end(va2);
 }
 
-void hcns(s_copyf)(HC_ST_S *sa, const char *fmt, ...)
+void s_copyf(HC_ST_S *sa, const char *fmt, ...)
 {
 	va_list	va;
 	va_start(va, fmt);
-	hcns(s_vformat)(sa, 0, fmt, va);
+	s_vformat(sa, 0, fmt, va);
 	va_end(va);
 }
 
-void hcns(s_catf)(HC_ST_S *sa, const char *fmt, ...)
+void s_catf(HC_ST_S *sa, const char *fmt, ...)
 {
 	va_list	va;
 	va_start(va, fmt);
-	hcns(s_vformat)(sa, 1, fmt, va);
+	s_vformat(sa, 1, fmt, va);
 	va_end(va);
 }
 
 /* cat numeric values
  */
 
-int hcns(s_cat_u4_hex)(HC_ST_S *s, hcns(u4) v)
+int s_cat_u4_hex(HC_ST_S *s, uint32_t v)
 {
 	int s_len0 = s->len;
-	hcns(s_alloc)(s, s->len + 8);  /* 0x12345678 */
+	s_alloc(s, s->len + 8);  /* 0x12345678 */
 	while (v) {
 		s->s[s->len++] = HC_HEX_DIGIT(v & 0xf);
 		v = v >> 4;
 	}
 	if (s->len == s_len0) {
-		hcns(s_catn)(s, "0", 1);
+		s_catn(s, "0", 1);
 	} else {
-		hcns(b_rev)(s->s + s_len0, s->len - s_len0);
+		b_rev(s->s + s_len0, s->len - s_len0);
 	}
 	return s->len - s_len0;
 }
 
-int hcns(s_cat_i4_hex)(HC_ST_S *s, hcns(i4) v)
+int s_cat_i4_hex(HC_ST_S *s, int32_t v)
 {
 	int i = 0;
 	if (v < 0) {
 		i++;
-		hcns(s_catn)(s, "-", 1);
+		s_catn(s, "-", 1);
 		v = -v;
 	}
-	return hcns(s_cat_u4_hex)(s, v) + i;
+	return s_cat_u4_hex(s, v) + i;
 }
 
-int hcns(s_cat_u4_dec)(HC_ST_S *s, hcns(u4) v)
+int s_cat_u4_dec(HC_ST_S *s, uint32_t v)
 {
 	int s_len0 = s->len;
-	hcns(s_alloc)(s, s->len + 10);	/* 4-bytes can't hold more
+	s_alloc(s, s->len + 10);	/* 4-bytes can't hold more
 					 * than 10 decimal digits (max
 					 * decimal value is
 					 * 4294967296) */
@@ -212,72 +212,72 @@ int hcns(s_cat_u4_dec)(HC_ST_S *s, hcns(u4) v)
 		v = v / 10;
 	}
 	if (s->len == s_len0) {
-		hcns(s_catn)(s, "0", 1);
+		s_catn(s, "0", 1);
 	} else {
-		hcns(b_rev)(s->s + s_len0, s->len - s_len0);
+		b_rev(s->s + s_len0, s->len - s_len0);
 	}
 	return s->len - s_len0;
 }
 
-int hcns(s_cat_i4_dec)(HC_ST_S *s, hcns(i4) v)
+int s_cat_i4_dec(HC_ST_S *s, int32_t v)
 {
 	int i = 0;
 	if (v < 0) {
 		i++;
-		hcns(s_catn)(s, "-", 1);
+		s_catn(s, "-", 1);
 		v = -v;
 	}
-	return hcns(s_cat_u4_dec)(s, v) + i;
+	return s_cat_u4_dec(s, v) + i;
 }
 
-int hcns(s_cat_u4_base36)(HC_ST_S *s, hcns(u4) v)
+int s_cat_u4_base36(HC_ST_S *s, uint32_t v)
 {
 	int s_len0 = s->len;
-	hcns(s_alloc)(s, s->len + 7);  /* 0xffffffff = 1z141z3 */
+	s_alloc(s, s->len + 7);  /* 0xffffffff = 1z141z3 */
 	while (v) {
 		s->s[s->len++] = HC_BASE36_DIGIT(v % 36);
 		v = v / 36;
 	}
 	if (s->len == s_len0) {
-		hcns(s_catn)(s, "0", 1);
+		s_catn(s, "0", 1);
 	} else {
-		hcns(b_rev)(s->s + s_len0, s->len - s_len0);
+		b_rev(s->s + s_len0, s->len - s_len0);
 	}
 	return s->len - s_len0;
 }
 
-int hcns(s_cat_i4_base36)(HC_ST_S *s, hcns(i4) v)
+int s_cat_i4_base36(HC_ST_S *s, int32_t v)
 {
 	int i = 0;
 	if (v < 0) {
 		i++;
-		hcns(s_catn)(s, "-", 1);
+		s_catn(s, "-", 1);
 		v = -v;
 	}
-	return hcns(s_cat_u4_base36)(s, v) + i;
+	return s_cat_u4_base36(s, v) + i;
 }
 
 /* diff
  */
 
-int hcns(s_diffn)(HC_ST_S *a, char *b, int bl)
+int s_diffn(HC_ST_S *a, char *b, int bl)
 {
 	int x = a->len - bl;
 	int y = 0;
 
 	if (x > 0) {
 		x = 1;
-		y = hcns(b_diff)(a->s, bl, b);
+		y = b_diff(a->s, bl, b);
 	} else if (x < 0) {
 		x = -1;
-		y = hcns(b_diff)(a->s, a->len, b);
+		y = b_diff(a->s, a->len, b);
 	} else {
-		y = hcns(b_diff)(a->s, a->len, b);
+		y = b_diff(a->s, a->len, b);
 	}
 	return y ? y : x;
 }
 
-int hcns(s_diffz)(HC_ST_S *a, char *b)
+int s_diffz(HC_ST_S *a, char *b)
 {
 	char *s = a->s;
 	int len = a->len;
@@ -301,15 +301,15 @@ int hcns(s_diffz)(HC_ST_S *a, char *b)
 		- ((int)(unsigned char)*t);
 }
 
-int hcns(s_diff)(HC_ST_S *a, HC_ST_S *b)
+int s_diff(HC_ST_S *a, HC_ST_S *b)
 {
-	return hcns(s_diffn)(a, b->s, b->len);
+	return s_diffn(a, b->s, b->len);
 }
 
 /* case change
  */
 
-void hcns(s_upper)(HC_ST_S *s)
+void s_upper(HC_ST_S *s)
 {
 	int i;
 	char c;
@@ -321,7 +321,7 @@ void hcns(s_upper)(HC_ST_S *s)
 	}
 }
 
-void hcns(s_lower)(HC_ST_S *s)
+void s_lower(HC_ST_S *s)
 {
 	int i;
 	char c;
@@ -336,7 +336,7 @@ void hcns(s_lower)(HC_ST_S *s)
 /* lchr/rchr
  */
 
-int hcns(s_lchr)(HC_ST_S *s, int chr)
+int s_lchr(HC_ST_S *s, int chr)
 {
 	const char *start = s->s;
 	const char *end = s->s + s->len;
@@ -347,7 +347,7 @@ int hcns(s_lchr)(HC_ST_S *s, int chr)
 	return start - s->s;
 }
 
-int hcns(s_rchr)(HC_ST_S *s, int chr)
+int s_rchr(HC_ST_S *s, int chr)
 {
 	const char *start = s->s;
 	const char *end = s->s + s->len - 1;
@@ -361,7 +361,7 @@ int hcns(s_rchr)(HC_ST_S *s, int chr)
 /* shift
  */
 
-void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
+void s_shiftr(HC_ST_S *s, int start, int end, int n, int pad)
 {
 	int i, window_size;
 	char *ss;
@@ -387,18 +387,18 @@ void hcns(s_shiftr)(HC_ST_S *s, int start, int end, int n, int pad)
 	if (end > s->len) {
 		/* end is exclusive, so its len compatible
 		 */
-		hcns(s_alloc)(s, end);
+		s_alloc(s, end);
 		s->len = end;
 	}
 	ss = s->s + start;
-	hcns(b_copyr)(ss + n, window_size - n, ss);
+	b_copyr(ss + n, window_size - n, ss);
 
 	for (i=0; i<n; i++) {
 		ss[i] = pad;
 	}
 }
 
-void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
+void s_shiftl(HC_ST_S *s, int start, int end, int n, int pad)
 {
 	int i, window_size;
 	char *ss;
@@ -424,7 +424,7 @@ void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
 	assert(end <= s->len);
 
 	ss = s->s + start;
-	hcns(b_copyl)(ss, window_size - n, ss + n);
+	b_copyl(ss, window_size - n, ss + n);
 
 	ss += window_size - n;
 	for (i=0; i<n; i++) {
@@ -432,20 +432,20 @@ void hcns(s_shiftl)(HC_ST_S *s, int start, int end, int n, int pad)
 	}
 }
 
-void hcns(s_shiftr2)(HC_ST_S *s, int start, int n, int pad)
+void s_shiftr2(HC_ST_S *s, int start, int n, int pad)
 {
-	hcns(s_shiftr)(s, start, s->len + n, n, pad);
+	s_shiftr(s, start, s->len + n, n, pad);
 }
 
-void hcns(s_shiftl2)(HC_ST_S *s, int start, int n, int pad)
+void s_shiftl2(HC_ST_S *s, int start, int n, int pad)
 {
-	hcns(s_shiftl)(s, start, s->len, n, pad);
+	s_shiftl(s, start, s->len, n, pad);
 }
 
 /* repr
  */
 
-void hcns(s_reprn)(HC_ST_S *s_repr, void *s, int n)
+void s_reprn(HC_ST_S *s_repr, void *s, int n)
 {
 	unsigned char *x = s;
 	int c, flags;
@@ -453,9 +453,15 @@ void hcns(s_reprn)(HC_ST_S *s_repr, void *s, int n)
 		c = *x++;
 		flags = HC_CTYPE_FLAGS(c);
 		if (flags & (HC_ALNUM | HC_PUNCT | HC_BLANK)) {
-			hcns(s_catc)(s_repr, c);
+			if (c == '\t') {
+				s_alloc(s_repr, s_repr->len + 2); /* \t */
+				s_repr->s[s_repr->len++] = '\\';
+				s_repr->s[s_repr->len++] = 't';
+			} else {
+				s_catc(s_repr, c);
+			}
 		} else {
-			hcns(s_alloc)(s_repr, s_repr->len + 4); /* \xNN */
+			s_alloc(s_repr, s_repr->len + 4); /* \xNN */
 			s_repr->s[s_repr->len++] = '\\';
 			s_repr->s[s_repr->len++] = 'x';
 			s_repr->s[s_repr->len++] = HC_HEX_DIGIT((c >> 4) & 0xf);
@@ -464,55 +470,55 @@ void hcns(s_reprn)(HC_ST_S *s_repr, void *s, int n)
 	}
 }
 
-void hcns(s_repr)(HC_ST_S *s_repr, HC_ST_S *s)
+void s_repr(HC_ST_S *s_repr, HC_ST_S *s)
 {
-	hcns(s_reprn)(s_repr, s->s, s->len);
+	s_reprn(s_repr, s->s, s->len);
 }
 
-void hcns(s_reprz)(HC_ST_S *s_repr, char *s)
+void s_reprz(HC_ST_S *s_repr, char *s)
 {
-	hcns(s_reprn)(s_repr, s, hcns(slen)(s));
+	s_reprn(s_repr, s, slen(s));
 }
 
 /* serialization
  */
 
-int hcns(s_putlen)(HC_ST_S *x)
+int s_putlen(HC_ST_S *x)
 {
-	return hcns(enc_u4_be)(NULL, x->len) + x->len;
+	return enc_u4_be(NULL, x->len) + x->len;
 }
 
-int hcns(s_put)(HC_ST_S *x, void *out)
+int s_put(HC_ST_S *x, void *out)
 {
 	int r;
-	r = hcns(enc_u4_be)(out, x->len);
-	hcns(b_copyl)(HC_OFFSET(out, r), x->len, x->s);
+	r = enc_u4_be(out, x->len);
+	b_copyl(HC_OFFSET(out, r), x->len, x->s);
 	return r + x->len;
 }
 
-int hcns(s_get)(HC_ST_S *x, void *in)
+int s_get(HC_ST_S *x, void *in)
 {
 	int r;
-	int len = hcns(dec_u4_be)(in, &r);
-	hcns(s_alloc)(x, len);
+	int len = dec_u4_be(in, &r);
+	s_alloc(x, len);
 	x->len = len;
-	hcns(b_copyl)(x->s, len, HC_OFFSET(in, r));
+	b_copyl(x->s, len, HC_OFFSET(in, r));
 	return r + len;
 }
 
 /* sha1
  */
 
-int hcns(s_cat_sha1hex)(HC_ST_S *x, void *s, int n)
+int s_cat_sha1hex(HC_ST_S *x, void *s, int n)
 {
 	HC_DEF_SHA1(E0);
 	unsigned char E[20];  /* sha1 bytes */
 
-	hcns(sha1_init)(E0);
-	hcns(sha1_update)(E0, s, n);
-	hcns(sha1_final)(E0, E);
+	sha1_init(E0);
+	sha1_update(E0, s, n);
+	sha1_final(E0, E);
 
-	hcns(s_alloc)(x, x->len + 40 + 1);
+	s_alloc(x, x->len + 40 + 1);
 	HC_PUT_HEX(x->s + x->len, 20, E);
 	x->len += 40;
 

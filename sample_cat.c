@@ -40,9 +40,11 @@ static int aaa = 0;
 
 /* processing function, return amount of successfully processed data
  */
-static int doit(const char *buf, int len, hcns(bool) eof)
+static int doit(const char *buf, int len, bool eof)
 {
 	int i;
+
+	assert(len > 0); /* this never happen */
 
 	if (eof) {
 		/* we are at EOF, MUST consume ALL data
@@ -61,13 +63,13 @@ static int doit(const char *buf, int len, hcns(bool) eof)
 		} while (i < len);
 	} else {
 		if (aaa++ == 3) {
-			/* just a test, tells that nothing was
-			 * processed, possible only if we are not at
-			 * EOF
+			/* just a test, partial processing, possible
+			 * only if we are not at EOF
 			 */
-			return 0;
+			i = write(1 /* STDOUT */, buf, 1);
+		} else {
+			i = write(1 /* STDOUT */, buf, len);
 		}
-		i = write(1 /* STDOUT */, buf, len);
 	}
 
 	fprintf(stderr, "processed %i bytes out of %i, %i left out, eof? %i\n", i, len, len - i, eof);
@@ -81,7 +83,7 @@ int main(int argc, char **argv)
 
 	HC_ALLOC(buf, bufsz);
 
-	fprintf(stderr, "total bytes read: %i\n", hcns(readfd)(0 /* STDIN */, buf, bufsz, doit));
+	fprintf(stderr, "total bytes read: %i\n", readfd(0 /* STDIN */, buf, bufsz, doit));
 
 	HC_FREE(buf);
 

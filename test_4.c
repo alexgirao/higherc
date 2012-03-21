@@ -43,26 +43,26 @@
 /*
  */
 
-#define AA_CMPEXPR hcns(s_diff)(x->tag, y->tag)
+#define AA_CMPEXPR s_diff(x->tag, y->tag)
 
 #ifndef TEST_PRIVATE
 #include "test_4.h"
 #else
-HC_DECL_PRIVATE_I(hcns(aa),
-	struct hcns(s) tag[1];
+HC_DECL_PRIVATE_I(aa,
+	struct s tag[1];
 	int a;
 	int b;
 	int c;
 );
-HC_DECL_PRIVATE_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
-HC_DECL_PRIVATE_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PRIVATE_I_SORT(aa, x, y, AA_CMPEXPR);
+HC_DECL_PRIVATE_I_USORT(aa, x, y, AA_CMPEXPR);
 #endif
 
-static struct hcns(aa) *aa_new(struct hcns(aa) *h, int argc, char *arg)
+static struct aa *aa_new(struct aa *h, int argc, char *arg)
 {
-	h = hcns(aa_new0)(h);
+	h = aa_new0(h);
 
-	hcns(s_copyz)(h->tag, arg);
+	s_copyz(h->tag, arg);
 	HC_SAFE_CSTR(h->tag);
 
 	h->a = argc;
@@ -72,19 +72,19 @@ static struct hcns(aa) *aa_new(struct hcns(aa) *h, int argc, char *arg)
 	return h;
 }
 
-static void aa_free(struct hcns(aa) *h)
+static void aa_free(struct aa *h)
 {
-	struct hcns(aa) *t;
-	struct hcns(aa_iter) c[1];
-	hcns(aa_backward)(c, h);
-	while ((t = hcns(aa_next)(c))) {
-		hcns(s_free)(t->tag);
+	struct aa *t;
+	struct aa_iter c[1];
+	aa_backward(c, h);
+	while ((t = aa_next(c))) {
+		s_free(t->tag);
 	}
-	hcns(aa_end)(c);
-	hcns(aa_free0)(h);
+	aa_end(c);
+	aa_free0(h);
 }
 
-void traverse_post_order(struct hcns(aa) *h)
+void traverse_post_order(struct aa *h)
 {
 	if (h) {
 		traverse_post_order(h->tail);
@@ -95,7 +95,7 @@ void traverse_post_order(struct hcns(aa) *h)
 int main(int argc, char **argv)
 {
 	int i, j;
-	struct hcns(aa) *h = NULL;
+	struct aa *h = NULL;
 
 	/* fill list
 	 */
@@ -114,25 +114,25 @@ int main(int argc, char **argv)
 	/* sorted traverse
 	 */
 
-	struct hcns(aa) **sorted = hcns(aa_as_array)(h);
-	hcns(aa_sort)(sorted, hcns(aa_len)(h));
+	struct aa **sorted = aa_as_array(h);
+	aa_sort(sorted, aa_len(h));
 
 	fprintf(stdout, "sorted traverse (from sorted array)\n");
 
-	for (i=0, j=hcns(aa_len)(h); i<j; i++) {
-		struct hcns(aa) *tmp = sorted[i];
+	for (i=0, j=aa_len(h); i<j; i++) {
+		struct aa *tmp = sorted[i];
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
 	/* .. descending order
 	 */
 
-	hcns(aa_sort_desc)(sorted, hcns(aa_len)(h));
+	aa_sort_desc(sorted, aa_len(h));
 
 	fprintf(stdout, "sorted traverse (from sorted array, descending order)\n");
 
-	for (i=0, j=hcns(aa_len)(h); i<j; i++) {
-		struct hcns(aa) *tmp = sorted[i];
+	for (i=0, j=aa_len(h); i<j; i++) {
+		struct aa *tmp = sorted[i];
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
@@ -141,13 +141,13 @@ int main(int argc, char **argv)
 	/* sorted traverse
 	 */
 
-	struct hcns(aa) **usorted = hcns(aa_as_array)(h);
-	int newlen = hcns(aa_usort)(usorted, hcns(aa_len)(h));
+	struct aa **usorted = aa_as_array(h);
+	int newlen = aa_usort(usorted, aa_len(h));
 
 	fprintf(stdout, "sorted traverse (from uniquely sorted array)\n");
 
 	for (i=0, j=newlen; i<j; i++) {
-		struct hcns(aa) *tmp = usorted[i];
+		struct aa *tmp = usorted[i];
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
@@ -156,13 +156,13 @@ int main(int argc, char **argv)
 	/* .. descending order
 	 */
 
-	usorted = hcns(aa_as_array)(h);
-	newlen = hcns(aa_usort_desc)(usorted, hcns(aa_len)(h));
+	usorted = aa_as_array(h);
+	newlen = aa_usort_desc(usorted, aa_len(h));
 
 	fprintf(stdout, "sorted traverse (from uniquely sorted array, descending order)\n");
 
 	for (i=0, j=newlen; i<j; i++) {
-		struct hcns(aa) *tmp = usorted[i];
+		struct aa *tmp = usorted[i];
 		fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 	}
 
@@ -179,9 +179,9 @@ int main(int argc, char **argv)
 	fprintf(stdout, "foreach (backward order)\n");
 
 	{
-		struct hcns(aa) *tmp2[2] = {0, h};
-		while (hcns(aa_foreach)(tmp2)) {
-			struct hcns(aa) *tmp = *tmp2;
+		struct aa *tmp2[2] = {0, h};
+		while (aa_foreach(tmp2)) {
+			struct aa *tmp = *tmp2;
 			fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 		}
 	}
@@ -189,13 +189,13 @@ int main(int argc, char **argv)
 	/* reverse
 	 */
 
-	h = hcns(aa_reverse)(h);
+	h = aa_reverse(h);
 	fprintf(stdout, "foreach after reverse (forward order)\n");
 
 	{
-		struct hcns(aa) *tmp2[2] = {0, h};
-		while (hcns(aa_foreach)(tmp2)) {
-			struct hcns(aa) *tmp = *tmp2;
+		struct aa *tmp2[2] = {0, h};
+		while (aa_foreach(tmp2)) {
+			struct aa *tmp = *tmp2;
 			fprintf(stdout, "  [%s][%i][%i][%i]\n", tmp->tag->s, tmp->a, tmp->b, tmp->c);
 		}
 	}
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 }
 
 #ifndef TEST_PRIVATE
-HC_DECL_PUBLIC_I(hcns(aa));
-HC_DECL_PUBLIC_I_SORT(hcns(aa), x, y, AA_CMPEXPR);
-HC_DECL_PUBLIC_I_USORT(hcns(aa), x, y, AA_CMPEXPR);
+HC_DECL_PUBLIC_I(aa);
+HC_DECL_PUBLIC_I_SORT(aa, x, y, AA_CMPEXPR);
+HC_DECL_PUBLIC_I_USORT(aa, x, y, AA_CMPEXPR);
 #endif

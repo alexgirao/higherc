@@ -18,8 +18,8 @@
 
 /*
 
-find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; sha1sum < iii | cut -d" " -f1' > ../a
-find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test_sha1 < iii' > ../b
+  find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; sha1sum < iii | cut -d" " -f1' > ../a
+  find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test_sha1 < iii' > ../b
 
 */
 
@@ -34,12 +34,13 @@ find -type f | xargs -n1 -Iiii sh -c 'echo -n iii " "; ./test_sha1 < iii' > ../b
 #include "higherc/bytewise.h"
 #include "higherc/byte.h"
 #include "higherc/sha1.h"
+#include "higherc/str.h"
 
-int main()
+int main(int argc, char **argv)
 {
 	int bufsz;
 	void *buf;
-	struct hcns(sha1) ctx;
+	struct sha1 ctx;
 	unsigned char sha1_1[20];
 	unsigned char sha1_2[20];
 	char sha1_1str[41];
@@ -48,21 +49,35 @@ int main()
    	/* processing function, return amount of successfully
 	 * processed data
 	 */
-	int doit(const char *buf, int len, hcns(bool) eof) {
-		hcns(sha1_update)(&ctx, buf, len);
+	int doit(const char *buf, int len, bool eof) {
+		sha1_update(&ctx, buf, len);
     		return len;
 	}
 
 	bufsz = 1024 * 1024;
 	HC_ALLOC(buf, bufsz);
 
-	hcns(sha1_init)(&ctx);
-	int i = hcns(readfd)(0 /* STDIN */, buf, bufsz, doit);
-	hcns(sha1_final)(&ctx, sha1_1);
+	sha1_init(&ctx);
+        if (argc == 2) {
+		if (strcmp(argv[1], "-") == 0) {
+			int i = readfd(0 /* STDIN */, buf, bufsz, doit);
+			fprintf(stderr, "total bytes read from stdin: %i\n", i);
+		} else {
+			int i, fd = open(argv[1], O_RDONLY);
+			if (fd == -1) {
+				perror(argv[1]);
+				exit(1);
+			}
+			i = readfd(fd, buf, bufsz, doit);
+			fprintf(stderr, "total bytes read from %s: %i\n", argv[1], i);
+			close(fd);
+		}
+        } else {
+		sha1_update(&ctx, argv[0], slen(argv[0]));
+        }
+	sha1_final(&ctx, sha1_1);
 
 	HC_FREE(buf);
-
-	fprintf(stderr, "total bytes read: %i\n", i);
 
 	memset(sha1_1str, 'x', sizeof(sha1_1str));
 	memset(sha1_2, 'y', sizeof(sha1_2));
@@ -76,7 +91,7 @@ int main()
 	HC_PUT_HEX(sha1_2str, 20, sha1_2);
 	sha1_2str[40] = '\0';
 
-	assert(hcns(b_diff)(sha1_1str, 41, sha1_2str) == 0);
+	assert(b_diff(sha1_1str, 41, sha1_2str) == 0);
 
 	puts(sha1_1str);
 

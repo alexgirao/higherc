@@ -21,17 +21,17 @@
 #include "higherc/higherc.h"
 #include "higherc/rand.h"
 
-void hcns(seed)(struct hcns(entropy) *e, int seed)
+void seed(struct entropy *e, int seed)
 {
 	e->entropy = seed;
 }
 
-void hcns(time_seed)(struct hcns(entropy) *e)
+void time_seed(struct entropy *e)
 {
 	e->entropy = time(NULL);
 }
 
-int hcns(rand4)(struct hcns(entropy) *e)
+int rand4(struct entropy *e)
 {
 	int tmp = e->entropy * HC_RAND4_MAGIC + HC_RAND4_MAGIC;
 	e->entropy = tmp + (tmp >> (5 + 16)) + (tmp >> (8 + 16)) + (tmp >> (13 + 16));

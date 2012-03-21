@@ -44,26 +44,30 @@ int main(int argc, char **argv)
 	/*
 	 */
 
-	for (i=0; i<=100; i++) {
-		hcns(s_catc)(s, i);
+	for (i=1; i<=100; i++) {
+		s_catc(s, i);
 	}
-	hcns(s_repr)(repr, s);
+	s_repr(repr, s);
 
 	print_s("[", repr, "]\n");
+
+        assert(s_diffz(s, "\x01\x02\x03\x04\x05\x06\x07\x08\t\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcd") == 0);
 
 	/*
 	 */
 
 	repr->len = 0;
-	hcns(s_reprz)(repr, "\x1\x2\x3");
+	s_reprz(repr, "\x1\x2\x3");
 
 	print_s("[", repr, "]\n");
+
+        assert(s_diffz(repr, "\\x01\\x02\\x03") == 0);
 
 	/*
 	 */
 
-	hcns(s_free)(repr);
-	hcns(s_free)(s);
+	s_free(repr);
+	s_free(s);
 
 	return 0;
 }

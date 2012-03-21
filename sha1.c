@@ -111,7 +111,7 @@
 #define T_40_59(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, ((B&C)+(D&(B^C))) , 0x8f1bbcdc, A, B, C, D, E )
 #define T_60_79(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, (B^C^D) ,  0xca62c1d6, A, B, C, D, E )
 
-static void blk_SHA1_Block(struct hcns(sha1) *ctx, const unsigned int *data)
+static void blk_SHA1_Block(struct sha1 *ctx, const unsigned int *data)
 {
 	unsigned int A,B,C,D,E;
 	unsigned int array[16];
@@ -219,7 +219,7 @@ static void blk_SHA1_Block(struct hcns(sha1) *ctx, const unsigned int *data)
 	ctx->H[4] += E;
 }
 
-void hcns(sha1_init)(struct hcns(sha1) *ctx)
+void sha1_init(struct sha1 *ctx)
 {
 	ctx->size = 0;
 
@@ -231,7 +231,7 @@ void hcns(sha1_init)(struct hcns(sha1) *ctx)
 	ctx->H[4] = 0xc3d2e1f0;
 }
 
-void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long len)
+void sha1_update(struct sha1 *ctx, const void *data, unsigned long len)
 {
 	int lenW = ctx->size & 63;
 
@@ -242,7 +242,7 @@ void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long l
 		int left = 64 - lenW;
 		if (len < left)
 			left = len;
-		hcns(b_copyl)(lenW + (char *)ctx->W, left, data);
+		b_copyl(lenW + (char *)ctx->W, left, data);
 		lenW = (lenW + left) & 63;
 		len -= left;
 		data = ((const char *)data + left);
@@ -256,10 +256,10 @@ void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *data, unsigned long l
 		len -= 64;
 	}
 	if (len)
-		hcns(b_copyl)((char*)ctx->W, len, data);
+		b_copyl((char*)ctx->W, len, data);
 }
 
-void hcns(sha1_final)(struct hcns(sha1) *ctx, unsigned char hashout[20])
+void sha1_final(struct sha1 *ctx, unsigned char hashout[20])
 {
 	static const unsigned char pad[64] = { 0x80 };
 	unsigned int padlen[2];
@@ -271,8 +271,8 @@ void hcns(sha1_final)(struct hcns(sha1) *ctx, unsigned char hashout[20])
 	HC_PUT_BE4(&padlen[1], ctx->size << 3);
 
 	i = ctx->size & 63;
-	hcns(sha1_update)(ctx, pad, 1 + (63 & (55 - i)));
-	hcns(sha1_update)(ctx, padlen, 8);
+	sha1_update(ctx, pad, 1 + (63 & (55 - i)));
+	sha1_update(ctx, padlen, 8);
 
 	/* output hash
 	 */

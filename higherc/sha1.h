@@ -13,18 +13,18 @@
  * none of the original Mozilla code remains.
  */
 
-struct hcns(sha1) {
+struct sha1 {
 	unsigned long long size;
 	unsigned int H[5];
 	unsigned int W[16];
 };
 
 #define HC_NULL_SHA1 {0LL, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
-#define HC_ST_SHA1 struct hcns(sha1)
+#define HC_ST_SHA1 struct sha1
 #define HC_DEF_SHA1(sym) HC_ST_SHA1 sym[1] = {HC_NULL_SHA1}
 
-void hcns(sha1_init)(struct hcns(sha1) *ctx);
-void hcns(sha1_update)(struct hcns(sha1) *ctx, const void *dataIn, unsigned long len);
-void hcns(sha1_final)(struct hcns(sha1) *ctx, unsigned char hashout[20]);
+void sha1_init(struct sha1 *ctx);
+void sha1_update(struct sha1 *ctx, const void *dataIn, unsigned long len);
+void sha1_final(struct sha1 *ctx, unsigned char hashout[20]);
 
 #endif

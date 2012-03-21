@@ -31,9 +31,9 @@ static char test1[] = "#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[
 
 int main(int argc, char **argv)
 {
-	assert(hcns(crc32)(0, test0, sizeof test0 - 1) == -1625496575);
-	assert(hcns(crc32)(0, test0, sizeof test0 - 1) == 0x9f1ce401 /* -1625496575 */);
-	assert(hcns(crc32)(0, test1, sizeof test1 - 1) == 1690350392);
+	assert(crc32(0, test0, sizeof test0 - 1) == -1625496575);
+	assert(crc32(0, test0, sizeof test0 - 1) == 0x9f1ce401 /* -1625496575 */);
+	assert(crc32(0, test1, sizeof test1 - 1) == 1690350392);
 	puts("ok");
 	return 0;
 }

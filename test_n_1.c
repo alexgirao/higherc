@@ -39,19 +39,19 @@
 		fflush(stdout);						\
 	} while (0)
 
-static void print_n(char *prefix, struct hcns(n) *n, char *suffix)
+static void print_n(char *prefix, struct n *n, char *suffix)
 {
-	struct hcns(s) s = HC_NULL_S;
+	struct s s = HC_NULL_S;
 
-	hcns(s_catz)(&s, prefix);
-	hcns(n_as_hex)(n, &s);
-	hcns(s_catz)(&s, suffix);
+	s_catz(&s, prefix);
+	n_as_hex(n, &s);
+	s_catz(&s, suffix);
 
 	HC_SAFE_CSTR(&s);
 
 	printf("%s", s.s);
 
-	hcns(s_free)(&s);
+	s_free(&s);
 }
 
 int main(int argc, char **argv)
@@ -59,62 +59,62 @@ int main(int argc, char **argv)
 	char *a_hex = "15bc3c38c53340b1e98c3be3671a378276b7613c";
 	char *a_dec = "124086592339716874826150129472345739134649196860";
 	char *a_b36 = "2jeg2ovjrtl0hfk79vsjjfva7prvj24";
-	int a_hex_len = hcns(slen)(a_hex);
+	int a_hex_len = slen(a_hex);
 	HC_DEF_N(a);
 	HC_DEF_S(s);
 
 	if (0) {
-		struct hcns(n) _unused = HC_NULL_N;
+		struct n _unused = HC_NULL_N;
 		DEBUG_N(&_unused);
 	}
 
 	/* load a_hex
 	 */
 
-	hcns(n_load_hex)(a, a_hex, a_hex_len);
+	n_load_hex(a, a_hex, a_hex_len);
 
 	/* base36
 	 */
 
 	s->len = 0; /* truncate s */
-	assert(hcns(n_as_base36)(a, s) == hcns(slen)(a_b36));
+	assert(n_as_base36(a, s) == slen(a_b36));
 	HC_SAFE_CSTR(s);
-	assert(hcns(s_diffz)(s, a_b36) == 0);
+	assert(s_diffz(s, a_b36) == 0);
 
 	/* decimal
 	 */
 
 	s->len = 0; /* truncate s */
-	assert(hcns(n_as_dec)(a, s) == hcns(slen)(a_dec));
+	assert(n_as_dec(a, s) == slen(a_dec));
 	HC_SAFE_CSTR(s);
-	assert(hcns(s_diffz)(s, a_dec) == 0);
+	assert(s_diffz(s, a_dec) == 0);
 
 	/* load 0
 	 */
 
-	hcns(n_set_u4)(a, 0);
+	n_set_u4(a, 0);
 
 	/* base36
 	 */
 
 	s->len = 0; /* truncate s */
-	assert(hcns(n_as_base36)(a, s) == 1);
+	assert(n_as_base36(a, s) == 1);
 	HC_SAFE_CSTR(s);
-	assert(hcns(s_diffz)(s, "0") == 0);
+	assert(s_diffz(s, "0") == 0);
 
 	/* decimal
 	 */
 
 	s->len = 0; /* truncate s */
-	assert(hcns(n_as_dec)(a, s) == 1);
+	assert(n_as_dec(a, s) == 1);
 	HC_SAFE_CSTR(s);
-	assert(hcns(s_diffz)(s, "0") == 0);
+	assert(s_diffz(s, "0") == 0);
 
 	/*
 	 */
 
-	hcns(n_free)(a);
-	hcns(s_free)(s);
+	n_free(a);
+	s_free(s);
 
 	puts("ok");
 

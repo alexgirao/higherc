@@ -5,6 +5,6 @@
 #error higherc-h not included
 #endif
 
-unsigned int hcns(crc32)(unsigned int crc, void *p, int len);
+unsigned int crc32(unsigned int crc, void *p, int len);
 
 #endif

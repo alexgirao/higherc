@@ -34,19 +34,19 @@ int main()
 	HC_DEF_S(msg);
 	HC_DEF_S(s);
 
-	hcns(s_copyz)(msg, "hello world of possibilities!");
+	s_copyz(msg, "hello world of possibilities!");
 
-	hcns(s_cat_sha1hex)(s, msg->s, msg->len);
+	s_cat_sha1hex(s, msg->s, msg->len);
 
 	fwrite(msg->s, msg->len, 1, stdout);
 	fputs(" = ", stdout);
 	fwrite(s->s, s->len, 1, stdout);
 	fputs("\n", stdout);
 
-	assert(hcns(s_diffz)(s, "a0546faeff640257907540e2901f5fdcbc8a90ef") == 0);
+	assert(s_diffz(s, "a0546faeff640257907540e2901f5fdcbc8a90ef") == 0);
 
-	hcns(s_free)(msg);
-	hcns(s_free)(s);
+	s_free(msg);
+	s_free(s);
 
 	puts("ok");
 

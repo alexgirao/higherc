@@ -19,7 +19,7 @@
 #include "higherc/higherc.h"
 #include "higherc/str.h"
 
-int hcns(schrl)(const char *s, int c)
+int schrl(const char *s, int c)
 {
 	char ch;
 	const char *t;
@@ -55,7 +55,7 @@ int hcns(schrl)(const char *s, int c)
 	return t - s;
 }
 
-int hcns(schrr)(const char *s, int c)
+int schrr(const char *s, int c)
 {
 	char ch;
 	const char *t;
@@ -94,7 +94,7 @@ int hcns(schrr)(const char *s, int c)
 	return t - s;
 }
 
-int hcns(scopy)(char *s, const char *t)
+int scopy(char *s, const char *t)
 {
 	char *tmp = s;
 	for (;;) {
@@ -121,7 +121,7 @@ int hcns(scopy)(char *s, const char *t)
 	return s - tmp;
 }
 
-int hcns(sdiff)(const char *s, const char *t)
+int sdiff(const char *s, const char *t)
 {
 	char x;
 
@@ -163,7 +163,7 @@ int hcns(sdiff)(const char *s, const char *t)
 	    - ((int)(unsigned char)*t);
 }
 
-int hcns(sdiffn)(const char *s, const char *t, int len)
+int sdiffn(const char *s, const char *t, int len)
 {
 	char x;
 
@@ -213,7 +213,7 @@ int hcns(sdiffn)(const char *s, const char *t, int len)
 	    - ((int)(unsigned char)*t);
 }
 
-int hcns(slen)(const char *s)
+int slen(const char *s)
 {
 	const char *t;
 
@@ -237,7 +237,7 @@ int hcns(slen)(const char *s)
 	}
 }
 
-hcns(bool) hcns(sstart)(const char *s, const char *t)
+bool sstart(const char *s, const char *t)
 {
 	char x;
 

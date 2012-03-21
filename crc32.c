@@ -565,7 +565,7 @@ static unsigned int crc32_big(unsigned int crc, const unsigned char *buf, int le
 	return REV4(c);
 }
 
-unsigned int hcns(crc32)(unsigned int crc, void *p, int len)
+unsigned int crc32(unsigned int crc, void *p, int len)
 {
 	const unsigned char *buf = p;
 

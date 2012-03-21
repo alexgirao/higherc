@@ -41,115 +41,115 @@ int main(int argc, char **argv)
 	/* shift right
 	 */
 
-	hcns(s_catz)(s, "alphaXYZbravo");
+	s_catz(s, "alphaXYZbravo");
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, 8, 1, '0');
-	assert(hcns(s_diffz)(s, "alpha0XYbravo") == 0 && s->len == 13);
+	s_shiftr(s, 5, 8, 1, '0');
+	assert(s_diffz(s, "alpha0XYbravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, 8, 1, '9');
-	assert(hcns(s_diffz)(s, "alpha90Xbravo") == 0 && s->len == 13);
+	s_shiftr(s, 5, 8, 1, '9');
+	assert(s_diffz(s, "alpha90Xbravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 7, 8, 1, '2');
-	assert(hcns(s_diffz)(s, "alpha902bravo") == 0 && s->len == 13);
+	s_shiftr(s, 7, 8, 1, '2');
+	assert(s_diffz(s, "alpha902bravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, 9, 3, '1');
-	assert(hcns(s_diffz)(s, "alpha1119ravo") == 0 && s->len == 13);
+	s_shiftr(s, 5, 9, 3, '1');
+	assert(s_diffz(s, "alpha1119ravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, -1, 3, '2');
-	assert(hcns(s_diffz)(s, "alpha2221119o") == 0 && s->len == 13);
+	s_shiftr(s, 5, -1, 3, '2');
+	assert(s_diffz(s, "alpha2221119o") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, s->len, 3, '3');
-	assert(hcns(s_diffz)(s, "alpha33322211") == 0 && s->len == 13);
+	s_shiftr(s, 5, s->len, 3, '3');
+	assert(s_diffz(s, "alpha33322211") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, s->len + 1, 3, '4');
-	assert(hcns(s_diffz)(s, "alpha444333222") == 0 && s->len == 14);
+	s_shiftr(s, 5, s->len + 1, 3, '4');
+	assert(s_diffz(s, "alpha444333222") == 0 && s->len == 14);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 5, s->len + 3, 3, '5');
-	assert(hcns(s_diffz)(s, "alpha555444333222") == 0 && s->len == 17);
+	s_shiftr(s, 5, s->len + 3, 3, '5');
+	assert(s_diffz(s, "alpha555444333222") == 0 && s->len == 17);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 0, 5, 5, '6');
-	assert(hcns(s_diffz)(s, "66666555444333222") == 0 && s->len == 17);
+	s_shiftr(s, 0, 5, 5, '6');
+	assert(s_diffz(s, "66666555444333222") == 0 && s->len == 17);
 	print_s("[", s, "]\n");
 
 	/* shift left
 	 */
 
-	hcns(s_copyz)(s, "alphaXYZbravo");
+	s_copyz(s, "alphaXYZbravo");
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 5, 8, 1, '0');
-	assert(hcns(s_diffz)(s, "alphaYZ0bravo") == 0 && s->len == 13);
+	s_shiftl(s, 5, 8, 1, '0');
+	assert(s_diffz(s, "alphaYZ0bravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 5, 8, 1, '1');
-	assert(hcns(s_diffz)(s, "alphaZ01bravo") == 0 && s->len == 13);
+	s_shiftl(s, 5, 8, 1, '1');
+	assert(s_diffz(s, "alphaZ01bravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 5, 8, 1, '2');
-	assert(hcns(s_diffz)(s, "alpha012bravo") == 0 && s->len == 13);
+	s_shiftl(s, 5, 8, 1, '2');
+	assert(s_diffz(s, "alpha012bravo") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 5, s->len, 1, '3');
-	assert(hcns(s_diffz)(s, "alpha12bravo3") == 0 && s->len == 13);
+	s_shiftl(s, 5, s->len, 1, '3');
+	assert(s_diffz(s, "alpha12bravo3") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 5, -1, 1, '4');
-	assert(hcns(s_diffz)(s, "alpha2bravo43") == 0 && s->len == 13);
+	s_shiftl(s, 5, -1, 1, '4');
+	assert(s_diffz(s, "alpha2bravo43") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 0, s->len, 1, '5');
-	assert(hcns(s_diffz)(s, "lpha2bravo435") == 0 && s->len == 13);
+	s_shiftl(s, 0, s->len, 1, '5');
+	assert(s_diffz(s, "lpha2bravo435") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, -1, s->len, 1, '6');
-	assert(hcns(s_diffz)(s, "lpha2bravo436") == 0 && s->len == 13);
+	s_shiftl(s, -1, s->len, 1, '6');
+	assert(s_diffz(s, "lpha2bravo436") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, -2, s->len, 2, '7');
-	assert(hcns(s_diffz)(s, "lpha2bravo477") == 0 && s->len == 13);
+	s_shiftl(s, -2, s->len, 2, '7');
+	assert(s_diffz(s, "lpha2bravo477") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl)(s, 0, s->len, s->len, '5');
-	assert(hcns(s_diffz)(s, "5555555555555") == 0 && s->len == 13);
+	s_shiftl(s, 0, s->len, s->len, '5');
+	assert(s_diffz(s, "5555555555555") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl2)(s, 0, 1, '6');
-	assert(hcns(s_diffz)(s, "5555555555556") == 0 && s->len == 13);
+	s_shiftl2(s, 0, 1, '6');
+	assert(s_diffz(s, "5555555555556") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftl2)(s, 0, 1, '7');
-	assert(hcns(s_diffz)(s, "5555555555567") == 0 && s->len == 13);
+	s_shiftl2(s, 0, 1, '7');
+	assert(s_diffz(s, "5555555555567") == 0 && s->len == 13);
 	print_s("[", s, "]\n");
 
 	/* shift right
 	 */
 
-	hcns(s_shiftr2)(s, 0, 1, '4');
-	assert(hcns(s_diffz)(s, "45555555555567") == 0 && s->len == 14);
+	s_shiftr2(s, 0, 1, '4');
+	assert(s_diffz(s, "45555555555567") == 0 && s->len == 14);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr2)(s, 0, 1, '3');
-	assert(hcns(s_diffz)(s, "345555555555567") == 0 && s->len == 15);
+	s_shiftr2(s, 0, 1, '3');
+	assert(s_diffz(s, "345555555555567") == 0 && s->len == 15);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr)(s, 0, s->len, 1, '2');
-	assert(hcns(s_diffz)(s, "234555555555556") == 0 && s->len == 15);
+	s_shiftr(s, 0, s->len, 1, '2');
+	assert(s_diffz(s, "234555555555556") == 0 && s->len == 15);
 	print_s("[", s, "]\n");
 
-	hcns(s_shiftr2)(s, -1, 3, '1');
-	assert(hcns(s_diffz)(s, "234555555555551116") == 0 && s->len == 18);
+	s_shiftr2(s, -1, 3, '1');
+	assert(s_diffz(s, "234555555555551116") == 0 && s->len == 18);
 	print_s("[", s, "]\n");
 
-	hcns(s_free)(s);
+	s_free(s);
 
 	return 0;
 }

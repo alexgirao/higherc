@@ -21,18 +21,18 @@
 
 /* list header
  */
-struct hcns(list) {
+struct list {
 	int refcnt;    // reference count
 	int length;    // list length
 	int bufsiz;    // user data for items setup
 	int lastpos;   // used to control allocated item data
-	struct hcns(list) *tail;  // used for linked lists
+	struct list *tail;  // used for linked lists
 	// list data (item + user data)
 };
 
 /* list item
  */
-struct hcns(item) {
+struct item {
 	int pos;    // data position relative to list header, 0 means undefined
 	int size;   // data size
 };
@@ -40,11 +40,11 @@ struct hcns(item) {
 /* bufsz: holds item data
  * return: list object, use list_free to dispose
  */
-struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *tail);
+struct list* list_alloc(int length, int bufsz, struct list *tail);
 
 /* return: false (0) if reference count less than or equal zero
  */
-void hcns(list_free)(struct hcns(list) *list);
+void list_free(struct list *list);
 
 /*
  * index: item position at list, start at 0
@@ -53,12 +53,12 @@ void hcns(list_free)(struct hcns(list) *list);
  *   will be freed automatically with list. NULL if called more than
  *   once or if called with invalid arguments
  */
-void *hcns(item_setup)(struct hcns(list) *list, int index, int size);
+void *item_setup(struct list *list, int index, int size);
 
 /* index: item position at list, start at 0
  * szp: pointer to a integer that will receive size, can be NULL
  * return: pointer to user allocated area or NULL if undefined (no call to item_setup)
  */
-void *hcns(item_get)(struct hcns(list) *list, int index, int *sizep);
+void *item_get(struct list *list, int index, int *sizep);
 
 #endif

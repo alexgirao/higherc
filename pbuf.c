@@ -28,23 +28,23 @@
 #include "higherc/list.h"
 #include "higherc/pbuf.h"
 
-void hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int len, int itemsiz)
+void pbuf_alloc(struct pbuf *pbuf, int len, int itemsiz)
 {
 	int i;
-	struct hcns(list) *list;
+	struct list *list;
 
 	assert(pbuf->list == NULL);
 	assert(len > 0);
 
-	list = hcns(list_alloc)(len, len * itemsiz, NULL);
+	list = list_alloc(len, len * itemsiz, NULL);
 
 	/* setup items
 	 */
 
 	for (i=0; i<len; i++) {
-		void *p = hcns(item_setup)(list, i, itemsiz);
+		void *p = item_setup(list, i, itemsiz);
 		if (p == NULL) {
-			hcns(list_free)(list);
+			list_free(list);
 			list = NULL;
 			return;
 		}
@@ -56,17 +56,17 @@ void hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int len, int itemsiz)
 	pbuf->enqueued = 0;
 }
 
-void hcns(pbuf_free)(struct hcns(pbuf) *pbuf)
+void pbuf_free(struct pbuf *pbuf)
 {
 	if (pbuf->list) {
-		struct hcns(list) *l = pbuf->list;
+		struct list *l = pbuf->list;
 		pbuf->list = NULL;
 		pbuf->itemsiz = 0;
-		hcns(list_free)(l);
+		list_free(l);
 	}
 }
 
-void *hcns(pbuf_enqueue)(struct hcns(pbuf) *pbuf)
+void *pbuf_enqueue(struct pbuf *pbuf)
 {
 	int pos = pbuf->next;
 
@@ -87,10 +87,10 @@ void *hcns(pbuf_enqueue)(struct hcns(pbuf) *pbuf)
 	pbuf->next = (pbuf->next + 1) % pbuf->list->length;
 	pbuf->enqueued++;
 
-	return hcns(item_get)(pbuf->list, pos, NULL);
+	return item_get(pbuf->list, pos, NULL);
 }
 
-void *hcns(pbuf_shift)(struct hcns(pbuf) *pbuf)
+void *pbuf_shift(struct pbuf *pbuf)
 {
 	assert(pbuf->next >= 0);
 	assert(pbuf->next < pbuf->list->length);
@@ -109,10 +109,10 @@ void *hcns(pbuf_shift)(struct hcns(pbuf) *pbuf)
 	pbuf->next = (pbuf->next + pbuf->list->length - 1) % pbuf->list->length;
 	pbuf->enqueued--;
 
-	return hcns(item_get)(pbuf->list, pbuf->next, NULL);
+	return item_get(pbuf->list, pbuf->next, NULL);
 }
 
-void *hcns(pbuf_dequeue)(struct hcns(pbuf) *pbuf)
+void *pbuf_dequeue(struct pbuf *pbuf)
 {
 	int pos;
 
@@ -132,15 +132,15 @@ void *hcns(pbuf_dequeue)(struct hcns(pbuf) *pbuf)
 	}
 	pbuf->enqueued--;
 
-	return hcns(item_get)(pbuf->list, pos, NULL);
+	return item_get(pbuf->list, pos, NULL);
 }
 
-int hcns(pbuf_enqueued_len)(struct hcns(pbuf) *pbuf)
+int pbuf_enqueued_len(struct pbuf *pbuf)
 {
 	return pbuf->enqueued;
 }
 
-int hcns(pbuf_enqueued_first)(struct hcns(pbuf) *pbuf)
+int pbuf_enqueued_first(struct pbuf *pbuf)
 {
 	int pos = pbuf->next - pbuf->enqueued;
 	if (pos < 0) {
@@ -151,43 +151,43 @@ int hcns(pbuf_enqueued_first)(struct hcns(pbuf) *pbuf)
 	return pos;
 }
 
-int hcns(pbuf_enqueued_last)(struct hcns(pbuf) *pbuf)
+int pbuf_enqueued_last(struct pbuf *pbuf)
 {
 	return (pbuf->next + pbuf->list->length - 1) % pbuf->list->length;
 }
 
-int hcns(pbuf_remaining_len)(struct hcns(pbuf) *pbuf)
+int pbuf_remaining_len(struct pbuf *pbuf)
 {
 	return pbuf->list->length - pbuf->enqueued;
 }
 
-int hcns(pbuf_remaining_first)(struct hcns(pbuf) *pbuf)
+int pbuf_remaining_first(struct pbuf *pbuf)
 {
 	return pbuf->next;
 }
 
-int hcns(pbuf_remaining_last)(struct hcns(pbuf) *pbuf)
+int pbuf_remaining_last(struct pbuf *pbuf)
 {
-	return (hcns(pbuf_enqueued_first)(pbuf) + pbuf->list->length - 1) % pbuf->list->length;
+	return (pbuf_enqueued_first(pbuf) + pbuf->list->length - 1) % pbuf->list->length;
 }
 
-int hcns(pbuf_len)(struct hcns(pbuf) *pbuf)
+int pbuf_len(struct pbuf *pbuf)
 {
 	return pbuf->list->length;
 }
 
-int hcns(pbuf_next)(struct hcns(pbuf) *pbuf, int pos)
+int pbuf_next(struct pbuf *pbuf, int pos)
 {
 	return (pos + 1) % pbuf->list->length;
 }
 
-int hcns(pbuf_prior)(struct hcns(pbuf) *pbuf, int pos)
+int pbuf_prior(struct pbuf *pbuf, int pos)
 {
 	return (pos + pbuf->list->length - 1) % pbuf->list->length;
 }
 
-void *hcns(pbuf_item)(struct hcns(pbuf) *pbuf, int pos)
+void *pbuf_item(struct pbuf *pbuf, int pos)
 {
 	assert(pos >= 0);
-	return hcns(item_get)(pbuf->list, pos % pbuf->list->length, NULL);
+	return item_get(pbuf->list, pos % pbuf->list->length, NULL);
 }

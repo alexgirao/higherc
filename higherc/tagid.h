@@ -8,28 +8,28 @@
 /* tag
  */
 
-HC_DECL_PUBLIC_I_HEADERS(hcns(tag),
+HC_DECL_PUBLIC_I_HEADERS(tag,
 			 HC_ST_S value[1];
 );
 
-HC_DECL_PUBLIC_I_USORT_HEADER(hcns(tag));
+HC_DECL_PUBLIC_I_USORT_HEADER(tag);
 
-#define HC_ST_TAG struct hcns(tag)
+#define HC_ST_TAG struct tag
 
-struct hcns(tag) *hcns(tag_new)(struct hcns(tag) *x, HC_ST_S *s);
-struct hcns(tag) *hcns(tag_newz)(struct hcns(tag) *x, char *z);
+struct tag *tag_new(struct tag *x, HC_ST_S *s);
+struct tag *tag_newz(struct tag *x, char *z);
 
-void hcns(tag_free)(struct hcns(tag) *x);
+void tag_free(struct tag *x);
 
-hcns(bool) hcns(tag_is_valid)(struct hcns(s) *s);
+bool tag_is_valid(struct s *s);
 
-hcns(bool) hcns(tag_set)(struct hcns(tag) *x, HC_ST_S *s);
-hcns(bool) hcns(tag_setz)(struct hcns(tag) *x, char *z);
+bool tag_set(struct tag *x, HC_ST_S *s);
+bool tag_setz(struct tag *x, char *z);
 
 /* tagid
  */
 
-struct hcns(tagid) {
+struct tagid {
 	int B;
 	int C;
 	unsigned int D;
@@ -43,22 +43,22 @@ struct hcns(tagid) {
 				0, 0, 0, 0, 0		\
 				}}
 
-#define HC_ST_TAGID struct hcns(tagid)
+#define HC_ST_TAGID struct tagid
 #define HC_DEF_TAGID(sym) HC_ST_TAGID sym[1] = {HC_NULL_TAGID}
 
-void hcns(tagid_set_tags0)(HC_ST_TAGID *tagid, HC_ST_S *A, HC_ST_TAG *tag);
-void hcns(tagid_set_tags)(HC_ST_TAGID *tagid, HC_ST_TAG *tag);
-void hcns(tagid_free)(HC_ST_TAGID *tagid);
-void hcns(tagid_cat_id)(HC_ST_TAGID *tagid, HC_ST_S *tid);
+void tagid_set_tags0(HC_ST_TAGID *tagid, HC_ST_S *A, HC_ST_TAG *tag);
+void tagid_set_tags(HC_ST_TAGID *tagid, HC_ST_TAG *tag);
+void tagid_free(HC_ST_TAGID *tagid);
+void tagid_cat_id(HC_ST_TAGID *tagid, HC_ST_S *tid);
 
 #define HC_TAGID_RAW_LEN 26
 
 /* serialize tagid, write 26 bytes
  */
-void hcns(tagid_put)(HC_ST_TAGID *tagid, void *out);
+void tagid_put(HC_ST_TAGID *tagid, void *out);
 
 /* deserialize tagid, read 26 bytes
  */
-void hcns(tagid_get)(HC_ST_TAGID *tagid, void *in);
+void tagid_get(HC_ST_TAGID *tagid, void *in);
 
 #endif

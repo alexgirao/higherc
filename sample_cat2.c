@@ -41,15 +41,6 @@
 #include "higherc/higherc.h"
 #include "higherc/alloc.h"
 
-static int goto_newline(const char *buf, int len)
-{
-	const char *cp = buf;
-	while (*cp != '\n' && cp < (buf + len)) {
-		cp++;
-	}
-	return cp - buf;
-}
-
 static const char *get_line(const char *buf, int buflen, int *llenp)
 {
 	const char *cp = buf;
@@ -62,7 +53,7 @@ static const char *get_line(const char *buf, int buflen, int *llenp)
 
 /* processing function, return amount of successfully processed data
  */
-static int doit(const char *buf, int len, hcns(bool) eof)
+static int doit(const char *buf, int len, bool eof)
 {
 	int i;
 	const char *line;
@@ -108,7 +99,7 @@ int main(int argc, char **argv)
 
 	HC_ALLOC(buf, bufsz);
 
-	fprintf(stderr, "total bytes read: %i\n", hcns(readfd)(0 /* STDIN */, buf, bufsz, doit));
+	fprintf(stderr, "total bytes read: %i\n", readfd(0 /* STDIN */, buf, bufsz, doit));
 
 	HC_FREE(buf);
 

@@ -31,11 +31,11 @@
 struct i {
 	int pos;
 	struct i *tail;
-	struct hcns(s) tag;
+	struct s tag;
 };
 
 #define I_NEW(p) do {struct i *__tmp = p; HC_NEW(p, struct i); p->pos = __tmp ? __tmp->pos + 1 : 0; p->tail = __tmp;} while (0)
-#define I_FREE(p) do {hcns(s_free)(&p->tag); hcns(bzero)(p, sizeof(struct i)); HC_FREE(p);} while (0)
+#define I_FREE(p) do {s_free(&p->tag); bzero(p, sizeof(struct i)); HC_FREE(p);} while (0)
 #define I_ARRAY(r, h)  do {					\
 		HC_NEW_AR(r, h->pos + 1, struct i*);		\
 		{						\
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 
 	for (i=1; i<argc; i++) {
 		I_NEW(h);
-		hcns(s_copyz)(&h->tag, argv[i]);
+		s_copyz(&h->tag, argv[i]);
 	}
 
 	if (h == NULL) {

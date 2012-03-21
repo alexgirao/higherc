@@ -5,7 +5,7 @@
 #error higherc-h not included
 #endif
 
-void *hcns(alloc_re)(void *x, int m, int n); /* reallocate n copying only m bytes */
-int hcns(alloc_delta)(void);
+void *alloc_re(void *x, int m, int n); /* reallocate n copying only m bytes */
+int alloc_delta(void);
 
 #endif

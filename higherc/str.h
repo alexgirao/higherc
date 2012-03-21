@@ -5,12 +5,12 @@
 #error higherc-h not included
 #endif
 
-int hcns(scopy)(char *s, const char *t); /* copy t into s, til '\0' */
-int hcns(sdiff)(const char *s, const char *t); /* returns s - t, 0 if equal */
-int hcns(sdiffn)(const char *s, const char *t, int len);
-int hcns(slen)(const char *s);
-int hcns(schrl)(const char *s, int c); /* search c from left */
-int hcns(schrr)(const char *s, int c); /*  search c from right */
-hcns(bool) hcns(sstart)(const char *s, const char *t);  /* t is substring of s?*/
+int scopy(char *s, const char *t); /* copy t into s, til '\0' */
+int sdiff(const char *s, const char *t); /* returns s - t, 0 if equal */
+int sdiffn(const char *s, const char *t, int len);
+int slen(const char *s);
+int schrl(const char *s, int c); /* search c from left */
+int schrr(const char *s, int c); /*  search c from right */
+bool sstart(const char *s, const char *t);  /* t is substring of s?*/
 
 #endif

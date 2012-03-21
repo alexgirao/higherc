@@ -19,7 +19,7 @@
  * Default version that the compiler ought to optimize properly with
  * constant values.
  */
-static inline unsigned int hcns(swab32)(unsigned int val)
+static inline unsigned int swab32(unsigned int val)
 {
 	return (((val & 0xff000000) >> 24) |
 		((val & 0x00ff0000) >>  8) |
@@ -43,7 +43,7 @@ static inline unsigned int hcns(swab32)(unsigned int val)
 #define HC_BSWAP4(x) ({ \
 	unsigned int __res; \
 	if (__builtin_constant_p(x)) { \
-		__res = hcns(swab32)(x);	\
+		__res = swab32(x);	\
 	} else { \
 		__asm__("bswap %0" : "=r" (__res) : "0" ((unsigned int)(x))); \
 	} \
@@ -92,14 +92,14 @@ static inline unsigned int hcns(swab32)(unsigned int val)
 
 #endif
 
-#define HC_BITMASK(c) ((1 << (c)) - ((hcns(u4))1))
+#define HC_BITMASK(c) ((1 << (c)) - ((uint32_t)1))
 
 /* hex
  */
 
-extern const signed char hcns(hexval_table)[256];
+extern const signed char hexval_table[256];
 
-#define HC_HEX_VALUE(d) (hcns(hexval_table)[(unsigned char)(d)])
+#define HC_HEX_VALUE(d) (hexval_table[(unsigned char)(d)])
 #define HC_HEX_DIGIT(v) ((v) >= 0 && (v) < 16 ? "0123456789abcdef"[v] : '?')
 
 //#define HC_DEC_VALUE(d)
@@ -148,10 +148,10 @@ extern const signed char hcns(hexval_table)[256];
 #define HC_BLANK 0x100 /* space or '\t' */
 #define HC_PUNCT 0x200  /* not HC_GLOB nor HC_REGEX_* */
 
-extern hcns(u2) hcns(ctypetbl)[256];
+extern uint16_t ctypetbl[256];
 
-#define HC_CTYPE_FLAGS(x) (hcns(ctypetbl)[(unsigned char)(x)])
-#define HC_SANE_ISTEST(x, mask) ((hcns(ctypetbl)[(unsigned char)(x)] & (mask)) != 0)
+#define HC_CTYPE_FLAGS(x) (ctypetbl[(unsigned char)(x)])
+#define HC_SANE_ISTEST(x, mask) ((ctypetbl[(unsigned char)(x)] & (mask)) != 0)
 
 #define HC_ISASCII(x) (((x) & ~0x7f) == 0)
 #define HC_ISSPACE(x) HC_SANE_ISTEST(x, HC_SPACE)
@@ -183,7 +183,7 @@ extern hcns(u2) hcns(ctypetbl)[256];
  * function
  *
  */
-int hcns(enc_u4_be)(void *len0, hcns(u4) v);
-hcns(u4) hcns(dec_u4_be)(void *len0, int *lenp);
+int enc_u4_be(void *len0, uint32_t v);
+uint32_t dec_u4_be(void *len0, int *lenp);
 
 #endif /* tid0312749c542csqvqaudj9q3g02z9fbwf2qthdq7pco1 higherc-bytewise-h */

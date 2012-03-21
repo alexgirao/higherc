@@ -29,11 +29,11 @@
 
 /*#define HIGHERC_LIST_DEBUG*/
 
-struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *tail)
+struct list* list_alloc(int length, int bufsz, struct list *tail)
 {
-	int allocsz0 = sizeof(struct hcns(list)) + length * sizeof(struct hcns(item));
+	int allocsz0 = sizeof(struct list) + length * sizeof(struct item);
 	int allocsz = allocsz0 + bufsz;
-	struct hcns(list) *r = NULL;
+	struct list *r = NULL;
 
 	if (tail) {
 		/* not implemented-yet, see TODO */
@@ -55,7 +55,7 @@ struct hcns(list)* hcns(list_alloc)(int length, int bufsz, struct hcns(list) *ta
 	return r;
 }
 
-void hcns(list_free)(struct hcns(list) *list)
+void list_free(struct list *list)
 {
 	assert(list->refcnt > 0);
 
@@ -72,12 +72,12 @@ void hcns(list_free)(struct hcns(list) *list)
 #endif
 }
 
-void *hcns(item_setup)(struct hcns(list) *list, int index, int size)
+void *item_setup(struct list *list, int index, int size)
 {
-	struct hcns(item) *first_item = (struct hcns(item) *) HC_OFFSET(list, sizeof(struct hcns(list)));
-	struct hcns(item) *item = first_item + index;
+	struct item *first_item = (struct item *) HC_OFFSET(list, sizeof(struct list));
+	struct item *item = first_item + index;
 
-	int allocsz0 = sizeof(struct hcns(list)) + list->length * sizeof(struct hcns(item));
+	int allocsz0 = sizeof(struct list) + list->length * sizeof(struct item);
 
 	assert(index >= 0);
 
@@ -99,10 +99,10 @@ void *hcns(item_setup)(struct hcns(list) *list, int index, int size)
 	return HC_OFFSET(list, item->pos);
 }
 
-void *hcns(item_get)(struct hcns(list) *list, int index, int *sizep)
+void *item_get(struct list *list, int index, int *sizep)
 {
-	struct hcns(item) *first_item = (struct hcns(item) *) HC_OFFSET(list, sizeof(struct hcns(list)));
-	struct hcns(item) *item = first_item + index;
+	struct item *first_item = (struct item *) HC_OFFSET(list, sizeof(struct list));
+	struct item *item = first_item + index;
 
 	assert(index >= 0);
 

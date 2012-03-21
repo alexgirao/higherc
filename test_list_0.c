@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 {
 	int len = 10;
 	int bufsiz = len * sizeof(struct mydata);
-	struct hcns(list) *list = hcns(list_alloc)(len, bufsiz, NULL);
+	struct list *list = list_alloc(len, bufsiz, NULL);
 	int i;
 
 	if (!list) {
@@ -47,8 +47,8 @@ int main(int argc, char **argv)
 	for (i=0; i<list->length; i++) {
 		int sz = sizeof(struct mydata);
 		int sz2;
-		void *p = hcns(item_setup)(list, i, sz);
-		void *p2 = hcns(item_get)(list, i, &sz2);
+		void *p = item_setup(list, i, sz);
+		void *p2 = item_get(list, i, &sz2);
 
 		assert(p == p2);
 		assert(sz == sz2);
@@ -63,11 +63,11 @@ int main(int argc, char **argv)
 
 	for (i=0; i<list->length; i++) {
 		int sz;
-		struct mydata *ms = hcns(item_get)(list, i, &sz);
+		struct mydata *ms = item_get(list, i, &sz);
 		printf("{%i, %.2f, %s}\n", ms->alpha, ms->bravo, ms->charlie);
 	}
 
-	hcns(list_free)(list);
+	list_free(list);
 
 	return 0;
 }

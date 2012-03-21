@@ -16,17 +16,17 @@
  */
 
 #define HC_HALF_BITS 16
-typedef hcns(u2) hcns(h);    /* half word, at least 16-bit */
-typedef hcns(u4) hcns(f);    /* full word, at least 32-bit */
+typedef uint16_t h;    /* half word, at least 16-bit */
+typedef uint32_t f;    /* full word, at least 32-bit */
 
-struct hcns(n) {
-	hcns(h) *d; /* digits, least significant digit first */
+struct n {
+	h *d; /* digits, least significant digit first */
 	int len; /* effective words */
 	int a; /* allocated words */
 };
 
 #define HC_NULL_N {NULL, 0, 0}
-#define HC_ST_N struct hcns(n)
+#define HC_ST_N struct n
 #define HC_DEF_N(sym) HC_ST_N sym[1] = {HC_NULL_N}
 
 #define HC_HALF_BYTES (HC_HALF_BITS/8)
@@ -36,23 +36,23 @@ struct hcns(n) {
 #define HC_FMT_H "%.4x"
 #define HC_FMT_F "%.8x"
 
-#define HC_LOW(x)        ((hcns(h))(x))
-#define HC_HIGH(x)       ((hcns(h))(((hcns(f))(x)) >> HC_HALF_BITS))
-#define HC_TO_HIGH(x)    (((hcns(f))(x)) << HC_HALF_BITS)
+#define HC_LOW(x)        ((h)(x))
+#define HC_HIGH(x)       ((h)(((f)(x)) >> HC_HALF_BITS))
+#define HC_TO_HIGH(x)    (((f)(x)) << HC_HALF_BITS)
 
-#define HC_H(v) ((hcns(h))(v))
-#define HC_F(hi,lo) ((hcns(f))(HC_TO_HIGH(hi)+(lo)))
+#define HC_H(v) ((h)(v))
+#define HC_F(hi,lo) ((f)(HC_TO_HIGH(hi)+(lo)))
 
 #define HC_ZERO_DIGITS(v, l) do {		\
 		int __l = l;		\
-		hcns(h) *__v  = v;		\
+		h *__v  = v;		\
 		while(__l--) *__v++ = 0;	\
 	} while(0)
 
 #define HC_MOVE_DIGITS(dst, src, l) do {			\
 		int __l = l;				\
-		hcns(h) *__dst;					\
-		hcns(h) *__src;					\
+		h *__dst;					\
+		h *__src;					\
 		if (dst < src) {				\
 			__dst = dst;				\
 			__src = src;				\
@@ -66,34 +66,34 @@ struct hcns(n) {
 
 #define HC_IS_ZERO(n) ((n) == NULL || (n)->len == 0 || ((n)->len == 1 && (n)->d[0] == HC_H(0)))
 
-void hcns(n_alloc)(struct hcns(n) *x, int n);
-void hcns(n_free)(struct hcns(n) *x);
+void n_alloc(struct n *x, int n);
+void n_free(struct n *x);
 
-void hcns(n_copyn)(struct hcns(n) *x, const hcns(h) *d, int n);
-void hcns(n_copy)(struct hcns(n) *to, const struct hcns(n) *from);
+void n_copyn(struct n *x, const h *d, int n);
+void n_copy(struct n *to, const struct n *from);
 
-void hcns(n_set_u4)(struct hcns(n) *n, hcns(u4) v);
+void n_set_u4(struct n *n, uint32_t v);
 
-int hcns(n_as_hex)(struct hcns(n) *n, struct hcns(s) *s);
-int hcns(n_as_dec)(struct hcns(n) *n, struct hcns(s) *s);
-int hcns(n_as_base36)(struct hcns(n) *n, struct hcns(s) *s);
+int n_as_hex(struct n *n, struct s *s);
+int n_as_dec(struct n *n, struct s *s);
+int n_as_base36(struct n *n, struct s *s);
 
-void hcns(n_load_be1)(struct hcns(n) *r, void *x, int len);  /* load big-endian bytes */
-void hcns(n_load_hex)(struct hcns(n) *r, char *hex, int n);  /* load hex string */
-void hcns(n_load_hexz)(struct hcns(n) *r, char *hex); /* likewise */
+void n_load_be1(struct n *r, void *x, int len);  /* load big-endian bytes */
+void n_load_hex(struct n *r, char *hex, int n);  /* load hex string */
+void n_load_hexz(struct n *r, char *hex); /* likewise */
 
-int hcns(n_cmp_hex)(struct hcns(n) *v, char *hex, int n);
-int hcns(n_cmp_hexz)(struct hcns(n) *v, char *hex);
+int n_cmp_hex(struct n *v, char *hex, int n);
+int n_cmp_hexz(struct n *v, char *hex);
 
-int hcns(n_be1_as_hex)(struct hcns(s) *s, void *x, int len);
-int hcns(n_be1_as_dec)(struct hcns(s) *s, void *x, int len);
-int hcns(n_be1_as_base36)(struct hcns(s) *s, void *x, int len);
+int n_be1_as_hex(struct s *s, void *x, int len);
+int n_be1_as_dec(struct s *s, void *x, int len);
+int n_be1_as_base36(struct s *s, void *x, int len);
 
-int D_mul(hcns(h) *x, int xl, hcns(h) d, hcns(h) *r);
-int D_div(hcns(h) *x, int xl, hcns(h) d, hcns(h) *q, hcns(h) *r);
+int D_mul(h *x, int xl, h d, h *r);
+int D_div(h *x, int xl, h d, h *q, h *r);
 
-int I_mul(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *r);
-int I_comp(hcns(h) *x, int xl, hcns(h) *y, int yl);
-int I_div(hcns(h) *x, int xl, hcns(h) *y, int yl, hcns(h) *q, hcns(h) *r, int *rlp);
+int I_mul(h *x, int xl, h *y, int yl, h *r);
+int I_comp(h *x, int xl, h *y, int yl);
+int I_div(h *x, int xl, h *y, int yl, h *q, h *r, int *rlp);
 
 #endif

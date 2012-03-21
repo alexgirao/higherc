@@ -7,25 +7,13 @@
 
 #include <stdarg.h>
 #include <assert.h>
+#include <stdint.h>
 
-#ifndef hcns /* higherc namespace */
-#define hcns(v) v
-#endif
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-/* todo: ensure sizes below (u4, i2, ...)
- */
-
-typedef int hcns(bool);	  /* 0 = false, 1 = true */
-
-typedef signed char hcns(i1);  /* some compilers or compiler flag set char to be unsigned by default */
-typedef signed short hcns(i2);
-typedef signed int hcns(i4);
-//typedef unsigned long hcns(u8);  // future
-
-typedef unsigned char hcns(u1);
-typedef unsigned short hcns(u2);
-typedef unsigned int hcns(u4);
-//typedef unsigned long hcns(u8);  // future
+typedef int bool;	  /* 0 = false, 1 = true */
 
 #define HC_TRUE 1
 #define HC_FALSE 0
@@ -38,27 +26,27 @@ typedef unsigned int hcns(u4);
 #define HC_ALIGN16(bytes)		   HC_ALIGN_BY(bytes,16)
 
 #if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-# define HC_FATAL(...)	    hcns(_p_fatal)(__FILE__, __LINE__, __VA_ARGS__)
+# define HC_FATAL(...)	    _p_fatal(__FILE__, __LINE__, __VA_ARGS__)
 #elif defined (__GNUC__)
-# define HC_FATAL(fmt...)   hcns(_p_fatal)(__FILE__, __LINE__, fmt)
+# define HC_FATAL(fmt...)   _p_fatal(__FILE__, __LINE__, fmt)
 #endif
 
 /* private memory allocation functions, use macros if available
  */
 
-void *hcns(_p_alloc)(int n);
-void *hcns(_p_alloc_z)(int n); /* allocate with memory set to zero */
-void hcns(_p_alloc_free)(void *x);
-void hcns(_p_alloc_fatal_error_happend)(void);
+void *_p_alloc(int n);
+void *_p_alloc_z(int n); /* allocate with memory set to zero */
+void _p_alloc_free(void *x);
+void _p_alloc_fatal_error_happend(void);
 
 /* memory allocation macros
  */
 
-#define HC_ALLOC(p, sz) do { p = hcns(_p_alloc)(sz); if ((p) == NULL) HC_FATAL("HC_ALLOC(%i)", sz); } while (0)
-#define HC_ALLOC_Z(p, sz) do { p = hcns(_p_alloc_z)(sz); if ((p) == NULL) HC_FATAL("HC_ALLOC_Z(%i)", sz); } while (0)
-#define HC_NEW(p, t) do { p = (t*) hcns(_p_alloc_z)(sizeof(t)); if ((p) == NULL) HC_FATAL("HC_NEW(%i (type " #t "))", sizeof(t)); } while (0)
-#define HC_NEW_AR(p, l, t) do { p = (t*) hcns(_p_alloc_z)((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("HC_NEW_AR(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
-#define HC_FREE(p) do { hcns(_p_alloc_free)(p); p = NULL; } while (0)
+#define HC_ALLOC(p, sz) do { p = _p_alloc(sz); if ((p) == NULL) HC_FATAL("HC_ALLOC(%i)", sz); } while (0)
+#define HC_ALLOC_Z(p, sz) do { p = _p_alloc_z(sz); if ((p) == NULL) HC_FATAL("HC_ALLOC_Z(%i)", sz); } while (0)
+#define HC_NEW(p, t) do { p = (t*) _p_alloc_z(sizeof(t)); if ((p) == NULL) HC_FATAL("HC_NEW(%i (type " #t "))", sizeof(t)); } while (0)
+#define HC_NEW_AR(p, l, t) do { p = (t*) _p_alloc_z((l) * sizeof(t)); if ((p) == NULL) HC_FATAL("HC_NEW_AR(%i (%i itens of type " #t "))", (l) * sizeof(t), l); } while (0)
+#define HC_FREE(p) do { _p_alloc_free(p); p = NULL; } while (0)
 
 /* typed list/item macros
  */
@@ -316,21 +304,21 @@ void hcns(_p_alloc_fatal_error_happend)(void);
 
 /* this function ceases program execution with a exit(1)
  */
-void hcns(_p_fatal)(char *file, int line, char *fmt, ...);
+void _p_fatal(char *file, int line, char *fmt, ...);
 
 /* io functions
  */
 
-int hcns(readfd)(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int len, hcns(bool) eof));
+int readfd(int fd, void *buf, int bufsz, int (*doit)(const char *buf, int len, bool eof));
 
 /* read_exact/write_exact: return len or less/equal than 0 on error
  */
-int hcns(read_exact)(int fd, void *buf, int len);
-int hcns(write_exact)(int fd, void *buf, int len);
+int read_exact(int fd, void *buf, int len);
+int write_exact(int fd, void *buf, int len);
 
 /* returns the value at the next 4 bytes disposed in big-endian order,
  * fatal error if can't read 4 bytes (EOF)
  */
-hcns(u4) hcns(readfd_be4)(int fd);
+uint32_t readfd_be4(int fd);
 
 #endif

@@ -50,19 +50,19 @@ static void test0()
 	HC_ST_TAG *h = NULL;
 	char *check = "tid04079a5157de2jeg2ovjrtl0hfk79vsjjfva7prvj24";
 
-	h = hcns(tag_newz)(h, "a");
-	h = hcns(tag_newz)(h, "b");
-	h = hcns(tag_newz)(h, "c");
-	h = hcns(tag_newz)(h, "d");
+	h = tag_newz(h, "a");
+	h = tag_newz(h, "b");
+	h = tag_newz(h, "c");
+	h = tag_newz(h, "d");
 
-	hcns(tagid_set_tags)(tagid, h);
-	hcns(tagid_cat_id)(tagid, tid);
+	tagid_set_tags(tagid, h);
+	tagid_cat_id(tagid, tid);
 
-	assert(hcns(s_diffz)(tid, check) == 0);
+	assert(s_diffz(tid, check) == 0);
 
-	hcns(s_free)(tid);
-	hcns(tag_free)(h);
-	hcns(tagid_free)(tagid);
+	s_free(tid);
+	tag_free(h);
+	tagid_free(tagid);
 }
 
 int main(int argc, char **argv)
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 	HC_DEF_S(tid);
 
 	for (i=1; i<argc; i++) {
-		h = hcns(tag_newz)(h, argv[i]);
+		h = tag_newz(h, argv[i]);
 		if (h == NULL) {
 			HC_FATAL("invalid tag at arg %i", i);
 		}
@@ -94,8 +94,8 @@ int main(int argc, char **argv)
 	/*
 	 */
 
-	hcns(tagid_set_tags0)(tagid, A, h);
-	hcns(tagid_cat_id)(tagid, tid);
+	tagid_set_tags0(tagid, A, h);
+	tagid_cat_id(tagid, tid);
 
 	print_s(NULL, A, " = ");
 	print_s(NULL, tid, "\n");
@@ -103,20 +103,20 @@ int main(int argc, char **argv)
 	/* serialization test
 	 */
 
-	hcns(tagid_put)(tagid, b);
-	hcns(tagid_get)(a, b);
+	tagid_put(tagid, b);
+	tagid_get(a, b);
 
-	hcns(tagid_cat_id)(tagid, tid);
+	tagid_cat_id(tagid, tid);
 
-	assert(hcns(b_diff)(tagid, sizeof(HC_ST_TAGID), a) == 0);
+	assert(b_diff(tagid, sizeof(HC_ST_TAGID), a) == 0);
 
         /* cleanup
 	 */
 
-	hcns(s_free)(A);
-	hcns(s_free)(tid);
-	hcns(tag_free)(h);
-	hcns(tagid_free)(tagid);
+	s_free(A);
+	s_free(tid);
+	tag_free(h);
+	tagid_free(tagid);
 
 	return 0;
 }

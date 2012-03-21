@@ -23,8 +23,8 @@
  *
  */ 
 
-struct hcns(pbuf) {
-	struct hcns(list) *list;
+struct pbuf {
+	struct list *list;
 	int itemsiz;
 	int next; /* next available item */
 	int enqueued; /* how many items enqueued, decreasing by N has
@@ -33,46 +33,46 @@ struct hcns(pbuf) {
 };
 
 #define HC_NULL_PBUF {NULL, 0, 0, 0}
-#define HC_ST_PBUF struct hcns(pbuf)
+#define HC_ST_PBUF struct pbuf
 #define HC_DEF_PBUF(sym) HC_ST_PBUF sym[1] = {HC_NULL_PBUF}
 
-void hcns(pbuf_alloc)(struct hcns(pbuf) *pbuf, int len, int itemsz);
-void hcns(pbuf_free)(struct hcns(pbuf) *pbuf);
+void pbuf_alloc(struct pbuf *pbuf, int len, int itemsz);
+void pbuf_free(struct pbuf *pbuf);
 
 /* get item for write
  * return: NULL on error or if queue is full
  */
-void *hcns(pbuf_enqueue)(struct hcns(pbuf) *pbuf);
+void *pbuf_enqueue(struct pbuf *pbuf);
 
 /* get last enqueued item for read
  * return: NULL on error or if queue is empty
  */
-void *hcns(pbuf_shift)(struct hcns(pbuf) *pbuf);
+void *pbuf_shift(struct pbuf *pbuf);
 
 /* get first enqueued item for read
  * return: NULL on error or if queue is empty
  */
-void *hcns(pbuf_dequeue)(struct hcns(pbuf) *pbuf);
+void *pbuf_dequeue(struct pbuf *pbuf);
 
 /* get first remaining item
  */
-int hcns(pbuf_enqueued_first)(struct hcns(pbuf) *pbuf);
-int hcns(pbuf_enqueued_last)(struct hcns(pbuf) *pbuf);
-int hcns(pbuf_enqueued_len)(struct hcns(pbuf) *pbuf);
+int pbuf_enqueued_first(struct pbuf *pbuf);
+int pbuf_enqueued_last(struct pbuf *pbuf);
+int pbuf_enqueued_len(struct pbuf *pbuf);
 
-int hcns(pbuf_remaining_first)(struct hcns(pbuf) *pbuf);
-int hcns(pbuf_remaining_last)(struct hcns(pbuf) *pbuf);
-int hcns(pbuf_remaining_len)(struct hcns(pbuf) *pbuf);
+int pbuf_remaining_first(struct pbuf *pbuf);
+int pbuf_remaining_last(struct pbuf *pbuf);
+int pbuf_remaining_len(struct pbuf *pbuf);
 
 /* pbuf's length
  */
-int hcns(pbuf_len)(struct hcns(pbuf) *pbuf);
+int pbuf_len(struct pbuf *pbuf);
 
-int hcns(pbuf_next)(struct hcns(pbuf) *pbuf, int pos);
-int hcns(pbuf_prior)(struct hcns(pbuf) *pbuf, int pos);
+int pbuf_next(struct pbuf *pbuf, int pos);
+int pbuf_prior(struct pbuf *pbuf, int pos);
 
 /* get item at slot, queued or not
  */
-void * hcns(pbuf_item)(struct hcns(pbuf) *pbuf, int pos);
+void * pbuf_item(struct pbuf *pbuf, int pos);
 
 #endif

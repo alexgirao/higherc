@@ -32,7 +32,7 @@
  */
 
 HC_DECL_PRIVATE_I(i,
-	struct hcns(s) tag[1];
+	struct s tag[1];
 	int a;
 	int b;
 	int c;
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
 	for (i=1; i<argc; i++) {
 		h = i_new0(h);
-		hcns(s_copyz)(h->tag, argv[i]);
+		s_copyz(h->tag, argv[i]);
 		HC_SAFE_CSTR(h->tag);
 		h->a = i;
 		h->b = h->tag->len;
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 
 	i_backward(c, h);
 	while ((t = i_next(c))) {
-		hcns(s_free)(t->tag);
+		s_free(t->tag);
 	}
 	i_end(c);
 

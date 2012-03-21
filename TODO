@@ -1,5 +1,14 @@
 
 platform optimizations
 
-	 - byte ordering (little-endian, big-endian)
-	 - word size (4 or 8)
+    - byte ordering (little-endian, big-endian)
+    - word size (4 or 8) detection within autoconf
+    - remove 'bool' typedef
+    - update tagid
+    - update .h ids with updated tagid spec
+
+automate tests
+
+    for i in `file test_* | perl -lane 'if ($_ =~ /ELF [^ ]+ LSB executable/) { print substr($F[0], 0, -1); }'`; do
+        ./$i >/dev/null && echo $i ok
+    done

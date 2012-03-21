@@ -37,7 +37,7 @@
 
 /* return amount of successfully processed buffer
  */
-static int doit(const char *buf, int len, hcns(bool) eof)
+static int doit(const char *buf, int len, bool eof)
 {
 	int n, c;
 	const char *start = buf;
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 
 	HC_ALLOC(buf, bufsz);
 
-	fprintf(stderr, "total bytes read: %i\n", hcns(readfd)(0 /* STDIN */, buf, bufsz, doit));
+	fprintf(stderr, "total bytes read: %i\n", readfd(0 /* STDIN */, buf, bufsz, doit));
 
 	HC_FREE(buf);
 

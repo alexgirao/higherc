@@ -20,7 +20,7 @@
 #include "higherc/byte.h"
 #include "higherc/bytewise.h"
 
-const signed char hcns(hexval_table)[256] = {
+const signed char hexval_table[256] = {
 	 -1, -1, -1, -1, -1, -1, -1, -1,		/* 00-07 */
 	 -1, -1, -1, -1, -1, -1, -1, -1,		/* 08-0f */
 	 -1, -1, -1, -1, -1, -1, -1, -1,		/* 10-17 */
@@ -75,7 +75,7 @@ enum {
 	F = HC_ALPHA | HC_ALNUM | HC_HEXDIGIT
 };
 
-hcns(u2) hcns(ctypetbl)[256] = {
+uint16_t ctypetbl[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, C, S, S, S, S, 0, 0,		/*   0.. 15 */
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,		/*  16.. 31 */
 	C, P, P, P, R, P, P, P, R, R, B, R, P, H, R, P,		/*  32.. 47 */
@@ -93,10 +93,10 @@ hcns(u2) hcns(ctypetbl)[256] = {
  * len0 needs at least 5 digits
  *
  */
-int hcns(enc_u4_be)(void *len0, hcns(u4) v)
+int enc_u4_be(void *len0, uint32_t v)
 {
-	hcns(u1) *len=len0;
-	hcns(u4) q=v, r;
+	uint8_t *len=len0;
+	uint32_t q=v, r;
 
 	if (q) {
 		if (len0) {
@@ -105,8 +105,8 @@ int hcns(enc_u4_be)(void *len0, hcns(u4) v)
 				q = q >> 7;
 				*len++ = r | 0x80;
 			}
-			((hcns(u1)*)len0)[0] &= 0x7f; /* clear the last digit bit */
-			hcns(b_rev)(len0, len - (hcns(u1)*)len0); /* make big-endian (simpler to decode) */
+			((uint8_t*)len0)[0] &= 0x7f; /* clear the last digit bit */
+			b_rev(len0, len - (uint8_t*)len0); /* make big-endian (simpler to decode) */
 		} else {
 			if ((q & ~HC_BITMASK(7)) == 0) {
 				return 1;
@@ -125,13 +125,13 @@ int hcns(enc_u4_be)(void *len0, hcns(u4) v)
 		return 1;
 	}
 
-	return len - (hcns(u1)*)len0;
+	return len - (uint8_t*)len0;
 }
 
-hcns(u4) hcns(dec_u4_be)(void *len0, int *lenp)
+uint32_t dec_u4_be(void *len0, int *lenp)
 {
-	hcns(u1) *len=len0;
-	hcns(u4) q=0, r;
+	uint8_t *len=len0;
+	uint32_t q=0, r;
 
 #define ITER 						\
 	r = *len++;					\
@@ -153,7 +153,7 @@ hcns(u4) hcns(dec_u4_be)(void *len0, int *lenp)
 #undef ITER
 
 	if (lenp) {
-		*lenp = len - (hcns(u1)*)len0;
+		*lenp = len - (uint8_t*)len0;
 	}
 
 	return q;

@@ -42,50 +42,50 @@ int main(int argc, char **argv)
 	struct mydata *p;
 	HC_DEF_PBUF(pbuf);
 
-	hcns(pbuf_alloc)(pbuf, len, itemsiz);
+	pbuf_alloc(pbuf, len, itemsiz);
 
 	for (i=0; i<len; i++) {
-		p = hcns(pbuf_enqueue)(pbuf);
+		p = pbuf_enqueue(pbuf);
 		p->alpha = i;
 	}
 
 	assert(len == 10);
 
-	assert(p == hcns(pbuf_shift)(pbuf));
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == pbuf->enqueued);
+	assert(p == pbuf_shift(pbuf));
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == pbuf->enqueued);
 
 	assert(pbuf->enqueued == 0);
-	assert(hcns(pbuf_shift)(pbuf) == NULL);
+	assert(pbuf_shift(pbuf) == NULL);
 
 	/* fillup again, up to 7
 	 */
 
 	for (i=0; i<7; i++) {
-		p = hcns(pbuf_enqueue)(pbuf);
+		p = pbuf_enqueue(pbuf);
 		p->alpha = i * 100;
 	}
 
-	assert(((struct mydata *)hcns(pbuf_dequeue)(pbuf))->alpha == 0);
-	assert(((struct mydata *)hcns(pbuf_dequeue)(pbuf))->alpha == 100);
-	assert(((struct mydata *)hcns(pbuf_shift)(pbuf))->alpha == 600);
+	assert(((struct mydata *)pbuf_dequeue(pbuf))->alpha == 0);
+	assert(((struct mydata *)pbuf_dequeue(pbuf))->alpha == 100);
+	assert(((struct mydata *)pbuf_shift(pbuf))->alpha == 600);
 
 	/* traverse queued slots
 	 */
 
 	i = 0;
-	j = hcns(pbuf_enqueued_len)(pbuf);
-	pos = hcns(pbuf_enqueued_first)(pbuf);
+	j = pbuf_enqueued_len(pbuf);
+	pos = pbuf_enqueued_first(pbuf);
 	for (; i<j; i++) {
-		p = hcns(pbuf_item)(pbuf, pos);
-		pos = hcns(pbuf_next)(pbuf, pos);
+		p = pbuf_item(pbuf, pos);
+		pos = pbuf_next(pbuf, pos);
 		printf("enqueued[%i] = %i\n", pos, p->alpha);
 	}
 
@@ -93,11 +93,11 @@ int main(int argc, char **argv)
 	 */
 
 	i = 0;
-	j = hcns(pbuf_remaining_len)(pbuf);
-	pos = hcns(pbuf_remaining_first)(pbuf);
+	j = pbuf_remaining_len(pbuf);
+	pos = pbuf_remaining_first(pbuf);
 	for (; i<j; i++) {
-		p = hcns(pbuf_item)(pbuf, pos);
-		pos = hcns(pbuf_next)(pbuf, pos);
+		p = pbuf_item(pbuf, pos);
+		pos = pbuf_next(pbuf, pos);
 		printf("remaining[%i] = %i\n", pos, p->alpha);
 	}
 
@@ -105,11 +105,11 @@ int main(int argc, char **argv)
 	 */
 
 	i = 0;
-	j = hcns(pbuf_enqueued_len)(pbuf);
-	pos = hcns(pbuf_enqueued_last)(pbuf);
+	j = pbuf_enqueued_len(pbuf);
+	pos = pbuf_enqueued_last(pbuf);
 	for (; i<j; i++) {
-		p = hcns(pbuf_item)(pbuf, pos);
-		pos = hcns(pbuf_prior)(pbuf, pos);
+		p = pbuf_item(pbuf, pos);
+		pos = pbuf_prior(pbuf, pos);
 		printf("enqueued[%i] = %i\n", pos, p->alpha);
 	}
 
@@ -117,15 +117,15 @@ int main(int argc, char **argv)
 	 */
 
 	i = 0;
-	j = hcns(pbuf_remaining_len)(pbuf);
-	pos = hcns(pbuf_remaining_last)(pbuf);
+	j = pbuf_remaining_len(pbuf);
+	pos = pbuf_remaining_last(pbuf);
 	for (; i<j; i++) {
-		p = hcns(pbuf_item)(pbuf, pos);
-		pos = hcns(pbuf_prior)(pbuf, pos);
+		p = pbuf_item(pbuf, pos);
+		pos = pbuf_prior(pbuf, pos);
 		printf("remaining[%i] = %i\n", pos, p->alpha);
 	}
 
-	hcns(pbuf_free)(pbuf);
+	pbuf_free(pbuf);
 
 	return 0;
 }

@@ -42,16 +42,16 @@ int main(int argc, char **argv)
 	/* copyf
 	 */
 
-	hcns(s_copyf)(s, "[%i]", 123);
+	s_copyf(s, "[%i]", 123);
 	puts_s(s);
 
-	hcns(s_copyf)(s, "[%f]", 2.718281828459045);
+	s_copyf(s, "[%f]", 2.718281828459045);
 	puts_s(s);
 
-	hcns(s_copyf)(s, "[%s]", "hello world of possibilities!");
+	s_copyf(s, "[%s]", "hello world of possibilities!");
 	puts_s(s);
 
-	hcns(s_copyf)(s, "[%i][%f][%s]", 123, 2.718281828459045, "hello world of possibilities!");
+	s_copyf(s, "[%i][%f][%s]", 123, 2.718281828459045, "hello world of possibilities!");
 	puts_s(s);
 
 	/* catf
@@ -59,21 +59,21 @@ int main(int argc, char **argv)
 
 	s->len = 0; /* truncate */
 
-	hcns(s_catf)(s, "[%i]", 123);
+	s_catf(s, "[%i]", 123);
 	puts_s(s);
 
-	hcns(s_catf)(s, "[%f]", 2.718281828459045);
+	s_catf(s, "[%f]", 2.718281828459045);
 	puts_s(s);
 
-	hcns(s_catf)(s, "[%s]", "hello world of possibilities!");
+	s_catf(s, "[%s]", "hello world of possibilities!");
 	puts_s(s);
 
-	hcns(s_catf)(s, "[%i][%f][%s]", 123, 2.718281828459045, "hello world of possibilities!");
+	s_catf(s, "[%i][%f][%s]", 123, 2.718281828459045, "hello world of possibilities!");
 	puts_s(s);
 
 	/*
 	 */
 
-	hcns(s_free)(s);
+	s_free(s);
 	return 0;
 }
